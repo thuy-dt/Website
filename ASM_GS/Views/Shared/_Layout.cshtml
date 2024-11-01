@@ -893,7 +893,7 @@
         <div id="chat-box" class="chat-box" style="display: none;">
             <div class="chat-header">Hộp Thoại Hỗ Trợ</div>
             <div class="chat-body" id="chat-body">
-                <div class="chat-message">Chào bạn! Bạn cần hỗ trợ gì?</div>
+                <div class="chat-message">Chào Chủ Nhân! Chủ nhân muốn Rem hỗ trợ gì ạ?</div>
             </div>
             <div class="chat-input-container">
                 <input type="text" id="user-input" placeholder="Nhập câu hỏi..." class="chat-input">
@@ -941,22 +941,22 @@
             if (userInput.trim() !== "") {
                 const userMessage = document.createElement("div");
                 userMessage.className = "chat-message";
-                userMessage.textContent = "Bạn: " + userInput;
+                userMessage.textContent = "Chủ nhân: " + userInput;
                 chatBody.appendChild(userMessage);
 
                 const waitingMessage = document.createElement("div");
                 waitingMessage.className = "chat-message chat-message-waiting";
-                waitingMessage.textContent = "Hệ thống: Đang xử lý...";
+                waitingMessage.textContent = "Rem-Chan: Đang xử lý...";
                 chatBody.appendChild(waitingMessage);
-
+                 console.log(userInput);
                 // Send the user input to the backend
-                const response = await fetch('@Url.Action("TraLoi", "Home")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ userInput: userInput })
-                });
+               const response = await fetch('@Url.Action("TraLoi", "Home")', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userInput)  // send the raw string
+});
 
                 const data = await response.json();
                 chatBody.removeChild(waitingMessage);
@@ -964,7 +964,7 @@
                 // Display the response from the API
                 const responseMessage = document.createElement("div");
                 responseMessage.className = "chat-message";
-                responseMessage.textContent = "Hệ thống: " + data.response;
+                responseMessage.textContent = "Rem: " + data.response;
                 chatBody.appendChild(responseMessage);
 
                 // Clear user input and scroll to the bottom
@@ -1057,13 +1057,16 @@
         position: fixed;
         bottom: 110px;
         right: 20px;
-        width: 300px;
+        width: 500px;
         border: 1px solid #ddd;
         border-radius: 8px;
         background-color: #fff;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         z-index: 10000;
         font-family: Arial, sans-serif;
+        width: 500px;
+        flex-direction: column; 
+         overflow: hidden;
     }
 
     .chat-header {
@@ -1080,6 +1083,8 @@
         overflow-y: auto;
         padding: 10px;
         font-size: 14px;
+        overflow-y: auto;
+          flex: 1;
     }
 
     .chat-message {
