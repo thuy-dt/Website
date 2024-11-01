@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static ASM_GS.Controllers.HomeController;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+builder.Services.Configure<GeminiSettings>(
+    builder.Configuration.GetSection("Authentication"));
 // Google authentication configuration
 builder.Services.AddAuthentication(options =>
 {

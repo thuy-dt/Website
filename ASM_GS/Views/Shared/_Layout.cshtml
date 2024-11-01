@@ -22,6 +22,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=Prata&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
 
 </head>
 
@@ -143,8 +147,7 @@
 
     <div class="search-popup">
         <div class="search-popup-container">
-
-            <form role="search" method="get" class="form-group" action="">
+            <form role="search" method="get" class="form-group position-relative" action="">
                 <input type="search" id="search-form" class="form-control border-0 border-bottom"
                        placeholder="Nhập và nhấn enter" value="" name="s" />
                 <button type="submit" class="search-submit border-0 position-absolute bg-white"
@@ -153,6 +156,12 @@
                         <use xlink:href="#search"></use>
                     </svg>
                 </button>
+                <span id="record" style="top: 15px; right: 50px; cursor: pointer;">
+                    <i class="bi bi-mic"></i>
+                </span>
+                <span id="clear-icon" style="display: none; cursor: pointer; position: absolute; top: 15px; right: 100px;">
+                    ✖
+                </span>
             </form>
 
             <h5 class="cat-list-title">Duyệt theo danh mục</h5>
@@ -1182,7 +1191,43 @@
             </div>
         </div>
     </footer>
+    <div style="width: 100%; height: 100%;">
+        <div id="tawk-bubble-container" role="button" tabindex="0" class="tawk-bubble-container" onclick="toggleChatBox()">
+            <div class="tawk-icon-right">
+                <i role="button" tabindex="0" data-text="Đóng" aria-label="Đóng" class="tawk-icon tawk-icon-close tawk-icon-small"></i>
+                <img src="https://waifubait.moe/cdn/shop/products/RemProof_grande.png?v=1552807117" alt="Thu hút chú ý đến tính năng trò chuyện" style="max-width: 124px;height: 100%;">
+            </div>
+        </div>
+        <div id="chat-box" class="chat-box" style="display: none;">
+            <div class="chat-header">Hộp Thoại Hỗ Trợ</div>
+            <div class="chat-body" id="chat-body">
+                <div class="chat-message">Chào bạn! Bạn cần hỗ trợ gì?</div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="user-input" placeholder="Nhập câu hỏi..." class="chat-input">
+                <button onclick="sendMessage()" class="chat-send-button">Gửi</button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        const searchForm = document.getElementById("search-form");
+        const clearIcon = document.getElementById("clear-icon");
+
+        searchForm.addEventListener("input", function () {
+            if (searchForm.value.length > 0) {
+                clearIcon.style.display = "inline";
+            } else {
+                clearIcon.style.display = "none";
+            }
+        });
+
+        clearIcon.addEventListener("click", function () {
+            searchForm.value = "";
+            clearIcon.style.display = "none";
+            searchForm.focus();
+        });
+    </script>
     <script src="js/jquery.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/SmoothScroll.js"></script>
@@ -1191,7 +1236,184 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script>
+        function toggleChatBox() {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+        }
 
+        async function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            const chatBody = document.getElementById("chat-body");
+
+            if (userInput.trim() !== "") {
+                const userMessage = document.createElement("div");
+                userMessage.className = "chat-message";
+                userMessage.textContent = "Bạn: " + userInput;
+                chatBody.appendChild(userMessage);
+
+                const waitingMessage = document.createElement("div");
+                waitingMessage.className = "chat-message chat-message-waiting";
+                waitingMessage.textContent = "Hệ thống: Đang xử lý...";
+                chatBody.appendChild(waitingMessage);
+
+                // Send the user input to the backend
+                const response = await fetch('@Url.Action("TraLoi", "Home")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userInput: userInput })
+                });
+
+                const data = await response.json();
+                chatBody.removeChild(waitingMessage);
+
+                // Display the response from the API
+                const responseMessage = document.createElement("div");
+                responseMessage.className = "chat-message";
+                responseMessage.textContent = "Hệ thống: " + data.response;
+                chatBody.appendChild(responseMessage);
+
+                // Clear user input and scroll to the bottom
+                document.getElementById("user-input").value = "";
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+        }
+    </script>
+    <script>
+        const recordBtn = document.getElementById("record");
+        const searchInput = document.getElementById("search-form");
+
+        let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let recording = false;
+
+        function speechToText() {
+            try {
+                recognition = new SpeechRecognition();
+                recognition.lang = "vi";
+                recognition.interimResults = true;
+                recording = true;
+
+                recognition.start();
+                recordBtn.classList.add("recording");
+                recordBtn.innerHTML = '<i class="bi bi-mic-fill"></i>'; // Biểu tượng khi đang ghi âm
+
+                recognition.onresult = (event) => {
+                    const speechResult = event.results[0][0].transcript;
+                    if (event.results[0].isFinal) {
+                        searchInput.value = speechResult;
+                    } else {
+                        searchInput.placeholder = "Đang nghe...";
+                    }
+                };
+
+                recognition.onspeechend = () => {
+                    stopRecording();
+                };
+
+                recognition.onerror = (event) => {
+                    stopRecording();
+                    if (event.error === "no-speech") {
+                        alert("Không phát hiện giọng nói, vui lòng thử lại.");
+                    } else if (event.error === "audio-capture") {
+                        alert("Không tìm thấy micro.");
+                    } else if (event.error === "not-allowed") {
+                        alert("Không có quyền sử dụng micro.");
+                    } else {
+                        alert("Lỗi: " + event.error);
+                    }
+                };
+            } catch (error) {
+                recording = false;
+                console.error("Lỗi khi khởi tạo nhận dạng giọng nói:", error);
+            }
+        }
+
+        recordBtn.addEventListener("click", () => {
+            if (!recording) {
+                speechToText();
+            } else {
+                stopRecording();
+            }
+        });
+
+        function stopRecording() {
+            recognition.stop();
+            recording = false;
+            searchInput.placeholder = "Nhập và nhấn enter";
+            recordBtn.classList.remove("recording");
+            recordBtn.innerHTML = '<i class="bi bi-mic"></i>'; // Trở lại biểu tượng micro ban đầu
+        }
+
+    </script>
 </body>
 
 </html>
+<style>
+    #tawk-bubble-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        cursor: pointer;
+    }
+
+    /* Định dạng cho hộp thoại */
+    .chat-box {
+        position: fixed;
+        bottom: 110px;
+        right: 20px;
+        width: 300px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+    }
+
+    .chat-header {
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        background-color: #0078d4;
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .chat-body {
+        max-height: 150px;
+        overflow-y: auto;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .chat-message {
+        margin-bottom: 8px;
+    }
+
+    .chat-input-container {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+    }
+
+    .chat-input {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .chat-send-button {
+        padding: 5px 10px;
+        margin-left: 5px;
+        background-color: #0078d4;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
