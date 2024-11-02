@@ -27,6 +27,13 @@
             <option value="MaCombo" @(ViewBag.SortBy == "MaCombo" ? "selected" : "")>Sắp xếp theo Mã</option>
         </select>
     </form>
+    @if (TempData["successMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-0" role="alert" style="flex: 1; max-width: 300px;">
+            @TempData["successMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 </div>
 
 
@@ -172,11 +179,12 @@
 <script>
     // Tự động ẩn thông báo sau 2 giây (2000 ms)
     setTimeout(function () {
-        var successMessage = document.getElementById("successMessage");
+        var successMessage = document.querySelector(".alert-success");
         if (successMessage) {
             successMessage.style.display = "none";
         }
     }, 2000);
+
     function showDeleteModal(deleteUrl) {
         // Đặt đường dẫn xóa vào nút xác nhận trong modal
         document.getElementById('confirmDeleteButton').setAttribute('href', deleteUrl);
