@@ -39,13 +39,33 @@ namespace ASM_GS.Controllers
                 .WithMany(d => d.SanPhams)
                 .HasForeignKey(s => s.MaDanhMuc);
 
+            // Cấu hình quan hệ giữa ChiTietComBo và ComBo
+            modelBuilder.Entity<ChiTietCombo>()
+                .HasOne(cc => cc.MaComboNavigation)
+                .WithMany(c => c.ChiTietCombos)
+                .HasForeignKey(cc => cc.MaCombo)
+                .OnDelete(DeleteBehavior.Cascade); // Xóa Cascade nếu cần
+
+            // Cấu hình quan hệ giữa ChiTietComBo và SanPham
+            modelBuilder.Entity<ChiTietCombo>()
+                .HasOne(cc => cc.MaSanPhamNavigation)
+                .WithMany(sp => sp.ChiTietCombos)
+                .HasForeignKey(cc => cc.MaSanPham)
+                .OnDelete(DeleteBehavior.Cascade); // Xóa Cascade nếu cần
+
+            // Cấu hình quan hệ giữa GiamGia và HoaDon
+            modelBuilder.Entity<HoaDon>()
+                .HasOne(h => h.MaGiamGiaNavigation) // Thiết lập mối quan hệ từ HoaDon đến GiamGia
+                .WithMany(g => g.HoaDons)           // Một GiamGia có thể liên kết với nhiều HoaDon
+                .HasForeignKey(h => h.MaGiamGia)    // Khóa ngoại là MaGiamGia
+                .OnDelete(DeleteBehavior.SetNull);  // Xóa mềm: nếu GiamGia bị xóa, MaGiamGia sẽ được set null
+
             // Seed Data cho DanhMuc
             modelBuilder.Entity<DanhMuc>().HasData(
                 new DanhMuc { MaDanhMuc = "DM001", TenDanhMuc = "Dưỡng da", TrangThai = 1 },
                 new DanhMuc { MaDanhMuc = "DM002", TenDanhMuc = "Chống nắng", TrangThai = 1 },
                 new DanhMuc { MaDanhMuc = "DM003", TenDanhMuc = "Làm sạch", TrangThai = 1 }
             );
-
             // Seed Data cho SanPham (10 sản phẩm skincare)
             modelBuilder.Entity<SanPham>().HasData(
                 new SanPham { MaSanPham = "SP001", TenSanPham = "Kem dưỡng ẩm", Gia = 300000, MaDanhMuc = "DM001", SoLuong = 100, TrangThai = 1 },
@@ -121,6 +141,49 @@ namespace ASM_GS.Controllers
                new AnhSanPham { Id = 39, MaSanPham = "SP010", UrlAnh = "wwwroot/img/AnhSanPham/sp010_3.jpg" },
                new AnhSanPham { Id = 40, MaSanPham = "SP010", UrlAnh = "wwwroot/img/AnhSanPham/sp010_4.jpg" }
            );
+
+            // Seed Data cho bảng Combo
+            modelBuilder.Entity<Combo>().HasData(
+                new Combo { MaCombo = "CB001", TenCombo = "Combo Dưỡng Ẩm", MoTa = "Combo gồm các sản phẩm dưỡng ẩm", Gia = 800000, TrangThai = 1 },
+                new Combo { MaCombo = "CB002", TenCombo = "Combo Chăm Sóc Da", MoTa = "Combo chăm sóc da toàn diện", Gia = 1200000 , TrangThai = 1 },
+                new Combo { MaCombo = "CB003", TenCombo = "Combo Ngừa Mụn", MoTa = "Combo sản phẩm ngừa mụn hiệu quả", Gia = 950000 , TrangThai = 1 }
+            );
+
+            // Seed Data cho bảng ChiTietCombo
+            modelBuilder.Entity<ChiTietCombo>().HasData(
+                new ChiTietCombo { Id = 1, MaCombo = "CB001", MaSanPham = "SP001", SoLuong = 1 }, // Kem dưỡng ẩm
+                new ChiTietCombo { Id = 2, MaCombo = "CB001", MaSanPham = "SP005", SoLuong = 1 }, // Mặt nạ cấp ẩm
+                new ChiTietCombo { Id = 3, MaCombo = "CB001", MaSanPham = "SP006", SoLuong = 1 }, // Kem chống nắng
+                new ChiTietCombo { Id = 4, MaCombo = "CB002", MaSanPham = "SP002", SoLuong = 1 }, // Sữa rửa mặt
+                new ChiTietCombo { Id = 5, MaCombo = "CB002", MaSanPham = "SP003", SoLuong = 1 }, // Nước hoa hồng
+                new ChiTietCombo { Id = 6, MaCombo = "CB002", MaSanPham = "SP004", SoLuong = 1 }, // Serum dưỡng trắng
+                new ChiTietCombo { Id = 7, MaCombo = "CB002", MaSanPham = "SP010", SoLuong = 1 }, // Kem dưỡng da ban đêm
+                new ChiTietCombo { Id = 8, MaCombo = "CB003", MaSanPham = "SP008", SoLuong = 1 }, // Tinh chất ngừa mụn
+                new ChiTietCombo { Id = 9, MaCombo = "CB003", MaSanPham = "SP007", SoLuong = 1 }, // Tẩy trang
+                new ChiTietCombo { Id = 10, MaCombo = "CB003", MaSanPham = "SP009", SoLuong = 1 }  // Xịt khoáng
+            );
+
+            // Seed Data cho bảng GiamGia
+            modelBuilder.Entity<GiamGia>().HasData(
+                new GiamGia
+                {
+                    MaGiamGia = "CP001",
+                    TenGiamGia = "Giảm giá mùa hè",
+                    GiaTri = 0.25m, //Giảm giá 25%
+                    NgayBatDau = new DateOnly(2025, 6, 1),
+                    NgayKetThuc = new DateOnly(2025, 6, 30),
+                    TrangThai = 1
+                },
+                new GiamGia
+                {
+                    MaGiamGia = "CP002",
+                    TenGiamGia = "Giảm giá Noel",
+                    GiaTri = 0.15m, //Giảm giá 15%
+                    NgayBatDau = new DateOnly(2025, 12, 20),
+                    NgayKetThuc = new DateOnly(2025, 12, 25),
+                    TrangThai = 1
+                }
+            );
         }
     }
 }

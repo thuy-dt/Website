@@ -1,0 +1,81 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ASM_GS.Models.Combo
+
+<div class="combo-details">
+    <p><strong>Tên Combo:</strong> @Model.TenCombo</p>
+    <p><strong>Mô Tả:</strong> @Model.MoTa</p>
+    <p><strong>Giá:</strong> @Model.Gia.ToString("N0") VNĐ</p>
+    <p><strong>Trạng Thái:</strong> @(Model.TrangThai == 1 ? "Đang Áp Dụng" : "Không Áp Dụng")</p>
+
+    <h5 class="section-title">Sản Phẩm Trong Combo</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Hình Ảnh</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Số Lượng</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var chiTiet in Model.ChiTietCombos)
+            {
+                // Lấy ảnh đầu tiên từ danh sách ảnh của sản phẩm
+                var hinhAnh = chiTiet.MaSanPhamNavigation.AnhSanPhams?.FirstOrDefault()?.UrlAnh;
+                string imagePath = !string.IsNullOrEmpty(hinhAnh) ? Url.Content($"~/img/AnhSanPham/{System.IO.Path.GetFileName(hinhAnh)}") : null;
+
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(imagePath))
+                        {
+                            <img src="@imagePath" alt="Hình ảnh sản phẩm" class="product-image" />
+                        }
+                        else
+                        {
+                            <span>Không có ảnh</span>
+                        }
+                    </td>
+                    <td>@chiTiet.MaSanPhamNavigation.TenSanPham</td>
+                    <td>@chiTiet.SoLuong</td>
+                    <td>@chiTiet.MaSanPhamNavigation.Gia.ToString("N0") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* CSS cho toàn bộ chi tiết combo */
+    .combo-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+
+        .combo-details p {
+            font-size: 14px;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .combo-details .section-title {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+    
+
+    /* CSS cho hình ảnh sản phẩm */
+    .product-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+</style>

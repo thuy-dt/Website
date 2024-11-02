@@ -1,0 +1,142 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ASM_GS.Models.Combo
+@{
+    ViewData["Title"] = "Thêm Combo Mới";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h1 style="margin-left: 10px">@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="MaCombo">Mã Combo</label>
+        <input asp-for="MaCombo" class="form-control" required />
+        <span asp-validation-for="MaCombo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TenCombo">Tên combo</label>
+        <input asp-for="TenCombo" class="form-control" required />
+        <span asp-validation-for="TenCombo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MoTa">Mô tả</label>
+        <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="MoTa" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Gia">Giá combo</label>
+        <input asp-for="Gia" class="form-control" type="number" required />
+        <span asp-validation-for="Gia" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Chọn Sản Phẩm</label>
+        <div class="checkbox-list">
+            @if (ViewBag.SanPhams != null)
+            {
+                foreach (var sanPham in ViewBag.SanPhams)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" name="selectedSanPhams" value="@sanPham.MaSanPham" class="form-check-input" id="sanPham_@sanPham.MaSanPham" />
+                        <label class="form-check-label" for="sanPham_@sanPham.MaSanPham">@sanPham.TenSanPham</label>
+                    </div>
+                }
+            }
+        </div>
+        <small class="form-text text-muted">Chọn các sản phẩm bằng cách tích vào ô bên cạnh.</small>
+        <span class="text-danger">@ViewData.ModelState["selectedSanPhams"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TrangThai">Trạng thái</label>
+        <select asp-for="TrangThai" class="form-control">
+            <option value="1">Đang áp dụng</option>
+            <option value="0">Không áp dụng</option>
+        </select>
+        <span asp-validation-for="TrangThai" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Thêm combo</button>
+</form>
+
+<style>
+    /* Căn chỉnh toàn bộ form */
+    form {
+        max-width: 100%;
+        margin-left: 10px;
+        margin-right: 10px;
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Kiểu tiêu đề */
+    h1 {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Căn chỉnh nhãn và input */
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+        color: #555;
+        box-sizing: border-box;
+    }
+
+    /* Tùy chỉnh nút bấm */
+    button {
+        width: 50%;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin-left: 25%;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    /* Tùy chỉnh văn bản thông báo lỗi */
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.75rem;
+    }
+
+    /* Căn chỉnh văn bản hỗ trợ */
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    /* Thêm con trỏ dạng pointer khi di chuột qua checkbox */
+    .form-check-input {
+        cursor: pointer;
+    }
+
+    /* Thêm con trỏ dạng pointer khi di chuột qua nhãn của checkbox */
+    .form-check-label {
+        cursor: pointer;
+    }
+</style>

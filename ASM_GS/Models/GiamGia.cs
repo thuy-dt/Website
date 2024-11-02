@@ -16,6 +16,7 @@ public partial class GiamGia
     public DateOnly NgayBatDau { get; set; }
 
     public DateOnly NgayKetThuc { get; set; }
+    public int TrangThai { get; set; } 
 
     public virtual ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
 }
