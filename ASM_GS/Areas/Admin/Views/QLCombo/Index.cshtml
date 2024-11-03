@@ -6,10 +6,26 @@
     ViewData["Title"] = "Danh Sách Combo";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .custom-alert {
+        background-color: #28a745; /* Màu nền xanh đậm hơn */
+        color: #fff; /* Màu chữ trắng nổi bật */
+        font-weight: bold; /* Chữ đậm hơn */
+        border: 1px solid #1e7e34; /* Viền màu xanh đậm */
+        padding: 10px 15px; /* Thêm khoảng cách bên trong */
+        border-radius: 5px; /* Bo góc */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ để nổi bật */
+    }
+
+        .custom-alert button.btn-close {
+            filter: brightness(0) invert(1); /* Chỉnh nút đóng thành màu trắng */
+        }
+</style>
+
 <br />
 <h1 style="margin-left: 10px">@ViewData["Title"]</h1>
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-right: 20px; margin-left: 20px; gap: 10px; padding: 10px;">
-    <a href="@Url.Action("Create", "QLCombo", new { area = "Admin" })" class="btn btn-success btn-sm" style="padding: 10px 20px; font-size: 14px;">
+    <a href="#" class="btn btn-success btn-sm" style="padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createComboModal" onclick="loadCreateCombo()">
         <i class="bi bi-plus"></i> Thêm Combo
     </a>
 
@@ -29,11 +45,31 @@
     </form>
     @if (TempData["successMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show mb-0" role="alert" style="flex: 1; max-width: 300px;">
+        <div class="alert alert-success alert-dismissible fade show mb-0 custom-alert" role="alert">
             @TempData["successMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            @* <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> *@
         </div>
     }
+
+</div>
+<!-- Nút mở Modal tạo Combo -->
+
+
+<!-- Modal tạo Combo -->
+<div class="modal fade" id="createComboModal" tabindex="-1" aria-labelledby="createComboModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createComboModalLabel">Thêm Combo Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="createModalContent">
+                    <!-- Nội dung form tạo Combo sẽ được tải động -->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -43,6 +79,7 @@
             <th>#</th>
             <th>Mã Combo</th>
             <th>Tên Combo</th>
+            <th>Ảnh Combo</th>
             <th>Tổng Sản Phẩm</th>
             <th>Mô Tả</th>
             <th>Giá</th>
@@ -63,6 +100,16 @@
                     <td>@index</td>
                     <td>@combo.MaCombo</td>
                     <td>@combo.TenCombo</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(combo.Anh))
+                        {
+                            <img src="@Url.Content($"~/img/AnhCombo/{System.IO.Path.GetFileName(combo.Anh)}")" alt="Ảnh Combo" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10%" />
+                        }
+                        else
+                        {
+                            <span>Không có ảnh</span>
+                        }
+                    </td>
                     <td>@totalProducts</td>
                     <td>@(string.IsNullOrEmpty(combo.MoTa) ? "Không có mô tả" : combo.MoTa)</td>
                     <td>@($"{combo.Gia:N0} VNĐ")</td>
@@ -156,6 +203,7 @@
     </div>
 </div>
 
+
 <div class="d-flex justify-content-center">
     @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize, searchTerm = ViewBag.SearchTerm }),
             new PagedListRenderOptions
@@ -221,6 +269,20 @@
             }
         });
     }
+    function loadCreateCombo() {
+        $.ajax({
+            url: '/Admin/QLCombo/Create', // Đường dẫn đến action CreateCombo
+            type: 'GET',
+            success: function (response) {
+                // Tải dữ liệu (form tạo mới) vào nội dung modal
+                $('#createModalContent').html(response);
+            },
+            error: function () {
+                $('#createModalContent').html('<p class="text-danger">Không thể tải form tạo Combo. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+
        // Tìm phần tử input và thêm sự kiện 'input'
     document.querySelector('input[name="searchTerm"]').addEventListener('input', function(event) {
         event.preventDefault(); // Ngăn chặn hành vi mặc định (nếu có)

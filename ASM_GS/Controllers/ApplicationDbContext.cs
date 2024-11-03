@@ -144,9 +144,9 @@ namespace ASM_GS.Controllers
 
             // Seed Data cho bảng Combo
             modelBuilder.Entity<Combo>().HasData(
-                new Combo { MaCombo = "CB001", TenCombo = "Combo Dưỡng Ẩm", MoTa = "Combo gồm các sản phẩm dưỡng ẩm", Gia = 800000, TrangThai = 1 },
-                new Combo { MaCombo = "CB002", TenCombo = "Combo Chăm Sóc Da", MoTa = "Combo chăm sóc da toàn diện", Gia = 1200000 , TrangThai = 1 },
-                new Combo { MaCombo = "CB003", TenCombo = "Combo Ngừa Mụn", MoTa = "Combo sản phẩm ngừa mụn hiệu quả", Gia = 950000 , TrangThai = 1 }
+                new Combo { MaCombo = "CB001", TenCombo = "Combo Dưỡng Ẩm", MoTa = "Combo gồm các sản phẩm dưỡng ẩm", Gia = 800000, TrangThai = 1, Anh = "wwwroot/img/AnhCombo/z5959105369727_62f7dd6336f7577e1dd7ee873b52f574.jpg" },
+                new Combo { MaCombo = "CB002", TenCombo = "Combo Chăm Sóc Da", MoTa = "Combo chăm sóc da toàn diện", Gia = 1200000 , TrangThai = 1,  Anh = "wwwroot/img/AnhCombo/z5959105369727_62f7dd6336f7577e1dd7ee873b52f574.jpg" },
+                new Combo { MaCombo = "CB003", TenCombo = "Combo Ngừa Mụn", MoTa = "Combo sản phẩm ngừa mụn hiệu quả", Gia = 950000 , TrangThai = 1 , Anh = "wwwroot/img/AnhCombo/z5959105369727_62f7dd6336f7577e1dd7ee873b52f574.jpg" }
             );
 
             // Seed Data cho bảng ChiTietCombo

@@ -1,7 +1,7 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model ASM_GS.Models.Combo
 
-<form asp-action="Edit" method="post" id="editComboForm">
+<form asp-action="Edit" method="post" id="editComboForm" enctype="multipart/form-data">
     <input type="hidden" asp-for="MaCombo" />
     <div class="form-group">
         <label asp-for="TenCombo">Tên Combo</label>
@@ -31,6 +31,20 @@
             }
         </div>
         <span class="text-danger">@ViewData.ModelState["selectedSanPhams"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+    </div>
+    <div class="form-group">
+        <label for="anhcombo">Ảnh Combo</label>
+        <input type="file" name="anhcombo" class="form-control" />
+        @if (!string.IsNullOrEmpty(Model.Anh))
+        {
+            <img src="@Url.Content($"~/img/AnhCombo/{System.IO.Path.GetFileName(Model.Anh)}")"
+                 alt="Ảnh Combo"
+                 style="display: block; margin: 0 auto; width: 150px; height: 150px; object-fit: cover;border-radius: 2%" />
+        }
+        else
+        {
+            <span>Không có ảnh</span>
+        }
     </div>
     <div class="form-group">
         <label asp-for="TrangThai">Trạng thái</label>

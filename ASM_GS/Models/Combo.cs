@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASM_GS.Models
 {
@@ -22,6 +23,10 @@ namespace ASM_GS.Models
 
         [Required(ErrorMessage = "Vui lòng chọn trạng thái")]
         public int TrangThai { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn ảnh")]
+        public string? Anh { get; set; }
+        [NotMapped] // Không lưu thuộc tính này vào CSDL
+        public IFormFile? anhcombo { get; set; } // Thuộc tính để upload ảnh
 
         public virtual ICollection<ChiTietCombo> ChiTietCombos { get; set; } = new List<ChiTietCombo>();
         public virtual ICollection<ChiTietDonHang> ChiTietDonHangs { get; set; } = new List<ChiTietDonHang>();

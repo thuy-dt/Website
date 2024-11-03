@@ -1,8 +1,10 @@
 ﻿using ASM_GS.Controllers;
 using ASM_GS.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Thêm thư viện này để sử dụng Include
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -21,24 +23,20 @@ namespace ASM_GS.Areas.Admin.Controllers
         // Index - Hiển thị danh sách Combo
         public IActionResult Index(string searchTerm, int? page, int pageSize = 5, int? trangThai = null, string sortBy = "TenCombo")
         {
-            // Truy vấn tất cả các combo và bao gồm dữ liệu liên quan
             var combos = _context.Combos
                                  .Include(c => c.ChiTietCombos)
                                  .AsQueryable();
 
-            // Lọc combo theo từ khóa tìm kiếm
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 combos = combos.Where(c => c.TenCombo.Contains(searchTerm) || c.MaCombo.Contains(searchTerm));
             }
 
-            // Lọc combo theo trạng thái nếu được chỉ định
             if (trangThai.HasValue)
             {
                 combos = combos.Where(c => c.TrangThai == trangThai.Value);
             }
 
-            // Sắp xếp theo tiêu chí được chọn
             switch (sortBy)
             {
                 case "MaCombo":
@@ -50,11 +48,9 @@ namespace ASM_GS.Areas.Admin.Controllers
                     break;
             }
 
-            // Phân trang kết quả
             var pageNumber = page ?? 1;
             var pagedCombos = combos.ToPagedList(pageNumber, pageSize);
 
-            // Truyền tham số về lại view
             ViewBag.SearchTerm = searchTerm;
             ViewBag.PageSize = pageSize;
             ViewBag.TrangThai = trangThai;
@@ -63,58 +59,87 @@ namespace ASM_GS.Areas.Admin.Controllers
             return View(pagedCombos);
         }
 
-
         // Hiển thị form tạo mới Combo
         public IActionResult Create()
         {
-            // Lấy danh sách sản phẩm từ cơ sở dữ liệu
             ViewBag.SanPhams = _context.SanPhams.ToList();
-            return View();
+            return PartialView("_ComboCreatePartial", new Combo());
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Combo combo, List<string> selectedSanPhams)
+        public async Task<IActionResult> Create(Combo combo, List<string>? selectedSanPhams)
         {
-            // Kiểm tra nếu không có sản phẩm nào được chọn
+            // Tạo mã combo ngẫu nhiên với tiền tố "CB"
+            combo.MaCombo = "CB" + Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            // Ví dụ: CB1234ABCD
+
+            // Kiểm tra danh sách sản phẩm được chọn
             if (selectedSanPhams == null || !selectedSanPhams.Any())
             {
                 ModelState.AddModelError("selectedSanPhams", "Vui lòng chọn ít nhất một sản phẩm.");
             }
 
-            // Kiểm tra mã Combo đã tồn tại hay chưa
-            if (_context.Combos.Any(c => c.MaCombo == combo.MaCombo))
+            // Kiểm tra tệp ảnh
+            if (combo.anhcombo == null || combo.anhcombo.Length == 0)
             {
-                ModelState.AddModelError("MaCombo", "Mã Combo đã tồn tại. Vui lòng nhập mã khác.");
+                ModelState.AddModelError("anhcombo", "Vui lòng chọn một tệp ảnh.");
             }
 
-            // Kiểm tra nếu ModelState không hợp lệ
-            if (!ModelState.IsValid)
+            // Kiểm tra giá trị âm
+            if (combo.Gia < 0)
             {
-                // Truyền lại danh sách sản phẩm vào ViewBag để hiển thị trong form
-                ViewBag.SanPhams = _context.SanPhams.ToList();
-                return View(combo); // Trả về view với thông tin lỗi
+                ModelState.AddModelError("Gia", "Giá không thể là số âm.");
+            }
+
+            // Nếu ModelState không hợp lệ, trả lại view với thông báo lỗi
+            if (ModelState.IsValid)
+            {
+                ViewBag.SanPhams = _context.SanPhams?.ToList();
+                return PartialView("_ComboCreatePartial", combo);
+            }
+
+            // Xử lý lưu ảnh
+            if (combo.anhcombo != null && combo.anhcombo.Length > 0)
+            {
+                var folderPath = Path.Combine("wwwroot/img/AnhCombo");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, combo.anhcombo.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await combo.anhcombo.CopyToAsync(stream);
+                }
+
+                combo.Anh = combo.anhcombo.FileName;
             }
 
             // Thêm Combo vào cơ sở dữ liệu
             _context.Combos.Add(combo);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            // Thêm các sản phẩm vào Combo
-            foreach (var maSanPham in selectedSanPhams)
+            // Thêm ChiTietCombos nếu có
+            if (selectedSanPhams != null)
             {
-                var chiTietCombo = new ChiTietCombo
+                foreach (var maSanPham in selectedSanPhams)
                 {
-                    MaCombo = combo.MaCombo,
-                    MaSanPham = maSanPham,
-                    SoLuong = 1 // Mặc định là 1
-                };
-                _context.ChiTietCombos.Add(chiTietCombo);
+                    var chiTietCombo = new ChiTietCombo
+                    {
+                        MaCombo = combo.MaCombo,
+                        MaSanPham = maSanPham,
+                        SoLuong = 1
+                    };
+                    _context.ChiTietCombos.Add(chiTietCombo);
+                }
             }
-            _context.SaveChanges();
 
+            await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Thêm combo thành công!";
             return RedirectToAction("Index");
         }
+
 
         public IActionResult Delete(string id)
         {
@@ -131,7 +156,6 @@ namespace ASM_GS.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Xóa các sản phẩm trong ChiTietCombos trước khi xóa Combo
             foreach (var chiTiet in combo.ChiTietCombos)
             {
                 _context.ChiTietCombos.Remove(chiTiet);
@@ -143,7 +167,7 @@ namespace ASM_GS.Areas.Admin.Controllers
             TempData["SuccessMessage"] = "Xóa combo thành công!";
             return RedirectToAction("Index");
         }
-        // Phương thức hiển thị chi tiết Combo
+
         public IActionResult Details(string id)
         {
             if (id == null)
@@ -151,7 +175,6 @@ namespace ASM_GS.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Lấy Combo cùng với các ChiTietCombos và AnhSanPhams
             var combo = _context.Combos
                                 .Include(c => c.ChiTietCombos)
                                     .ThenInclude(ct => ct.MaSanPhamNavigation)
@@ -163,10 +186,9 @@ namespace ASM_GS.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Trả về một partial view cho yêu cầu AJAX
             return PartialView("_ComboDetailsPartial", combo);
         }
-        // Phương thức Edit
+
         public IActionResult Edit(string id)
         {
             if (id == null) return NotFound();
@@ -176,19 +198,14 @@ namespace ASM_GS.Areas.Admin.Controllers
                                 .FirstOrDefault(c => c.MaCombo == id);
             if (combo == null) return NotFound();
 
-            // Truyền danh sách sản phẩm vào ViewBag để hiển thị checkbox
             ViewBag.SanPhams = _context.SanPhams.ToList();
-
-            // Trả về partial view với chi tiết combo
-            return PartialView("_ComboEditPartial", combo);
+            return PartialView("_ComboEditPartial", combo); // Trả về PartialView để tải vào modal
         }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Combo combo, List<string> selectedSanPhams)
+        public async Task<IActionResult> Edit(Combo combo, List<string> selectedSanPhams)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ViewBag.SanPhams = _context.SanPhams.ToList();
                 return PartialView("_ComboEditPartial", combo); // Trả về partial view với thông tin lỗi
@@ -198,7 +215,7 @@ namespace ASM_GS.Areas.Admin.Controllers
                 ModelState.AddModelError("selectedSanPhams", "Vui lòng chọn ít nhất một sản phẩm.");
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ViewBag.SanPhams = _context.SanPhams.ToList();
                 return PartialView("_ComboEditPartial", combo);
@@ -211,6 +228,27 @@ namespace ASM_GS.Areas.Admin.Controllers
             existingCombo.MoTa = combo.MoTa;
             existingCombo.Gia = combo.Gia;
             existingCombo.TrangThai = combo.TrangThai;
+            // Xử lý ảnh nếu có tệp ảnh mới được tải lên
+            if (combo.anhcombo != null && combo.anhcombo.Length > 0)
+            {
+                var folderPath = Path.Combine("wwwroot/img/AnhCombo");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var fileName = Path.GetFileName(combo.anhcombo.FileName);
+                var filePath = Path.Combine(folderPath, fileName);
+
+                // Lưu tệp ảnh mới
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await combo.anhcombo.CopyToAsync(stream);
+                }
+
+                // Cập nhật đường dẫn ảnh
+                existingCombo.Anh = fileName;
+            }
 
             _context.ChiTietCombos.RemoveRange(existingCombo.ChiTietCombos);
 
@@ -225,11 +263,10 @@ namespace ASM_GS.Areas.Admin.Controllers
                 _context.ChiTietCombos.Add(chiTietCombo);
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Cập nhật combo thành công!";
             return RedirectToAction("Index");
         }
     }
 }
-

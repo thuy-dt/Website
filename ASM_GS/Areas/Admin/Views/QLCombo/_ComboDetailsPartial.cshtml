@@ -2,6 +2,17 @@
 @model ASM_GS.Models.Combo
 
 <div class="combo-details">
+    @if (!string.IsNullOrEmpty(Model.Anh))
+    {
+        <img src="@Url.Content($"~/img/AnhCombo/{System.IO.Path.GetFileName(Model.Anh)}")"
+             alt="Ảnh Combo"
+             style="display: block; margin: 0 auto; width: 100%; height: 30%; object-fit: cover;border-radius: 2%"  />
+    }
+    else
+    {
+        <span>Không có ảnh</span>
+    }
+
     <p><strong>Tên Combo:</strong> @Model.TenCombo</p>
     <p><strong>Mô Tả:</strong> @Model.MoTa</p>
     <p><strong>Giá:</strong> @Model.Gia.ToString("N0") VNĐ</p>
@@ -56,26 +67,44 @@
         font-family: Arial, sans-serif;
     }
 
-        .combo-details p {
-            font-size: 14px;
-            color: #333;
-            margin: 5px 0;
-        }
-
-        .combo-details .section-title {
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-    
-
-    /* CSS cho hình ảnh sản phẩm */
-    .product-image {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 4px;
+    .combo-details p {
+        font-size: 14px;
+        color: #333;
+        margin: 5px 0;
     }
+
+    .combo-details .section-title {
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    /* Tạo khoảng cách đều giữa các hàng */
+    .table tbody tr {
+        vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
+    }
+
+    /* Định dạng hình ảnh sản phẩm */
+    .product-image {
+        width: 150px; /* Chiều rộng ảnh */
+        height: 150px; /* Chiều cao ảnh */
+        object-fit: cover; /* Cắt và giữ tỉ lệ ảnh */
+        border-radius: 8px; /* Bo tròn góc ảnh */
+        display: block; /* Hiển thị ảnh dưới dạng khối */
+        margin: 0 auto; /* Căn giữa ảnh theo chiều ngang */
+    }
+
+    /* Căn chỉnh cột hình ảnh để vừa với ảnh */
+    .table td:first-child {
+        width: 1%; /* Đặt chiều rộng tự động, vừa với ảnh */
+        white-space: nowrap; /* Không cho phép nội dung dàn trải, giữ nội dung trên một dòng */
+    }
+
+    /* Khoảng cách giữa các cột khác trong bảng */
+    .table th, .table td:not(:first-child) {
+        padding: 10px 15px; /* Thêm khoảng cách giữa nội dung và biên của ô */
+        text-align: center; /* Căn giữa nội dung theo chiều ngang */
+    }
+
 </style>
