@@ -1,26 +1,26 @@
-﻿@model IPagedList<ASM_GS.Models.Combo>
+﻿@model IPagedList<ASM_GS.Models.GiamGia>
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 
-
 @{
-    ViewData["Title"] = "Danh Sách Combo";
+    ViewData["Title"] = "Danh Sách Giảm Giá";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+
 <style>
     .custom-alert {
-        background-color: #28a745; /* Màu nền xanh đậm hơn */
-        color: #fff; /* Màu chữ trắng nổi bật */
-        font-weight: bold; /* Chữ đậm hơn */
-        border: 1px solid #1e7e34; /* Viền màu xanh đậm */
-        padding: 10px 15px; /* Thêm khoảng cách bên trong */
-        border-radius: 5px; /* Bo góc */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ để nổi bật */
+        background-color: #28a745;
+        color: #fff;
+        font-weight: bold;
+        border: 1px solid #1e7e34;
+        padding: 10px 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         white-space: nowrap;
     }
 
     .custom-alert button.btn-close {
-        filter: brightness(0) invert(1); /* Chỉnh nút đóng thành màu trắng */
+        filter: brightness(0) invert(1);
     }
 
     .btn-success {
@@ -36,7 +36,6 @@
         border-color: #0e92eb;
         box-shadow: 0 0.125rem 0.25rem 0 rgba(14, 146, 235, 0.4);
     }
-
 </style>
 
 <br />
@@ -52,9 +51,11 @@
             <option value="15" @(ViewBag.PageSize == 15 ? "selected" : "")>15</option>
         </select>
     </form>
-    <a href="#" class="btn btn-success btn-sm" style="margin-right: 500px;padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createComboModal" onclick="loadCreateCombo()">
-        <i class="bi bi-plus"></i> Thêm Combo
+    <a href="#" class="btn btn-success btn-sm" style="margin-right: 650px; padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createDiscountModal" onclick="loadCreateDiscountForm()">
+        <i class="bi bi-plus"></i> Thêm Giảm Giá
     </a>
+
+
 
     <form id="searchForm" asp-action="Index" method="get" class="form-inline d-flex align-items-center">
         <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" placeholder="Tìm kiếm Combo..." class="form-control form-control-sm" style="margin-right: 10px; width: 200px; padding: 8px;" />
@@ -64,13 +65,15 @@
             <option value="1" @(ViewBag.TrangThai == 1 ? "selected" : "")>Đang Áp Dụng</option>
             <option value="0" @(ViewBag.TrangThai == 0 ? "selected" : "")>Không Áp Dụng</option>
         </select>
-
-        <select name="sortBy" class="form-control form-control-sm" style="margin-right: 10px;">
-            <option value="TenCombo" @(ViewBag.SortBy == "TenCombo" ? "selected" : "")>Sắp xếp theo A-Z</option>
-            <option value="Gia" @(ViewBag.SortBy == "Gia" ? "selected" : "")>Sắp xếp theo giá tiền</option>
+        <select name="sortOrder" class="form-control form-control-sm" style="margin-right: 10px;" onchange="this.form.submit()">
+            <option value="name" @(ViewBag.SortOrder == "name" ? "selected" : "")>Sắp xếp: A-Z</option>
+            <option value="newest" @(ViewBag.SortOrder == "newest" ? "selected" : "")>Ngày mới nhất</option>
+            <option value="oldest" @(ViewBag.SortOrder == "oldest" ? "selected" : "")>Ngày cũ nhất</option>
         </select>
     </form>
-     @if (TempData["successMessage"] != null)
+
+
+    @if (TempData["successMessage"] != null)
     {
         <script>
             // Sử dụng SweetAlert để hiển thị thông báo thành công
@@ -86,23 +89,18 @@
         </script>
     }
 
-
 </div>
-<!-- Nút mở Modal tạo Combo -->
 
-
-<!-- Modal tạo Combo -->
-<div class="modal fade" id="createComboModal" tabindex="-1" aria-labelledby="createComboModalLabel" aria-hidden="true">
+<!-- Modal tạo Giảm Giá -->
+<div class="modal fade" id="createDiscountModal" tabindex="-1" aria-labelledby="createDiscountModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createComboModalLabel">Thêm Combo Mới</h5>
+                <h5 class="modal-title" id="createDiscountModalLabel">Thêm Giảm Giá Mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div id="createModalContent">
-                    <!-- Nội dung form tạo Combo sẽ được tải động -->
-                </div>
+            <div id="createModalContent" class="modal-body">
+                <!-- Nội dung form tạo Giảm Giá sẽ được tải động -->
             </div>
         </div>
     </div>
@@ -113,13 +111,13 @@
     <thead>
         <tr>
             <th>#</th>
-            <!-- Ẩn cột Mã Combo -->
-            <th>Tên Combo</th>
-            <th>Ảnh Combo</th>
-            <th>Tổng Sản Phẩm</th>
-            <th>Mô Tả</th>
-            <th>Giá</th>
-            <th>Tình Trạng</th>
+@*             <th>Mã Giảm Giá</th>
+ *@          <th>Tên Giảm Giá</th>
+            <th>Giá Trị (%)</th>
+            <th>Ngày Bắt Đầu</th>
+            <th>Ngày Kết Thúc</th>
+            <th>Số Lượng Mã Nhập Tối Đa</th> <!-- Thêm cột mới -->
+            <th>Trạng Thái</th>
             <th>Hành Động</th>
         </tr>
     </thead>
@@ -127,29 +125,17 @@
         @if (Model != null && Model.Any())
         {
             int index = 1 + (Model.PageNumber - 1) * Model.PageSize;
-            foreach (var combo in Model)
+            foreach (var discount in Model)
             {
-                // Tính tổng số sản phẩm trong combo
-                var totalProducts = combo.ChiTietCombos.Count;
-
                 <tr>
                     <td>@index</td>
-                    <!-- Ẩn Mã Combo -->
-                    <td>@combo.TenCombo</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(combo.Anh))
-                        {
-                            <img src="@Url.Content($"~/img/AnhCombo/{System.IO.Path.GetFileName(combo.Anh)}")" alt="Ảnh Combo" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10%" />
-                        }
-                        else
-                        {
-                            <span>Không có ảnh</span>
-                        }
-                    </td>
-                    <td>@totalProducts</td>
-                    <td>@(string.IsNullOrEmpty(combo.MoTa) ? "Không có mô tả" : combo.MoTa)</td>
-                    <td>@($"{combo.Gia:N0} VNĐ")</td>
-                    <td>@(combo.TrangThai == 1 ? "Đang Áp Dụng" : "Không Áp Dụng")</td>
+@*                     <td>@discount.MaGiamGia</td>
+ *@                 <td>@discount.TenGiamGia</td>
+                    <td>@($"{discount.GiaTri:P0}")</td> <!-- Display as percentage -->
+                    <td>@discount.NgayBatDau.ToShortDateString()</td>
+                    <td>@discount.NgayKetThuc.ToShortDateString()</td>
+                    <td>@discount.SoLuongMaNhapToiDa</td>
+                    <td>@(discount.TrangThai == 1 ? "Đang Áp Dụng" : "Không Áp Dụng")</td>
                     <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: transparent; border: none; color: inherit; font-size: 20px;">
@@ -157,23 +143,24 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#comboDetailsModal" onclick="loadComboDetails('@combo.MaCombo')">
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsDiscountModal" onclick="loadDetailsDiscountForm('@discount.MaGiamGia')">
                                         <i class="bi bi-eye"></i> Xem
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editComboModal" onclick="loadEditCombo('@combo.MaCombo')">
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editDiscountModal" onclick="loadEditDiscountForm('@discount.MaGiamGia')">
                                         <i class="bi bi-pencil-square"></i> Sửa
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "QLCombo", new { id = combo.MaCombo })')">
+                                    <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "GiamGiaCB", new { id = discount.MaGiamGia })')">
                                         <i class="bi bi-trash"></i> Xóa
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </td>
+
 
                 </tr>
                 index++;
@@ -182,14 +169,27 @@
         else
         {
             <tr>
-                <td colspan="8" class="text-center">Không tìm thấy Combo nào.</td>
+                <td colspan="8" class="text-center">Không tìm thấy Giảm Giá nào.</td>
             </tr>
         }
     </tbody>
 </table>
-
-
-
+<!-- Modal xem Chi Tiết Giảm Giá -->
+<div class="modal fade" id="detailsDiscountModal" tabindex="-1" aria-labelledby="detailsDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="detailsModalContent">
+            <!-- Nội dung chi tiết Giảm Giá sẽ được tải động -->
+        </div>
+    </div>
+</div>
+<!-- Modal chỉnh sửa Giảm Giá -->
+<div class="modal fade" id="editDiscountModal" tabindex="-1" aria-labelledby="editDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="editModalContent">
+            <!-- Nội dung form chỉnh sửa Giảm Giá sẽ được tải động -->
+        </div>
+    </div>
+</div>
 <!-- Modal xác nhận xóa -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -199,7 +199,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn muốn xóa combo này?
+                Bạn có chắc chắn muốn xóa giảm giá này?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -208,41 +208,6 @@
         </div>
     </div>
 </div>
-<!-- Cấu trúc Modal -->
-<div class="modal fade" id="comboDetailsModal" tabindex="-1" aria-labelledby="comboDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="comboDetailsModalLabel">Chi Tiết Combo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Nội dung sẽ được tải động -->
-                <div id="modalContent">
-                    <!-- Chi tiết Combo sẽ được hiển thị tại đây -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal Sửa Combo -->
-<div class="modal fade" id="editComboModal" tabindex="-1" aria-labelledby="editComboModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editComboModalLabel">Sửa Combo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="editModalContent">
-                    <!-- Nội dung form Sửa Combo sẽ được tải động -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <div class="d-flex justify-content-center">
     @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize, searchTerm = ViewBag.SearchTerm }),
             new PagedListRenderOptions
@@ -262,103 +227,94 @@
         PageClasses = new[] { "page-link" }
     })
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-   @*  // Tự động ẩn thông báo sau 2 giây (2000 ms)
     setTimeout(function () {
         var successMessage = document.querySelector(".alert-success");
         if (successMessage) {
             successMessage.style.display = "none";
         }
-    }, 2000); *@
-
-function showDeleteModal(deleteUrl) {
-    // Sử dụng SweetAlert để hiển thị thông báo xác nhận
-    Swal.fire({
-        title: 'Xác nhận xóa',
-        text: 'Bạn có chắc chắn muốn xóa combo này?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Chuyển hướng đến đường dẫn xóa nếu người dùng xác nhận
-            window.location.href = deleteUrl;
-        }
-    });
-}
-
-    function loadComboDetails(maCombo) {
+    }, 2000);
+    function loadCreateDiscountForm() {
         $.ajax({
-            url: '/Admin/QLCombo/Details', // Đường dẫn đến action Details
-            type: 'GET',
-            data: { id: maCombo },
-            success: function (response) {
-                // Tải dữ liệu vào nội dung modal
-                $('#modalContent').html(response);
-            },
-            error: function () {
-                $('#modalContent').html('<p class="text-danger">Không thể tải chi tiết combo. Vui lòng thử lại sau.</p>');
-            }
-        });
-    }
-    function loadEditCombo(maCombo) {
-        $.ajax({
-            url: '/Admin/QLCombo/Edit', // Đường dẫn đến action Edit
-            type: 'GET',
-            data: { id: maCombo },
-            success: function (response) {
-                // Tải dữ liệu (form chỉnh sửa) vào nội dung modal
-                $('#editModalContent').html(response);
-                // Khởi tạo lại các sự kiện hoặc điều khiển nếu cần
-            },
-            error: function () {
-                $('#editModalContent').html('<p class="text-danger">Không thể tải thông tin combo. Vui lòng thử lại sau.</p>');
-            }
-        });
-    }
-    function loadCreateCombo() {
-        $.ajax({
-            url: '/Admin/QLCombo/Create', // Đường dẫn đến action CreateCombo
+            url: '/Admin/GiamGiaCB/Create', // Đường dẫn tới action Create
             type: 'GET',
             success: function (response) {
-                // Tải dữ liệu (form tạo mới) vào nội dung modal
                 $('#createModalContent').html(response);
             },
             error: function () {
-                $('#createModalContent').html('<p class="text-danger">Không thể tải form tạo Combo. Vui lòng thử lại sau.</p>');
+                $('#createModalContent').html('<p class="text-danger">Không thể tải form tạo mới. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+    function loadDetailsDiscountForm(maGiamGia) {
+        $.ajax({
+            url: '/Admin/GiamGiaCB/Details',
+            type: 'GET',
+            data: { id: maGiamGia },
+            success: function (response) {
+                $('#detailsModalContent').html(response);
+            },
+            error: function () {
+                $('#detailsModalContent').html('<p class="text-danger">Không thể tải chi tiết. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+    function loadEditDiscountForm(maGiamGia) {
+        $.ajax({
+            url: '/Admin/GiamGiaCB/Edit/' + maGiamGia, // Đường dẫn chính xác tới hành động Edit
+            type: 'GET',
+            success: function (response) {
+                $('#editModalContent').html(response); // Tải phản hồi vào modal
+            },
+            error: function () {
+                $('#editModalContent').html('<p class="text-danger">Không thể tải form chỉnh sửa. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+    function showDeleteModal(deleteUrl) {
+        // Sử dụng SweetAlert để hiển thị thông báo xác nhận
+        Swal.fire({
+            title: 'Xác nhận xóa',
+            text: 'Bạn có chắc chắn muốn xóa giảm giá này?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Chuyển hướng đến đường dẫn xóa nếu người dùng xác nhận
+                window.location.href = deleteUrl;
             }
         });
     }
 
-       // Tìm phần tử input và thêm sự kiện 'input'
-    document.querySelector('input[name="searchTerm"]').addEventListener('input', function(event) {
+    // Tìm phần tử input và thêm sự kiện 'input'
+    document.querySelector('input[name="searchTerm"]').addEventListener('input', function (event) {
         event.preventDefault(); // Ngăn chặn hành vi mặc định (nếu có)
 
         var searchTerm = this.value.trim(); // Lấy giá trị nhập vào, bao gồm cả dấu tiếng Việt
 
         // Gửi yêu cầu AJAX ngay lập tức khi có thay đổi trong ô tìm kiếm
         $.ajax({
-            url: '/Admin/QLCombo/Index', // Thay URL này bằng đường dẫn đến action tìm kiếm
+            url: '/Admin/GiamGiaCB/Index', // Thay URL này bằng đường dẫn đến action tìm kiếm
             type: 'GET',
             data: { searchTerm: searchTerm },
-            success: function(response) {
+            success: function (response) {
                 // Cập nhật kết quả tìm kiếm ngay khi nhận được phản hồi
                 $('#searchResultsContainer').html(response);
             },
-            error: function() {
+            error: function () {
                 console.error('Không thể tải kết quả tìm kiếm. Vui lòng thử lại sau.');
             }
         });
     });
-        document.querySelector('select[name="trangThai"]').addEventListener('change', function() {
+    document.querySelector('select[name="trangThai"]').addEventListener('change', function () {
         document.getElementById('searchForm').submit(); // Gửi biểu mẫu khi thay đổi trạng thái
     });
-
-    document.querySelector('select[name="sortBy"]').addEventListener('change', function() {
+    document.querySelector('select[name="sortOrder"]').addEventListener('change', function () {
         document.getElementById('searchForm').submit(); // Gửi biểu mẫu khi thay đổi sắp xếp
     });
 </script>

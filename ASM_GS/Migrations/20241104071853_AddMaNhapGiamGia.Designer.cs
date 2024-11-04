@@ -4,6 +4,7 @@ using ASM_GS.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASM_GS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241104071853_AddMaNhapGiamGia")]
+    partial class AddMaNhapGiamGia
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -716,7 +719,7 @@ namespace ASM_GS.Migrations
                             GiaTri = 0.25m,
                             NgayBatDau = new DateOnly(2025, 6, 1),
                             NgayKetThuc = new DateOnly(2025, 6, 30),
-                            SoLuongMaNhapToiDa = 100,
+                            SoLuongMaNhapToiDa = 0,
                             TenGiamGia = "Giảm giá mùa hè",
                             TrangThai = 1
                         },
@@ -726,7 +729,7 @@ namespace ASM_GS.Migrations
                             GiaTri = 0.15m,
                             NgayBatDau = new DateOnly(2025, 12, 20),
                             NgayKetThuc = new DateOnly(2025, 12, 25),
-                            SoLuongMaNhapToiDa = 100,
+                            SoLuongMaNhapToiDa = 0,
                             TenGiamGia = "Giảm giá Noel",
                             TrangThai = 1
                         });
@@ -831,12 +834,12 @@ namespace ASM_GS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
+                    b.Property<string>("GiamGiaMaGiamGia")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaGiamGia")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaNhap")
                         .IsRequired()
@@ -844,7 +847,7 @@ namespace ASM_GS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MaGiamGia");
+                    b.HasIndex("GiamGiaMaGiamGia");
 
                     b.ToTable("MaNhapGiamGia");
                 });
@@ -1226,9 +1229,7 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.GiamGia", "GiamGia")
                         .WithMany("MaNhapGiamGias")
-                        .HasForeignKey("MaGiamGia")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GiamGiaMaGiamGia");
 
                     b.Navigation("GiamGia");
                 });

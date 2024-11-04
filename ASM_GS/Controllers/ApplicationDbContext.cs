@@ -6,7 +6,7 @@ namespace ASM_GS.Controllers
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
+        public virtual DbSet<MaNhapGiamGia> MaNhapGiamGia { get; set; }
         public virtual DbSet<AnhSanPham> AnhSanPhams { get; set; }
         public virtual DbSet<ChiTietCombo> ChiTietCombos { get; set; }
         public virtual DbSet<ChiTietDonHang> ChiTietDonHangs { get; set; }
@@ -23,6 +23,7 @@ namespace ASM_GS.Controllers
         public virtual DbSet<NhanVien> NhanViens { get; set; }
         public virtual DbSet<SanPham> SanPhams { get; set; }
         public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
+        public virtual DbSet<MaNhapGiamGia> MaNhapGiamGias { get; set; } 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -59,6 +60,13 @@ namespace ASM_GS.Controllers
                 .WithMany(g => g.HoaDons)           // Một GiamGia có thể liên kết với nhiều HoaDon
                 .HasForeignKey(h => h.MaGiamGia)    // Khóa ngoại là MaGiamGia
                 .OnDelete(DeleteBehavior.SetNull);  // Xóa mềm: nếu GiamGia bị xóa, MaGiamGia sẽ được set null
+
+            // Cấu hình mối quan hệ giữa GiamGia và MaNhapGiamGia
+            modelBuilder.Entity<MaNhapGiamGia>()
+                .HasOne(m => m.GiamGia) // Một MaNhapGiamGia liên kết với một GiamGia
+                .WithMany(g => g.MaNhapGiamGias) // Một GiamGia có nhiều MaNhapGiamGias
+                .HasForeignKey(m => m.MaGiamGia) // Khóa ngoại là MaGiamGia
+                .OnDelete(DeleteBehavior.Cascade); // Xóa mã giảm giá sẽ xóa cả mã nhập liên quan
 
             // Seed Data cho DanhMuc
             modelBuilder.Entity<DanhMuc>().HasData(
@@ -172,7 +180,8 @@ namespace ASM_GS.Controllers
                     GiaTri = 0.25m, //Giảm giá 25%
                     NgayBatDau = new DateOnly(2025, 6, 1),
                     NgayKetThuc = new DateOnly(2025, 6, 30),
-                    TrangThai = 1
+                    TrangThai = 1,
+                    SoLuongMaNhapToiDa = 100
                 },
                 new GiamGia
                 {
@@ -181,7 +190,8 @@ namespace ASM_GS.Controllers
                     GiaTri = 0.15m, //Giảm giá 15%
                     NgayBatDau = new DateOnly(2025, 12, 20),
                     NgayKetThuc = new DateOnly(2025, 12, 25),
-                    TrangThai = 1
+                    TrangThai = 1,
+                    SoLuongMaNhapToiDa = 100
                 }
             );
         }

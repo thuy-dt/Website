@@ -39,8 +39,8 @@ namespace ASM_GS.Areas.Admin.Controllers
 
             switch (sortBy)
             {
-                case "MaCombo":
-                    combos = combos.OrderBy(c => c.MaCombo);
+                case "Gia":
+                    combos = combos.OrderBy(c => c.Gia);
                     break;
                 case "TenCombo":
                 default:
@@ -69,9 +69,10 @@ namespace ASM_GS.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Combo combo, List<string>? selectedSanPhams)
         {
-            // Tạo mã combo ngẫu nhiên với tiền tố "CB"
-            combo.MaCombo = "CB" + Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
-            // Ví dụ: CB1234ABCD
+            Random random = new Random();
+            string maCombo = "CB" + string.Concat(Enumerable.Range(0, 6).Select(_ => random.Next(0, 10)));
+            combo.MaCombo = maCombo;
+
 
             // Kiểm tra danh sách sản phẩm được chọn
             if (selectedSanPhams == null || !selectedSanPhams.Any())
