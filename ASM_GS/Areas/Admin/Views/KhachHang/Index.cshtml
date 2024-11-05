@@ -1,0 +1,208 @@
+﻿@model IEnumerable<ASM_GS.Models.KhachHang>
+
+@{
+    ViewBag.Title = "Danh Sách Khách Hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1 style="margin-left: 10px">@ViewData["Title"]</h1>
+<div class="d-flex justify-content-between align-items-center mb-3" style="gap: 10px; padding: 10px;">
+    <!-- Control Buttons -->
+    <div class="mb-3 d-flex justify-content-between">
+        <div>
+            <label>Hiển thị:</label>
+            <select class="form-select d-inline-block w-auto">
+                <option>5</option>
+                <option>10</option>
+                <option>20</option>
+            </select>
+        </div>
+        <a href="javascript:void(0);" class="btn btn-primary" onclick="loadCreateModal()">
+            Thêm Khách Hàng
+        </a>
+    </div>
+
+    @if (TempData["successMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-0 custom-alert" role="alert">
+            @TempData["successMessage"]
+            @* <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> *@
+        </div>
+    }
+    <div class="mb-3 input-group">
+        <input type="text" class="form-control" placeholder="Tìm kiếm khách hàng...">
+        <button class="btn btn-primary">Tìm kiếm</button>
+    </div>
+</div>
+
+<!-- Customer Table -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Mã Khách hàng</th>
+            <th>Tên khách hàng</th>
+            <th>Số Điện Thoại</th>
+            <th>Địa chỉ</th>
+            <th>Ngày đăng ký</th>
+            <th>Hình ảnh</th>
+            <th>CCCD</th>
+            <th>Ngày Sinh</th>
+            <th>Giới tính</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var khachHang in Model)
+        {
+            <tr>
+                <td>@(Model.ToList().IndexOf(khachHang) + 1)</td>
+                <td>@khachHang.MaKhachHang</td>
+                <td>@khachHang.TenKhachHang</td>
+                <td>@khachHang.SoDienThoai</td>
+                <td>@khachHang.DiaChi</td>
+                <td>@khachHang.NgayDangKy.ToShortDateString()</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(khachHang.HinhAnh))
+                    {
+                        <img src="@Url.Content($"~/img/AnhKhachHang/{System.IO.Path.GetFileName(khachHang.HinhAnh)}")" alt="Ảnh Khách Hàng" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10%" />
+                    }
+                    else
+                    {
+                        <span>Không có ảnh</span>
+                    }
+                </td>
+                <td>@khachHang.Cccd</td>
+                <td>@(khachHang.NgaySinh?.ToShortDateString() ?? "N/A")</td>
+                <td>@(khachHang.GioiTinh.HasValue ? (khachHang.GioiTinh.Value ? "Nam" : "Nữ") : "N/A")</td>
+                <td>@(khachHang.TrangThai == 1 ? "Hoạt động" : "Ngừng hoạt động")</td>
+                <td>
+                    <button class="btn btn-warning" onclick="loadEditModal('@khachHang.MaKhachHang')">Sửa</button>
+                    <a href="javascript:void(0);" class="btn btn-danger" onclick="loadDeleteModal('@khachHang.MaKhachHang', '@khachHang.TenKhachHang')">Xóa</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<div class="container-fluid">
+    <!-- Modal for creating a customer -->
+    <div class="modal fade" id="createCustomerModal" tabindex="-1" aria-labelledby="createCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="createCustomerModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal for editing a customer -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="editCustomerModalContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for deleting a customer -->
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCustomerModalLabel">Xóa Khách Hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa khách hàng <span id="customerName"></span> không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    function loadCreateModal() {
+        $.ajax({
+            url: '@Url.Action("Create", "KhachHang", new { area = "Admin" })',
+            type: 'GET',
+            success: function (data) {
+                $('#createCustomerModalContent').html(data);
+                $('#createCustomerModal').modal('show');
+            },
+            error: function () {
+                alert("Lỗi khi tải dữ liệu");
+            }
+        });
+    }
+    setTimeout(function () {
+        var successMessage = document.querySelector(".alert-success");
+        if (successMessage) {
+            successMessage.style.display = "none";
+        }
+    }, 2000);
+
+
+
+    function loadEditModal(id) {
+        $.ajax({
+            url: '@Url.Action("Edit", "KhachHang", new { area = "Admin" })/' + id,
+            type: 'GET',
+            success: function (data) {
+                $('#editCustomerModalContent').html(data);
+                $('#editCustomerModal').modal('show');
+            },
+            error: function () {
+                alert("Lỗi khi tải dữ liệu");
+            }
+        });
+    }
+
+    setTimeout(function () {
+        var successMessage = document.querySelector(".alert-success");
+        if (successMessage) {
+            successMessage.style.display = "none";
+        }
+    }, 2000);
+
+
+
+    function loadDeleteModal(id, customerName) {
+        $('#customerName').text(customerName);
+        $('#deleteCustomerModal').modal('show');
+
+        // Xử lý xác nhận xóa
+        $('#confirmDeleteBtn').off('click').on('click', function () {
+            $.ajax({
+                url: '@Url.Action("Delete", "KhachHang", new { area = "Admin" })',
+                type: 'POST', 
+                data: { id: id }, 
+                success: function (response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert("Xóa không thành công.");
+                    }
+                },
+                error: function () {
+                    alert("Lỗi khi xóa khách hàng.");
+                }
+            });
+        });
+    }
+
+    setTimeout(function () {
+        var successMessage = document.querySelector(".alert-success");
+        if (successMessage) {
+            successMessage.style.display = "none";
+        }
+    }, 2000);
+
+</script>
