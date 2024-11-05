@@ -49,121 +49,121 @@ namespace ASM_GS.Migrations
                         {
                             Id = 1,
                             MaSanPham = "SP001",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp001_1.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/kemduongam1.jpg"
                         },
                         new
                         {
                             Id = 2,
                             MaSanPham = "SP001",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp001_2.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/kemduongam2.jpg"
                         },
                         new
                         {
                             Id = 3,
                             MaSanPham = "SP001",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp001_3.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/kemduongam3.jpg"
                         },
                         new
                         {
                             Id = 4,
                             MaSanPham = "SP001",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp001_4.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/kemduongam4.jpg"
                         },
                         new
                         {
                             Id = 5,
                             MaSanPham = "SP002",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp002_1.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/suaruamat1.jpg"
                         },
                         new
                         {
                             Id = 6,
                             MaSanPham = "SP002",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp002_2.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/suaruamat2.jpg"
                         },
                         new
                         {
                             Id = 7,
                             MaSanPham = "SP002",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp002_3.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/suaruamat3.jpg"
                         },
                         new
                         {
                             Id = 8,
                             MaSanPham = "SP002",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp002_4.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/suaruamat4.jpg"
                         },
                         new
                         {
                             Id = 9,
                             MaSanPham = "SP003",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp003_1.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/toner1.png"
                         },
                         new
                         {
                             Id = 10,
                             MaSanPham = "SP003",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp003_2.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/toner2.png"
                         },
                         new
                         {
                             Id = 11,
                             MaSanPham = "SP003",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp003_3.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/toner3.png"
                         },
                         new
                         {
                             Id = 12,
                             MaSanPham = "SP003",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp003_4.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/toner4.png"
                         },
                         new
                         {
                             Id = 13,
                             MaSanPham = "SP004",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp004_1.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/serumtrang1.jpg"
                         },
                         new
                         {
                             Id = 14,
                             MaSanPham = "SP004",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp004_2.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/serumtrang2.jpg"
                         },
                         new
                         {
                             Id = 15,
                             MaSanPham = "SP004",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp004_3.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/serumtrang3.jpg"
                         },
                         new
                         {
                             Id = 16,
                             MaSanPham = "SP004",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp004_4.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/serumtrang4.jpg"
                         },
                         new
                         {
                             Id = 17,
                             MaSanPham = "SP005",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp005_1.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/mark1.jpg"
                         },
                         new
                         {
                             Id = 18,
                             MaSanPham = "SP005",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp005_2.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/mark2.jpg"
                         },
                         new
                         {
                             Id = 19,
                             MaSanPham = "SP005",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp005_3.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/mark3.jpg"
                         },
                         new
                         {
                             Id = 20,
                             MaSanPham = "SP005",
-                            UrlAnh = "wwwroot/img/AnhSanPham/sp005_4.jpg"
+                            UrlAnh = "wwwroot/img/AnhSanPham/mark4.jpg"
                         },
                         new
                         {
@@ -297,17 +297,9 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("MaCombo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaComboNavigationMaCombo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaSanPham")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaSanPhamNavigationMaSanPham")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -316,11 +308,83 @@ namespace ASM_GS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MaComboNavigationMaCombo");
+                    b.HasIndex("MaCombo");
 
-                    b.HasIndex("MaSanPhamNavigationMaSanPham");
+                    b.HasIndex("MaSanPham");
 
                     b.ToTable("ChiTietCombos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            MaCombo = "CB001",
+                            MaSanPham = "SP001",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            MaCombo = "CB001",
+                            MaSanPham = "SP005",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            MaCombo = "CB001",
+                            MaSanPham = "SP006",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            MaCombo = "CB002",
+                            MaSanPham = "SP002",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            MaCombo = "CB002",
+                            MaSanPham = "SP003",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            MaCombo = "CB002",
+                            MaSanPham = "SP004",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            MaCombo = "CB002",
+                            MaSanPham = "SP010",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            MaCombo = "CB003",
+                            MaSanPham = "SP008",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            MaCombo = "CB003",
+                            MaSanPham = "SP007",
+                            SoLuong = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            MaCombo = "CB003",
+                            MaSanPham = "SP009",
+                            SoLuong = 1
+                        });
                 });
 
             modelBuilder.Entity("ASM_GS.Models.ChiTietDonHang", b =>
@@ -462,6 +526,10 @@ namespace ASM_GS.Migrations
                     b.Property<string>("MaCombo")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Anh")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Gia")
                         .HasColumnType("decimal(18,2)");
 
@@ -470,11 +538,44 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenCombo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TrangThai")
+                        .HasColumnType("int");
 
                     b.HasKey("MaCombo");
 
                     b.ToTable("Combos");
+
+                    b.HasData(
+                        new
+                        {
+                            MaCombo = "CB001",
+                            Anh = "wwwroot/img/AnhCombo/z5959105369727_62f7dd6336f7577e1dd7ee873b52f574.jpg",
+                            Gia = 800000m,
+                            MoTa = "Combo gồm các sản phẩm dưỡng ẩm",
+                            TenCombo = "Combo Dưỡng Ẩm",
+                            TrangThai = 1
+                        },
+                        new
+                        {
+                            MaCombo = "CB002",
+                            Anh = "wwwroot/img/AnhCombo/z5959105369727_62f7dd6336f7577e1dd7ee873b52f574.jpg",
+                            Gia = 1200000m,
+                            MoTa = "Combo chăm sóc da toàn diện",
+                            TenCombo = "Combo Chăm Sóc Da",
+                            TrangThai = 1
+                        },
+                        new
+                        {
+                            MaCombo = "CB003",
+                            Anh = "wwwroot/img/AnhCombo/z5959105369727_62f7dd6336f7577e1dd7ee873b52f574.jpg",
+                            Gia = 950000m,
+                            MoTa = "Combo sản phẩm ngừa mụn hiệu quả",
+                            TenCombo = "Combo Ngừa Mụn",
+                            TrangThai = 1
+                        });
                 });
 
             modelBuilder.Entity("ASM_GS.Models.DanhGia", b =>
@@ -593,13 +694,42 @@ namespace ASM_GS.Migrations
                     b.Property<DateOnly>("NgayKetThuc")
                         .HasColumnType("date");
 
+                    b.Property<int>("SoLuongMaNhapToiDa")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenGiamGia")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TrangThai")
+                        .HasColumnType("int");
 
                     b.HasKey("MaGiamGia");
 
                     b.ToTable("GiamGia");
+
+                    b.HasData(
+                        new
+                        {
+                            MaGiamGia = "CP001",
+                            GiaTri = 0.25m,
+                            NgayBatDau = new DateOnly(2025, 6, 1),
+                            NgayKetThuc = new DateOnly(2025, 6, 30),
+                            SoLuongMaNhapToiDa = 100,
+                            TenGiamGia = "Giảm giá mùa hè",
+                            TrangThai = 1
+                        },
+                        new
+                        {
+                            MaGiamGia = "CP002",
+                            GiaTri = 0.15m,
+                            NgayBatDau = new DateOnly(2025, 12, 20),
+                            NgayKetThuc = new DateOnly(2025, 12, 25),
+                            SoLuongMaNhapToiDa = 100,
+                            TenGiamGia = "Giảm giá Noel",
+                            TrangThai = 1
+                        });
                 });
 
             modelBuilder.Entity("ASM_GS.Models.GioHang", b =>
@@ -629,9 +759,6 @@ namespace ASM_GS.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaGiamGia")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaGiamGiaNavigationMaGiamGia")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaKhachHang")
@@ -651,7 +778,7 @@ namespace ASM_GS.Migrations
 
                     b.HasKey("MaHoaDon");
 
-                    b.HasIndex("MaGiamGiaNavigationMaGiamGia");
+                    b.HasIndex("MaGiamGia");
 
                     b.HasIndex("MaKhachHangNavigationMaKhachHang");
 
@@ -694,6 +821,32 @@ namespace ASM_GS.Migrations
                     b.HasKey("MaKhachHang");
 
                     b.ToTable("KhachHangs");
+                });
+
+            modelBuilder.Entity("ASM_GS.Models.MaNhapGiamGia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MaGiamGia")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaNhap")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaGiamGia");
+
+                    b.ToTable("MaNhapGiamGia");
                 });
 
             modelBuilder.Entity("ASM_GS.Models.NhanVien", b =>
@@ -928,13 +1081,13 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.Combo", "MaComboNavigation")
                         .WithMany("ChiTietCombos")
-                        .HasForeignKey("MaComboNavigationMaCombo")
+                        .HasForeignKey("MaCombo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ASM_GS.Models.SanPham", "MaSanPhamNavigation")
                         .WithMany("ChiTietCombos")
-                        .HasForeignKey("MaSanPhamNavigationMaSanPham")
+                        .HasForeignKey("MaSanPham")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1057,7 +1210,8 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.GiamGia", "MaGiamGiaNavigation")
                         .WithMany("HoaDons")
-                        .HasForeignKey("MaGiamGiaNavigationMaGiamGia");
+                        .HasForeignKey("MaGiamGia")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ASM_GS.Models.KhachHang", "MaKhachHangNavigation")
                         .WithMany("HoaDons")
@@ -1066,6 +1220,17 @@ namespace ASM_GS.Migrations
                     b.Navigation("MaGiamGiaNavigation");
 
                     b.Navigation("MaKhachHangNavigation");
+                });
+
+            modelBuilder.Entity("ASM_GS.Models.MaNhapGiamGia", b =>
+                {
+                    b.HasOne("ASM_GS.Models.GiamGia", "GiamGia")
+                        .WithMany("MaNhapGiamGias")
+                        .HasForeignKey("MaGiamGia")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GiamGia");
                 });
 
             modelBuilder.Entity("ASM_GS.Models.SanPham", b =>
@@ -1116,6 +1281,8 @@ namespace ASM_GS.Migrations
             modelBuilder.Entity("ASM_GS.Models.GiamGia", b =>
                 {
                     b.Navigation("HoaDons");
+
+                    b.Navigation("MaNhapGiamGias");
                 });
 
             modelBuilder.Entity("ASM_GS.Models.GioHang", b =>
