@@ -43,9 +43,10 @@ namespace ASM_GS.Controllers
         {
             public GeminiAPI Google { get; set; }
         }
-
+        [HttpPost]
         public async Task<IActionResult> TraLoi([FromBody] string userInput)
         {
+            var Test = userInput;
             var GoogleAPIKey = _authSettings.Google.GoogleAPIKey;
             var GoogleAPIUrl = _authSettings.Google.GoogleAPIUrl;
             var requestBody = new
@@ -73,7 +74,7 @@ namespace ASM_GS.Controllers
                 var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
 
 
-                string answer = responseObject?.candidates[0].content?.parts[0]?.text ?? "Error";
+                string answer = responseObject?.candidates[0].content?.parts[0]?.text ?? "Xin lỗi, câu hỏi của chủ nhân đã vi phạm chính sách của Google hoặc câu trở lời quá dài nên Rem không hiển thị cho bạn được";
                 return Json(new { response = answer });
             }
         }
