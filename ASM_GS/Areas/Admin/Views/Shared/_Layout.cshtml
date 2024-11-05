@@ -13,19 +13,19 @@
 -->
 <!-- beautify ignore:start -->
 <html lang="en"
-    class="light-style layout-menu-fixed"
-    dir="ltr"
-    data-theme="theme-default"
-    data-assets-path="~/assets/assets/"
-    data-template="vertical-menu-template-free">
+      class="light-style layout-menu-fixed"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="~/assets/assets/"
+      data-template="vertical-menu-template-free">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
 <title>Dashboard - Admin</title>
 
-<meta name="description" content="" />
+    <meta name="description" content="" />
 
 <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="~/images/Enigma (1).png" style="height: 60px; width: 100px;" />
@@ -42,26 +42,29 @@
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<!-- Icons. Uncomment required icon fonts -->
-<link rel="stylesheet" href="~/assets/assets/vendor/fonts/boxicons.css" />
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<!-- Core CSS -->
-<link rel="stylesheet" href="~/assets/assets/vendor/css/core.css" class="template-customizer-core-css" />
-<link rel="stylesheet" href="~/assets/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-<link rel="stylesheet" href="~/assets/assets/css/demo.css" />
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="~/assets/assets/vendor/fonts/boxicons.css" />
 
-<!-- Vendors CSS -->
-<link rel="stylesheet" href="~/assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="~/assets/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/assets/css/demo.css" />
 
-<link rel="stylesheet" href="~/assets/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="~/assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
-<!-- Page CSS -->
-<!-- Helpers -->
-<script src="~/assets/assets/vendor/js/helpers.js"></script>
+    <link rel="stylesheet" href="~/assets/assets/vendor/libs/apex-charts/apex-charts.css" />
 
-<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-<script src="~/assets/assets/js/config.js"></script>
+    <!-- Page CSS -->
+    <!-- Helpers -->
+    <script src="~/assets/assets/vendor/js/helpers.js"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="~/assets/assets/js/config.js"></script>
 </head>
 
 <body>
@@ -74,25 +77,25 @@
                 <a href="@Url.Action("Index", "Home", new { area = "Admin" })" class="app-brand-link">
                     <span class="app-brand-logo demo">
                             <img src="~/images/Enigma (1).png" alt="logo" style="height: 60px; width: 100px;">
-                    </span>
+                        </span>
                         <span class="app-brand-text demo menu-text fw-bolder ms-2" style="text-transform: uppercase;">GS</span>
-                </a>
-
-                <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-                    <i class="bx bx-chevron-left bx-sm align-middle"></i>
-                </a>
-            </div>
-
-            <div class="menu-inner-shadow"></div>
-
-            <ul class="menu-inner py-1">
-                <!-- Dashboard -->
-                <li class="menu-item active">
-                    <a href="@Url.Action("Index", "Home", new { area = "Admin" })" class="menu-link"">
-                        <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                        <div data-i18n="Analytics"> Trang chủ </div>
                     </a>
-                </li>
+
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-inner-shadow"></div>
+
+                <ul class="menu-inner py-1">
+                    <!-- Dashboard -->
+                    <li class="menu-item active">
+                        <a href="@Url.Action("Index", "Home", new { area = "Admin" })" class="menu-link" ">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics"> Trang chủ </div>
+                        </a>
+                    </li>
 
 
 
@@ -178,7 +181,7 @@
                         </ul>
                     </li>
 
-                <!-- Components -->
+                    <!-- Components -->
                     <li class="menu-header small text-uppercase"><span class="menu-header-text">Thành Phần</span></li>
                     <!-- Thẻ -->
                     <li class="menu-item">
@@ -320,7 +323,7 @@
                     </li>
 
 
-                <!-- Forms & Tables -->
+                    <!-- Forms & Tables -->
                     <li class="menu-header small text-uppercase"><span class="menu-header-text">Biểu Mẫu &amp; Bảng</span></li>
                     <!-- Biểu Mẫu -->
                     <li class="menu-item">
@@ -377,8 +380,8 @@
                         </a>
                     </li>
                     <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                        target="_blank"
-                        class="menu-link">
+                       target="_blank"
+                       class="menu-link">
                         <i class="menu-icon tf-icons bx bx-file"></i>
                         <div data-i18n="Documentation">Documentation</div>
                     </a>
@@ -391,7 +394,6 @@
         <div class="layout-page">
             @RenderBody()
         </div>
-        <!-- / Layout page -->
     </div>
 </div>
 <!-- / Layout wrapper -->
@@ -407,19 +409,29 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+    <!-- / Layout wrapper -->
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="~/assets/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="~/assets/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/assets/assets/vendor/js/bootstrap.js"></script>
+    <script src="~/assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
 
-<script src="~/assets/assets/vendor/js/menu.js"></script>
-<!-- endbuild -->
-<!-- Vendors JS -->
-<script src="~/assets/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+    <script src="~/assets/assets/vendor/js/menu.js"></script>
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <script src="~/assets/assets/vendor/libs/apex-charts/apexcharts.js"></script>
 
-<!-- Main JS -->
-<script src="~/assets/assets/js/main.js"></script>
+    <!-- Main JS -->
+    <script src="~/assets/assets/js/main.js"></script>
 
-<!-- Page JS -->
-<script src="~/assets/assets/js/dashboards-analytics.js"></script>
+    <!-- Page JS -->
+    <script src="~/assets/assets/js/dashboards-analytics.js"></script>
 
-<!-- Place this tag in your head or just before your close body tag. -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

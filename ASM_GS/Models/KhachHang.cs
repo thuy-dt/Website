@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASM_GS.Models;
 
@@ -18,6 +19,8 @@ public partial class KhachHang
     public DateOnly NgayDangKy { get; set; }
 
     public string? HinhAnh { get; set; }
+    [NotMapped]
+    public IFormFile Anh {  get; set; }
 
     public string? Cccd { get; set; }
 
