@@ -46,9 +46,9 @@
         <label for="pageSize" class="mr-2 mb-0" style="margin-left: 10px;">Hiển thị:</label>
         <br />
         <select id="pageSize" name="pageSize" class="form-control form-control-sm" onchange="this.form.submit()" style="width: 45px; margin-left: 10px;">
-            <option value="5" @(ViewBag.PageSize == 5 ? "selected" : "")>5</option>
-            <option value="10" @(ViewBag.PageSize == 10 ? "selected" : "")>10</option>
-            <option value="15" @(ViewBag.PageSize == 15 ? "selected" : "")>15</option>
+            <option value="5" selected="@(ViewBag.PageSize == 5 ? "selected" : "")">5</option>
+            <option value="10" selected="@(ViewBag.PageSize == 10 ? "selected" : "")">10</option>
+            <option value="15" selected=" @(ViewBag.PageSize == 15 ? "selected" : "")">15</option>
         </select>
     </form>
     <a href="#" class="btn btn-success btn-sm" style="margin-right: 650px; padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createDiscountModal" onclick="loadCreateDiscountForm()">
@@ -62,13 +62,13 @@
 
         <select name="trangThai" class="form-control form-control-sm" style="margin-right: 10px;">
             <option value="">Tất cả trạng thái</option>
-            <option value="1" @(ViewBag.TrangThai == 1 ? "selected" : "")>Đang Áp Dụng</option>
-            <option value="0" @(ViewBag.TrangThai == 0 ? "selected" : "")>Không Áp Dụng</option>
+            <option value="1" selected="@(ViewBag.TrangThai == 1 ? "selected" : "")">Đang Áp Dụng</option>
+            <option value="0" selected="@(ViewBag.TrangThai == 0 ? "selected" : "")">Không Áp Dụng</option>
         </select>
         <select name="sortOrder" class="form-control form-control-sm" style="margin-right: 10px;" onchange="this.form.submit()">
-            <option value="name" @(ViewBag.SortOrder == "name" ? "selected" : "")>Sắp xếp: A-Z</option>
-            <option value="newest" @(ViewBag.SortOrder == "newest" ? "selected" : "")>Ngày mới nhất</option>
-            <option value="oldest" @(ViewBag.SortOrder == "oldest" ? "selected" : "")>Ngày cũ nhất</option>
+            <option value="name" selected="@(ViewBag.SortOrder == "name" ? "selected" : "")">Sắp xếp: A-Z</option>
+            <option value="newest" selected="@(ViewBag.SortOrder == "newest" ? "selected" : "")">Ngày mới nhất</option>
+            <option value="oldest" selected="@(ViewBag.SortOrder == "oldest" ? "selected" : "")">Ngày cũ nhất</option>
         </select>
     </form>
 
