@@ -47,9 +47,9 @@
         <label for="pageSize" class="mr-2 mb-0" style="margin-left: 10px;">Hiển thị:</label>
         <br />
         <select id="pageSize" name="pageSize" class="form-control form-control-sm" onchange="this.form.submit()" style="width: 45px; margin-left: 10px;">
-            <option value="5" @(ViewBag.PageSize == 5 ? "selected" : "")>5</option>
-            <option value="10" @(ViewBag.PageSize == 10 ? "selected" : "")>10</option>
-            <option value="15" @(ViewBag.PageSize == 15 ? "selected" : "")>15</option>
+            <option value="5" selected="@(ViewBag.PageSize == 5 ? "selected" : "")">5</option>
+            <option value="10" selected="@(ViewBag.PageSize == 10 ? "selected" : "")">10</option>
+            <option value="15" selected="@(ViewBag.PageSize == 15 ? "selected" : "")">15</option>
         </select>
     </form>
     <a href="#" class="btn btn-success btn-sm" style="margin-right: 500px;padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createComboModal" onclick="loadCreateCombo()">
@@ -61,13 +61,13 @@
 
         <select name="trangThai" class="form-control form-control-sm" style="margin-right: 10px;">
             <option value="">Tất cả trạng thái</option>
-            <option value="1" @(ViewBag.TrangThai == 1 ? "selected" : "")>Đang Áp Dụng</option>
-            <option value="0" @(ViewBag.TrangThai == 0 ? "selected" : "")>Không Áp Dụng</option>
+            <option value="1" selected="@(ViewBag.TrangThai == 1 ? "selected" : "")">Đang Áp Dụng</option>
+            <option value="0" selected="@(ViewBag.TrangThai == 0 ? "selected" : "")">Không Áp Dụng</option>
         </select>
 
         <select name="sortBy" class="form-control form-control-sm" style="margin-right: 10px;">
-            <option value="TenCombo" @(ViewBag.SortBy == "TenCombo" ? "selected" : "")>Sắp xếp theo A-Z</option>
-            <option value="Gia" @(ViewBag.SortBy == "Gia" ? "selected" : "")>Sắp xếp theo giá tiền</option>
+            <option value="TenCombo" selected=" @(ViewBag.SortBy == "TenCombo" ? "selected" : "")">Sắp xếp theo A-Z</option>
+            <option value="Gia" selected="@(ViewBag.SortBy == "Gia" ? "selected" : "")">Sắp xếp theo giá tiền</option>
         </select>
     </form>
      @if (TempData["successMessage"] != null)
