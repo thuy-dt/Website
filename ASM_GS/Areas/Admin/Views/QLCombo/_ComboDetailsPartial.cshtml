@@ -1,0 +1,110 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ASM_GS.Models.Combo
+
+<div class="combo-details">
+    @if (!string.IsNullOrEmpty(Model.Anh))
+    {
+        <img src="@Url.Content($"~/img/AnhCombo/{System.IO.Path.GetFileName(Model.Anh)}")"
+             alt="Ảnh Combo"
+             style="display: block; margin: 0 auto; width: 100%; height: 30%; object-fit: cover;border-radius: 2%"  />
+    }
+    else
+    {
+        <span>Không có ảnh</span>
+    }
+
+    <p><strong>Tên Combo:</strong> @Model.TenCombo</p>
+    <p><strong>Mô Tả:</strong> @Model.MoTa</p>
+    <p><strong>Giá:</strong> @Model.Gia.ToString("N0") VNĐ</p>
+    <p><strong>Trạng Thái:</strong> @(Model.TrangThai == 1 ? "Đang Áp Dụng" : "Không Áp Dụng")</p>
+
+    <h5 class="section-title">Sản Phẩm Trong Combo</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Hình Ảnh</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Số Lượng</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var chiTiet in Model.ChiTietCombos)
+            {
+                // Lấy ảnh đầu tiên từ danh sách ảnh của sản phẩm
+                var hinhAnh = chiTiet.MaSanPhamNavigation.AnhSanPhams?.FirstOrDefault()?.UrlAnh;
+                string imagePath = !string.IsNullOrEmpty(hinhAnh) ? Url.Content($"~/img/AnhSanPham/{System.IO.Path.GetFileName(hinhAnh)}") : null;
+
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(imagePath))
+                        {
+                            <img src="@imagePath" alt="Hình ảnh sản phẩm" class="product-image" />
+                        }
+                        else
+                        {
+                            <span>Không có ảnh</span>
+                        }
+                    </td>
+                    <td>@chiTiet.MaSanPhamNavigation.TenSanPham</td>
+                    <td>@chiTiet.SoLuong</td>
+                    <td>@chiTiet.MaSanPhamNavigation.Gia.ToString("N0") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* CSS cho toàn bộ chi tiết combo */
+    .combo-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 20px auto;
+        font-family: Arial, sans-serif;
+    }
+
+    .combo-details p {
+        font-size: 14px;
+        color: #333;
+        margin: 5px 0;
+    }
+
+    .combo-details .section-title {
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    /* Tạo khoảng cách đều giữa các hàng */
+    .table tbody tr {
+        vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
+    }
+
+    /* Định dạng hình ảnh sản phẩm */
+    .product-image {
+        width: 150px; /* Chiều rộng ảnh */
+        height: 150px; /* Chiều cao ảnh */
+        object-fit: cover; /* Cắt và giữ tỉ lệ ảnh */
+        border-radius: 8px; /* Bo tròn góc ảnh */
+        display: block; /* Hiển thị ảnh dưới dạng khối */
+        margin: 0 auto; /* Căn giữa ảnh theo chiều ngang */
+    }
+
+    /* Căn chỉnh cột hình ảnh để vừa với ảnh */
+    .table td:first-child {
+        width: 1%; /* Đặt chiều rộng tự động, vừa với ảnh */
+        white-space: nowrap; /* Không cho phép nội dung dàn trải, giữ nội dung trên một dòng */
+    }
+
+    /* Khoảng cách giữa các cột khác trong bảng */
+    .table th, .table td:not(:first-child) {
+        padding: 10px 15px; /* Thêm khoảng cách giữa nội dung và biên của ô */
+        text-align: center; /* Căn giữa nội dung theo chiều ngang */
+    }
+
+</style>

@@ -1,0 +1,321 @@
+﻿@model IPagedList<ASM_GS.Models.GiamGia>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Danh Sách Giảm Giá";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .custom-alert {
+        background-color: #28a745;
+        color: #fff;
+        font-weight: bold;
+        border: 1px solid #1e7e34;
+        padding: 10px 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
+    }
+
+    .custom-alert button.btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .btn-success {
+        background-color: #0e92eb;
+        border-color: #0e92eb;
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(14, 146, 235, 0.4);
+    }
+
+    .btn-success:hover,
+    .btn-success:active,
+    .btn-success:focus {
+        background-color: #0e92eb;
+        border-color: #0e92eb;
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(14, 146, 235, 0.4);
+    }
+</style>
+
+<br />
+<h1 style="margin-left: 10px">@ViewData["Title"]</h1>
+<div class="d-flex justify-content-between align-items-center mb-3" style=" gap: 10px; padding: 10px;">
+    <form asp-action="Index" method="get" class="form-inline d-flex align-items-center" style="margin-left: 5px;">
+        <input type="hidden" name="searchTerm" value="@ViewBag.SearchTerm" />
+        <label for="pageSize" class="mr-2 mb-0" style="margin-left: 10px;">Hiển thị:</label>
+        <br />
+        <select id="pageSize" name="pageSize" class="form-control form-control-sm" onchange="this.form.submit()" style="width: 45px; margin-left: 10px;">
+            <option value="5" selected="@(ViewBag.PageSize == 5 ? "selected" : "")">5</option>
+            <option value="10" selected="@(ViewBag.PageSize == 10 ? "selected" : "")">10</option>
+            <option value="15" selected=" @(ViewBag.PageSize == 15 ? "selected" : "")">15</option>
+        </select>
+    </form>
+    <a href="#" class="btn btn-success btn-sm" style="margin-right: 650px; padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createDiscountModal" onclick="loadCreateDiscountForm()">
+        <i class="bi bi-plus"></i> Thêm Giảm Giá
+    </a>
+
+
+
+    <form id="searchForm" asp-action="Index" method="get" class="form-inline d-flex align-items-center">
+        <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" placeholder="Tìm kiếm Combo..." class="form-control form-control-sm" style="margin-right: 10px; width: 200px; padding: 8px;" />
+
+        <select name="trangThai" class="form-control form-control-sm" style="margin-right: 10px;">
+            <option value="">Tất cả trạng thái</option>
+            <option value="1" selected="@(ViewBag.TrangThai == 1 ? "selected" : "")">Đang Áp Dụng</option>
+            <option value="0" selected="@(ViewBag.TrangThai == 0 ? "selected" : "")">Không Áp Dụng</option>
+        </select>
+        <select name="sortOrder" class="form-control form-control-sm" style="margin-right: 10px;" onchange="this.form.submit()">
+            <option value="name" selected="@(ViewBag.SortOrder == "name" ? "selected" : "")">Sắp xếp: A-Z</option>
+            <option value="newest" selected="@(ViewBag.SortOrder == "newest" ? "selected" : "")">Ngày mới nhất</option>
+            <option value="oldest" selected="@(ViewBag.SortOrder == "oldest" ? "selected" : "")">Ngày cũ nhất</option>
+        </select>
+    </form>
+
+
+    @if (TempData["successMessage"] != null)
+    {
+        <script>
+            // Sử dụng SweetAlert để hiển thị thông báo thành công
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '@TempData["successMessage"]',
+                    //text: '@TempData["successMessage"]',
+                    //showConfirmButton: false,
+                    //timer: 2000 // Thông báo tự động ẩn sau 2 giây
+                });
+            });
+        </script>
+    }
+
+</div>
+
+<!-- Modal tạo Giảm Giá -->
+<div class="modal fade" id="createDiscountModal" tabindex="-1" aria-labelledby="createDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDiscountModalLabel">Thêm Giảm Giá Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="createModalContent" class="modal-body">
+                <!-- Nội dung form tạo Giảm Giá sẽ được tải động -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+@*             <th>Mã Giảm Giá</th>
+ *@          <th>Tên Giảm Giá</th>
+            <th>Giá Trị (%)</th>
+            <th>Ngày Bắt Đầu</th>
+            <th>Ngày Kết Thúc</th>
+            <th>Số Lượng Mã Nhập Tối Đa</th> <!-- Thêm cột mới -->
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1 + (Model.PageNumber - 1) * Model.PageSize;
+            foreach (var discount in Model)
+            {
+                <tr>
+                    <td>@index</td>
+@*                     <td>@discount.MaGiamGia</td>
+ *@                 <td>@discount.TenGiamGia</td>
+                    <td>@($"{discount.GiaTri:P0}")</td> <!-- Display as percentage -->
+                    <td>@discount.NgayBatDau.ToShortDateString()</td>
+                    <td>@discount.NgayKetThuc.ToShortDateString()</td>
+                    <td>@discount.SoLuongMaNhapToiDa</td>
+                    <td>@(discount.TrangThai == 1 ? "Đang Áp Dụng" : "Không Áp Dụng")</td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: transparent; border: none; color: inherit; font-size: 20px;">
+                                :
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsDiscountModal" onclick="loadDetailsDiscountForm('@discount.MaGiamGia')">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editDiscountModal" onclick="loadEditDiscountForm('@discount.MaGiamGia')">
+                                        <i class="bi bi-pencil-square"></i> Sửa
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "GiamGiaCB", new { id = discount.MaGiamGia })')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+
+
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">Không tìm thấy Giảm Giá nào.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Modal xem Chi Tiết Giảm Giá -->
+<div class="modal fade" id="detailsDiscountModal" tabindex="-1" aria-labelledby="detailsDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="detailsModalContent">
+            <!-- Nội dung chi tiết Giảm Giá sẽ được tải động -->
+        </div>
+    </div>
+</div>
+<!-- Modal chỉnh sửa Giảm Giá -->
+<div class="modal fade" id="editDiscountModal" tabindex="-1" aria-labelledby="editDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="editModalContent">
+            <!-- Nội dung form chỉnh sửa Giảm Giá sẽ được tải động -->
+        </div>
+    </div>
+</div>
+<!-- Modal xác nhận xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa giảm giá này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <a id="confirmDeleteButton" href="#" class="btn btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize, searchTerm = ViewBag.SearchTerm }),
+            new PagedListRenderOptions
+    {
+        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        LinkToFirstPageFormat = "Trang đầu",
+        LinkToLastPageFormat = "Trang cuối",
+        LinkToPreviousPageFormat = "«",
+        LinkToNextPageFormat = "»",
+        MaximumPageNumbersToDisplay = 5,
+        ContainerDivClasses = new[] { "pagination" },
+        UlElementClasses = new[] { "pagination" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" }
+    })
+</div>
+
+<script>
+    setTimeout(function () {
+        var successMessage = document.querySelector(".alert-success");
+        if (successMessage) {
+            successMessage.style.display = "none";
+        }
+    }, 2000);
+    function loadCreateDiscountForm() {
+        $.ajax({
+            url: '/Admin/GiamGiaCB/Create', // Đường dẫn tới action Create
+            type: 'GET',
+            success: function (response) {
+                $('#createModalContent').html(response);
+            },
+            error: function () {
+                $('#createModalContent').html('<p class="text-danger">Không thể tải form tạo mới. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+    function loadDetailsDiscountForm(maGiamGia) {
+        $.ajax({
+            url: '/Admin/GiamGiaCB/Details',
+            type: 'GET',
+            data: { id: maGiamGia },
+            success: function (response) {
+                $('#detailsModalContent').html(response);
+            },
+            error: function () {
+                $('#detailsModalContent').html('<p class="text-danger">Không thể tải chi tiết. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+    function loadEditDiscountForm(maGiamGia) {
+        $.ajax({
+            url: '/Admin/GiamGiaCB/Edit/' + maGiamGia, // Đường dẫn chính xác tới hành động Edit
+            type: 'GET',
+            success: function (response) {
+                $('#editModalContent').html(response); // Tải phản hồi vào modal
+            },
+            error: function () {
+                $('#editModalContent').html('<p class="text-danger">Không thể tải form chỉnh sửa. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+    function showDeleteModal(deleteUrl) {
+        // Sử dụng SweetAlert để hiển thị thông báo xác nhận
+        Swal.fire({
+            title: 'Xác nhận xóa',
+            text: 'Bạn có chắc chắn muốn xóa giảm giá này?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Chuyển hướng đến đường dẫn xóa nếu người dùng xác nhận
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+
+    // Tìm phần tử input và thêm sự kiện 'input'
+    document.querySelector('input[name="searchTerm"]').addEventListener('input', function (event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định (nếu có)
+
+        var searchTerm = this.value.trim(); // Lấy giá trị nhập vào, bao gồm cả dấu tiếng Việt
+
+        // Gửi yêu cầu AJAX ngay lập tức khi có thay đổi trong ô tìm kiếm
+        $.ajax({
+            url: '/Admin/GiamGiaCB/Index', // Thay URL này bằng đường dẫn đến action tìm kiếm
+            type: 'GET',
+            data: { searchTerm: searchTerm },
+            success: function (response) {
+                // Cập nhật kết quả tìm kiếm ngay khi nhận được phản hồi
+                $('#searchResultsContainer').html(response);
+            },
+            error: function () {
+                console.error('Không thể tải kết quả tìm kiếm. Vui lòng thử lại sau.');
+            }
+        });
+    });
+    document.querySelector('select[name="trangThai"]').addEventListener('change', function () {
+        document.getElementById('searchForm').submit(); // Gửi biểu mẫu khi thay đổi trạng thái
+    });
+    document.querySelector('select[name="sortOrder"]').addEventListener('change', function () {
+        document.getElementById('searchForm').submit(); // Gửi biểu mẫu khi thay đổi sắp xếp
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
