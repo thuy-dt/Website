@@ -262,10 +262,21 @@ namespace ASM_GS.Controllers
                 TrangThai = 2
             };
 
-            // Thêm vào database
             _context.KhachHangs.Add(newCustomer);
             await _context.SaveChangesAsync();
+            string maTaiKhoan = HttpContext.Session.GetString("SignUpAccount");
 
+            if (!string.IsNullOrEmpty(maTaiKhoan))
+            {
+
+                var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
+                if (taiKhoan != null)
+                {
+                    taiKhoan.MaKhachHang = newCustomer.MaKhachHang;
+                    _context.TaiKhoans.Update(taiKhoan);
+                    await _context.SaveChangesAsync();
+                }
+            }
             return Json(new { success = true, message = "Tài Khoản của bạn đã được đăng ký thành công" });
         }
 
