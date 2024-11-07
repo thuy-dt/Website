@@ -1076,6 +1076,9 @@ namespace ASM_GS.Migrations
                     b.Property<string>("TenTaiKhoan")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TinhTrang")
+                        .HasColumnType("int");
+
                     b.Property<string>("VaiTro")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1096,6 +1099,7 @@ namespace ASM_GS.Migrations
                             MaKhachHang = "KH001",
                             MatKhau = "123",
                             TenTaiKhoan = "customer1",
+                            TinhTrang = 0,
                             VaiTro = "Customer"
                         },
                         new
@@ -1105,6 +1109,7 @@ namespace ASM_GS.Migrations
                             MaKhachHang = "KH002",
                             MatKhau = "123",
                             TenTaiKhoan = "customer2",
+                            TinhTrang = 0,
                             VaiTro = "Customer"
                         });
                 });

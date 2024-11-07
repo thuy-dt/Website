@@ -36,7 +36,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Dancing+Script:wght@400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playball&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
     <meta name="google-signin-client_id" content="@ViewData["GoogleClientId"]">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
 
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="@Url.Content("~/assets/vendor/fonts/boxicons.css")" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="@Url.Content("~/assets/vendor/css/core.css")" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="@Url.Content("~/assets/vendor/css/theme-default.css")" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="@Url.Content("~/assets/css/demo.css")" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="@Url.Content("~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css")" />
+
+    <!-- Page CSS -->
+    <!-- Helpers -->
+    <script src="@Url.Content("~/assets/vendor/js/helpers.js")"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="@Url.Content("~/assets/js/config.js")"></script>
 </head>
 
 <body class="homepage">
@@ -413,36 +435,29 @@
         </div>
     </div>
     <!-- The Modal -->
-    <div class="modal" id="myModal">
+    <div class="modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Modal Heading</h4>
+                    <h4 class="modal-title">Thông Tin Bổ Sung</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="createCustomerForm" method="post">
+                <form id="createCustomerForm" method="post" enctype="multipart/form-data">
                     <div class="card-body">
                         <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img src="../assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
                             <div class="button-wrapper">
                                 <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                                    <span class="d-none d-sm-block">Upload new photo</span>
+                                    <span class="d-none d-sm-block" style="color:white">Thêm Ảnh</span>
                                     <i class="bx bx-upload d-block d-sm-none"></i>
-                                    <input type="file"
-                                           id="HinhAnh"
-                                           class="account-file-input"
-                                           hidden
-                                           accept="image/png, image/jpeg"/>
+                                    <input type="file" id="upload" name="Anh" class="account-file-input" hidden accept="image/png, image/jpeg" />
                                 </label>
-                                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4" onclick="resetImage()">
-                                    <i class="bx bx-reset d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Reset</span>
-                                </button>
                                 <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
                             </div>
                         </div>
                     </div>
+
                     <div class="card mb-4">
                         <h5 class="card-header">Thông Tin Khách Hàng</h5>
                         <hr class="my-0" />
@@ -450,41 +465,40 @@
                             <div class="row">
                                 <div class="mb-3 col-md-6">
                                     <label>Your Name: </label>
-                                    <input id="TenKhachHang" name="TenKhachHang" type="text" />
+                                    <input id="TenKhachHang" name="TenKhachHang" type="text" class="form-control" />
                                     <span id="errorTenKhachHang" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Phone Number</label>
-                                    <input id="SoDienThoai" name="SoDienThoai" type="number" />
+                                    <input id="SoDienThoai" name="SoDienThoai" type="string" class="form-control" />
                                     <span id="errorSoDienThoai" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Địa Chỉ</label>
-                                    <input id="DiaChi" name="DiaChi" type="text" />
+                                    <input id="DiaChi" name="DiaChi" type="text" class="form-control" />
                                     <span id="errorDiaChi" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Giới Tính</label>
-                                    <select id="GioiTinh" class="form-control">
+                                    <select id="GioiTinh" name="GioiTinh" class="form-control">
                                         <option value="Nam">Nam</option>
                                         <option value="Nữ">Nữ</option>
                                     </select>
                                 </div>
-
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label">Căn Cước</label>
-                                    <input id="Cccd" class="form-control" type="text" id="Cccd" name="Cccd" />
+                                    <input id="Cccd" name="Cccd" type="text" class="form-control" />
                                     <span id="errorCccd" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 col-md-6">
-                                    <label class="form-label">NgaySinh</label>
-                                    <input type="date"id="NgaySinh" name="NgaySinh" />
+                                    <label class="form-label">Ngày Sinh</label>
+                                    <input type="date" id="NgaySinh" name="NgaySinh" class="form-control" />
                                     <span id="errorNgaySinh" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="mt-2">
                                 <button type="submit" class="btn btn-primary me-2">Thêm Thông Tin</button>
-                                <button type="reset" class="btn btn-outline-secondary">Hủy</button>
+                                <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -492,6 +506,7 @@
             </div>
         </div>
     </div>
+
 
     <div style="width: 100%; height: 100%;">
         <div id="tawk-bubble-container" role="button" tabindex="0" class="tawk-bubble-container" onclick="toggleChatBox()">
@@ -512,6 +527,33 @@
         </div>
     </div>
     <div id="successNotification">Tạo tài khoản thành công!</div>
+    <script>
+        const myModal = document.getElementById('myModal');
+        myModal.addEventListener('hidden.bs.modal', function (event) {
+            const confirmClose = confirm("Bạn có muốn bỏ qua bước này không?");
+
+            if (!confirmClose) {
+                const modalInstance = bootstrap.Modal.getInstance(myModal);
+                modalInstance.show(); 
+            } else {
+                // Gọi AJAX để tạo khách hàng mặc định
+                $.ajax({
+                    url: '/LoginAndSignUp/CreateDefaultCustomer', 
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            window.location.href = "Home"; 
+                        }
+                    },
+                    error: function () {
+                        alert("Đã có lỗi xảy ra.");
+                    }
+                });
+            }
+        });
+    </script>
+
     <script>
         const searchForm = document.getElementById("search-form");
         const clearIcon = document.getElementById("clear-icon");
@@ -583,19 +625,16 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userInput)  // send the raw string
+            body: JSON.stringify(userInput)  
         });
-
                         const data = await response.json();
                         chatBody.removeChild(waitingMessage);
 
-                        // Display the response from the API
                         const responseMessage = document.createElement("div");
                         responseMessage.className = "chat-message";
                         responseMessage.textContent = "Rem: " + data.response;
                         chatBody.appendChild(responseMessage);
 
-                        // Clear user input and scroll to the bottom
                         document.getElementById("user-input").value = "";
                         chatBody.scrollTop = chatBody.scrollHeight;
                     }
@@ -663,14 +702,14 @@
             recording = false;
             searchInput.placeholder = "Nhập và nhấn enter";
             recordBtn.classList.remove("recording");
-            recordBtn.innerHTML = '<i class="bi bi-mic"></i>'; // Trở lại biểu tượng micro ban đầu
+            recordBtn.innerHTML = '<i class="bi bi-mic"></i>';
         }
 
     </script>
 
     <script>
         function submitLogin() {
-            // Xóa thông báo lỗi cũ
+
             $('#errorEmailOrUsername').empty();
             $('#errorPassword').empty();
             $('#errorMessages').empty();
@@ -695,7 +734,6 @@
                                 $('#errorPassword').html(response.errors.Password);
                             }
                         } else if (response.message) {
-                            // Hiển thị lỗi chung
                             $('#errorMessages').append('<p>' + response.message + '</p>');
                         }
                     }
@@ -726,25 +764,21 @@
                 success: function (response) {
                     if(response.success) {
 
-                        // Show the modal and apply fade-in effect
                         const modalElement = $('#myModal');
 
-                        // Initially set up the fade-in effect
                         modalElement.addClass('fade-in');
                         modalElement.modal('show');
-
-                        // Use a timeout to trigger opacity change after the modal is displayed
                         setTimeout(() => {
                             modalElement.addClass('show-opacity');
                         }, 50);
                         const notification = $('#successNotification');
-                        notification.css('display', 'block').css('opacity', '1'); // Hiện thông báo
+                        notification.css('display', 'block').css('opacity', '1'); 
                         setTimeout(() => {
-                            notification.css('opacity', '0'); // Mờ dần
+                            notification.css('opacity', '0'); 
                             setTimeout(() => {
-                                notification.css('display', 'none'); // Ẩn sau khi mờ
-                            }, 500); // Thời gian phù hợp với transition trong CSS
-                        }, 3000);// slight delay to allow modal to be fully in the DOM
+                                notification.css('display', 'none'); 
+                            }, 500); 
+                        }, 3000);
                     }
                     else if (response.errors) {
 
@@ -761,7 +795,6 @@
                             $('#errorSignUpConfirmPassword').html(response.errors.ConfirmPassword);
                         }
                     } else if (response.message) {
-                        // Display any general error message in the #signUpErrorMessages div
                         $('#signUpErrorMessages').append('<p>' + response.message + '</p>');
                     }
                 },
@@ -775,39 +808,28 @@
     <script>
         $(document).ready(function () {
             $('#createCustomerForm').submit(function (e) {
-                e.preventDefault(); // Ngừng form submit mặc định
+                e.preventDefault(); 
 
-                // Xóa lỗi cũ
                 $('#errorTenKhachHang').empty();
                 $('#errorSoDienThoai').empty();
                 $('#errorDiaChi').empty();
                 $('#errorCccd').empty();
                 $('#errorNgaySinh').empty();
 
-                // Lấy dữ liệu từ form
-                var formData = {
-                    TenKhachHang: $('#TenKhachHang').val(),
-                    SoDienThoai: $('#SoDienThoai').val(),
-                    DiaChi: $('#DiaChi').val(),
-                    GioiTinh: $('#GioiTinh').val(),
-                    Cccd: $('#Cccd').val(),
-                    NgaySinh: $('#NgaySinh').val()
-                };
 
-                // Gửi AJAX yêu cầu đến server để kiểm tra dữ liệu
+                var formData = new FormData(this);
+
                 $.ajax({
-                    url: '@Url.Action("ValidateCustomer", "LoginAndSignUp")', // Đổi đường dẫn API
+                    url: '@Url.Action("CreateCustomer", "LoginAndSignUp")',
                     type: 'POST',
-                    dataType: 'json',
                     data: formData,
+                    processData: false, 
+                    contentType: false, 
                     success: function (response) {
                         if (response.success) {
-                            // Nếu thành công, bạn có thể tiếp tục xử lý hoặc hiển thị thông báo thành công
-                            alert('Thông tin khách hàng hợp lệ!');
-                            // Có thể thực hiện việc gửi form thực sự ở đây
-                            // $('#createCustomerForm').submit(); // Nếu muốn gửi form
+                            alert(response.message);
                         } else {
-                            // Nếu có lỗi, hiển thị lỗi cho từng trường
+                            // Display errors if validation fails
                             if (response.errors.TenKhachHang) {
                                 $('#errorTenKhachHang').html(response.errors.TenKhachHang);
                             }
@@ -831,8 +853,23 @@
                 });
             });
         });
-
     </script>
+    <script src="@Url.Content("~/assets/vendor/libs/jquery/jquery.js")"></script>
+    <script src="@Url.Content("~/assets/vendor/libs/popper/popper.js")"></script>
+    <script src="@Url.Content("~/assets/vendor/js/bootstrap.js")"></script>
+    <script src="@Url.Content("~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js")"></script>
+
+    <script src="@Url.Content("~/assets/vendor/js/menu.js")"></script>
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <!-- Main JS -->
+    <script src="@Url.Content("~/assets/js/main.js")"></script>
+
+    <!-- Page JS -->
+    <script src="@Url.Content("~/assets/js/pages-account-settings-account.js")"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 
 </html>
@@ -1410,49 +1447,4 @@ input {
         color:black;
     }
 </style>
-<script>
-    $(document).ready(function () {
-        $('#createCustomerForm').on('submit', function (e) {
-            e.preventDefault();
-
-            var formData = new FormData(this);
-
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        window.location.href = response.redirectUrl;
-                    } else {
-                        // Clear previous errors
-                        $('.text-danger').text('');
-
-                        // Show field-specific errors
-                        if (response.errors) {
-                            $.each(response.errors, function (key, value) {
-                                $(`[asp-for="${key}"]`).siblings('.text-danger').text(value);
-                            });
-                        }
-
-                        // Show a general message if available
-                        if (response.message) {
-                            alert(response.message);
-                        }
-                    }
-                },
-                error: function () {
-                    alert("An error occurred while submitting the form. Please try again.");
-                }
-            });
-        });
-    });
-
-    function resetImage() {
-        $('#upload').val('');
-    }
-</script>
 

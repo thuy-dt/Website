@@ -1,4 +1,8 @@
-﻿using ASM_GS.Models;
+﻿//Mã Tài Khoản đăng nhập được lưu trong Session là UserAccount
+//Mã Khách hàng đăng nhập được lưu trong Session là User
+
+
+using ASM_GS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -37,7 +41,7 @@ namespace ASM_GS.Controllers
             }
 
             
-            return "TK" + newIdNumber.ToString("D3"); // 
+            return "TK" + newIdNumber.ToString("D3"); 
         }
         public IActionResult Index()
         {
@@ -53,7 +57,6 @@ namespace ASM_GS.Controllers
             {
                 var errors = new Dictionary<string, string>();
 
-                // Kiểm tra và thêm lỗi cho từng trường
                 if (ModelState.ContainsKey(nameof(model.EmailOrUsername)))
                 {
                     var emailErrors = ModelState[nameof(model.EmailOrUsername)].Errors;
@@ -72,17 +75,16 @@ namespace ASM_GS.Controllers
             }
 
             var user = _context.TaiKhoans
-                .FirstOrDefault(u => (u.Email == model.EmailOrUsername || u.TenTaiKhoan == model.EmailOrUsername)
-                                     && u.MatKhau == model.Password && (u.TinhTrang==1 || u.TinhTrang==2));
+                .FirstOrDefault(u => (u.Email.Trim() == model.EmailOrUsername.Trim() || u.TenTaiKhoan.Trim() == model.EmailOrUsername.Trim())
+                                     && u.MatKhau.Trim() == model.Password.Trim() && (u.TinhTrang==1 || u.TinhTrang==2));
 
             if (user == null)
             {
                 return Json(new { success = false, message = "Sai email, tên tài khoản hoặc mật khẩu" });
             }
             var Kh = _context.KhachHangs.FirstOrDefault(u => (u.MaKhachHang == user.MaKhachHang));
-            string khJson = JsonSerializer.Serialize(Kh);
-            HttpContext.Session.SetString("UserId", user.MaTaiKhoan);
-            HttpContext.Session.SetString("User", khJson);
+            HttpContext.Session.SetString("UserAccount", user.MaTaiKhoan);
+            HttpContext.Session.SetString("User", Kh.MaKhachHang);
             return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
         }
         [HttpPost]
@@ -90,10 +92,8 @@ namespace ASM_GS.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Create a dictionary to store errors for each field
                 var errors = new Dictionary<string, string>();
 
-                // Add specific field errors if they exist in the model state
                 if (ModelState.ContainsKey(nameof(model.TenTaiKhoan)))
                 {
                     var usernameErrors = ModelState[nameof(model.TenTaiKhoan)].Errors;
@@ -143,54 +143,130 @@ namespace ASM_GS.Controllers
             };
             _context.TaiKhoans.Add(newUser);
             _context.SaveChanges();
+            HttpContext.Session.SetString("SignUpAccount", newUser.MaTaiKhoan);
             return Json(new { success = true, message = "Đăng ký thành công!" });
         }
         [HttpPost]
-        public JsonResult ValidateCustomer(string TenKhachHang, string SoDienThoai, string DiaChi, string GioiTinh, string Cccd, string NgaySinh)
+        public async Task<IActionResult> CreateCustomer(KhachHang customer, IFormFile Anh)
         {
             var errors = new Dictionary<string, string>();
 
-            if (string.IsNullOrEmpty(TenKhachHang))
+            // Validate fields manually if required by the business logic
+            if (string.IsNullOrEmpty(customer.TenKhachHang))
             {
                 errors.Add("TenKhachHang", "Tên khách hàng không được để trống.");
             }
 
-            // Kiểm tra SoDienThoai
-            if (string.IsNullOrEmpty(SoDienThoai))
+            if (string.IsNullOrEmpty(customer.SoDienThoai))
             {
                 errors.Add("SoDienThoai", "Số điện thoại không được để trống.");
             }
-            else if (!Regex.IsMatch(SoDienThoai, @"^\d{10,11}$"))
+            else if (!Regex.IsMatch(customer.SoDienThoai, @"^\d{10,11}$"))
             {
                 errors.Add("SoDienThoai", "Số điện thoại không hợp lệ.");
             }
 
-            // Kiểm tra DiaChi
-            if (string.IsNullOrEmpty(DiaChi))
+            if (string.IsNullOrEmpty(customer.DiaChi))
             {
                 errors.Add("DiaChi", "Địa chỉ không được để trống.");
             }
 
-            // Kiểm tra Cccd
-            if (string.IsNullOrEmpty(Cccd))
+            if (string.IsNullOrEmpty(customer.Cccd))
             {
                 errors.Add("Cccd", "Căn cước công dân không được để trống.");
             }
 
-            // Kiểm tra NgaySinh
-            if (string.IsNullOrEmpty(NgaySinh))
+            if (string.IsNullOrEmpty(customer.NgaySinh?.ToString()))
             {
                 errors.Add("NgaySinh", "Ngày sinh không được để trống.");
             }
 
-            // Kiểm tra nếu có lỗi
-            if (errors.Count > 0)
+            if (errors.Any())
             {
                 return Json(new { success = false, errors = errors });
             }
 
-            // Nếu tất cả hợp lệ
-            return Json(new { success = true });
+            // Handle image upload
+            if (Anh != null && Anh.Length > 0)
+            {
+                string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Avatar", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await Anh.CopyToAsync(stream);
+                }
+
+                customer.HinhAnh = "/Avatar/" + fileName;
+            }
+            else
+            {
+                errors.Add("Anh", "Vui lòng tải lên hình ảnh hợp lệ.");
+                return Json(new { success = false, errors = errors });
+            }
+
+            // Generate a unique, sequential MaKhachHang
+            var lastCustomer = await _context.KhachHangs
+                                    .OrderByDescending(kh => kh.MaKhachHang)
+                                    .FirstOrDefaultAsync();
+
+            int nextId = 1;
+            if (lastCustomer != null)
+            {
+                string lastIdStr = lastCustomer.MaKhachHang.Substring(2); // Remove "KH" prefix
+                if (int.TryParse(lastIdStr, out int lastId))
+                {
+                    nextId = lastId + 1;
+                }
+            }
+            customer.MaKhachHang = "KH" + nextId.ToString("D3"); // Format as KH001, KH002, etc.
+
+            // Set default TrangThai
+            customer.TrangThai = 1;
+
+            // Assign additional properties
+            customer.NgayDangKy = DateOnly.FromDateTime(DateTime.Now);
+
+            // Save to database
+            _context.KhachHangs.Add(customer);
+            await _context.SaveChangesAsync();
+            string maTaiKhoan = HttpContext.Session.GetString("SignUpAccount");
+
+            if (!string.IsNullOrEmpty(maTaiKhoan))
+            {
+                // Find the account in the database and set MaKhachHang
+                var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
+                if (taiKhoan != null)
+                {
+                    taiKhoan.MaKhachHang = customer.MaKhachHang;
+                    _context.TaiKhoans.Update(taiKhoan);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return Json(new { success = true, message = "Tạo tài khoản và bổ sung thông tin thành công" });
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateDefaultCustomer()
+        {
+            var lastCustomer = _context.KhachHangs.OrderByDescending(c => c.MaKhachHang).FirstOrDefault();
+            string newMaKhachHang = lastCustomer == null ? "KH000" :
+                "KH" + (int.Parse(lastCustomer.MaKhachHang.Substring(2)) + 1).ToString("D3");
+            var lastUserName = _context.KhachHangs.OrderByDescending(c => c.TenKhachHang).FirstOrDefault()?.TenKhachHang;
+            int newUserNum = lastUserName != null && lastUserName.StartsWith("User") ? int.Parse(lastUserName.Substring(4)) + 1 : 0;
+            string newTenKhachHang = $"ToiXinhDep{newUserNum:D5}";
+            var newCustomer = new KhachHang
+            {
+                MaKhachHang = newMaKhachHang,
+                TenKhachHang = newTenKhachHang,
+                NgayDangKy = DateOnly.FromDateTime(DateTime.Now),
+                TrangThai = 2
+            };
+
+            // Thêm vào database
+            _context.KhachHangs.Add(newCustomer);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Tài Khoản của bạn đã được đăng ký thành công" });
         }
 
     }

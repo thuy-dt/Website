@@ -40,6 +40,7 @@
     <Folder Include="wwwroot\img\AnhSanPham\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="wwwroot\img\AnhKhachHang\" />
+    <Folder Include="wwwroot\Avatar\" />
   </ItemGroup>
 
 </Project>
