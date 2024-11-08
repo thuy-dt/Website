@@ -38,13 +38,21 @@
         </div>
         <div class="mb-3">
             <label for="MaDanhMuc" class="form-label">Danh mục</label>
-            <select id="MaDanhMuc" name="MaDanhMuc" class="form-control" required>
+            <select id="MaDanhMuc" name="MaDanhMuc" class="form-select d-inline-block w-auto" required style="width: 150px; margin-left: 10px;">
                 <option value="">-- Chọn danh mục --</option>
                 @foreach (var item in (SelectList)ViewBag.DanhMucList)
                 {
-                    <option value="@item.Value" @(item.Value == Model.MaDanhMuc.ToString() ? "selected" : "")>@item.Text</option>
+                    @if (item.Value == Model.MaDanhMuc.ToString())
+                    {
+                        <option value="@item.Value" selected>@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
                 }
             </select>
+
         </div>
         <div class="mb-3">
             <label for="SoLuong" class="form-label">Số Lượng</label>
@@ -68,10 +76,19 @@
         </div>
         <div class="mb-3">
             <label for="TrangThai" class="form-label">Trạng Thái</label>
-            <select id="TrangThai" name="TrangThai" class="form-select">
-                <option value="1" @(Model.TrangThai == 1 ? "selected" : "")>Hoạt Động</option>
-                <option value="0" @(Model.TrangThai == 0 ? "selected" : "")>Không Hoạt Động</option>
+            <select id="TrangThai" name="TrangThai" class="form-select d-inline-block w-auto" style="width: 120px; margin-left: 10px;">
+                @if (Model.TrangThai == 1)
+                {
+                    <option value="1" selected>Hoạt Động</option>
+                    <option value="0">Không Hoạt Động</option>
+                }
+                else
+                {
+                    <option value="1">Hoạt Động</option>
+                    <option value="0" selected>Không Hoạt Động</option>
+                }
             </select>
+
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>

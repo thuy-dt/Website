@@ -33,13 +33,14 @@
         </div>
     </div>
     <!-- Modal Edit Sản Phẩm -->
-    <div class="modal fade" id="modalEditProduct" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <!-- Nội dung sẽ được tải qua AJAX -->
             </div>
         </div>
     </div>
+
     
     <!-- Form Tìm kiếm và Lọc -->
     <form id="filterForm" class="mb-3">
@@ -75,12 +76,53 @@
             </div>
             <!-- Page Size Dropdown -->
             <div class="col-md-2">
-                <select name="pageSize" id="pageSize" class="form-control" onchange="document.getElementById('filterForm').submit();">
-                    <option value="5" @(ViewBag.CurrentPageSize == 5 ? "selected" : "")>5 sản phẩm/trang</option>
-                    <option value="10" @(ViewBag.CurrentPageSize == 10 ? "selected" : "")>10 sản phẩm/trang</option>
-                    <option value="20" @(ViewBag.CurrentPageSize == 20 ? "selected" : "")>20 sản phẩm/trang</option>
-                    <option value="50" @(ViewBag.CurrentPageSize == 50 ? "selected" : "")>50 sản phẩm/trang</option>
+                <select id="pageSize" name="pageSize" class="form-select d-inline-block w-auto" onchange="this.form.submit()" style="width: 45px; margin-left: 10px;">
+                    @if (ViewBag.PageSize == 5)
+                    {
+                        <option value="5" selected>5</option>
+                    }
+                    else
+                    {
+                        <option value="5">5</option>
+                    }
+
+                    @if (ViewBag.PageSize == 10)
+                    {
+                        <option value="10" selected>10</option>
+                    }
+                    else
+                    {
+                        <option value="10">10</option>
+                    }
+
+                    @if (ViewBag.PageSize == 15)
+                    {
+                        <option value="15" selected>15</option>
+                    }
+                    else
+                    {
+                        <option value="15">15</option>
+                    }
+
+                    @if (ViewBag.PageSize == 20)
+                    {
+                        <option value="20" selected>20</option>
+                    }
+                    else
+                    {
+                        <option value="20">20</option>
+                    }
+
+                    @if (ViewBag.PageSize == 50)
+                    {
+                        <option value="50" selected>50</option>
+                    }
+                    else
+                    {
+                        <option value="50">50</option>
+                    }
                 </select>
+
             </div>
 
         </div>
@@ -157,11 +199,13 @@
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" asp-action="EditPartial" asp-route-maSanPham="@item.MaSanPham">
-                                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editProductModal" onclick="loadEditProduct('@item.MaSanPham')">
+                                                    <i class="bi bi-pencil-square"></i> Sửa
                                                 </a>
+
+
                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="confirmDelete('@item.MaSanPham')">
-                                                    <i class="bx bx-trash me-1"></i> Delete
+                                                    <i class="bx bx-trash me-1"></i> Xóa
                                                 </a>
                                             </div>
                                         </div>
@@ -217,29 +261,24 @@
                 });
             });
         });
-
-        $(document).ready(function() {
-            // Trigger modal Edit Sản Phẩm
-            $('.table-responsive').on('click', '.dropdown-menu a[asp-action="EditPartial"]', function(e) {
-                e.preventDefault();
-                var maSanPham = $(this).attr("asp-route-maSanPham"); // Get product ID
-
-                // AJAX request to load the edit content
-                $.ajax({
-                    url: '/Admin/SanPham/EditPartial',
-                    type: 'GET',
-                    data: { maSanPham: maSanPham },
-                    success: function(response) {
-                        // Load the response (edit form) into the modal content
-                        $('#modalEditProduct .modal-content').html(response);
-                        $('#modalEditProduct').modal('show'); // Show the modal
-                    },
-                    error: function() {
-                        $('#modalEditProduct .modal-content').html('<p class="text-danger">Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.</p>');
-                    }
-                });
+        function loadEditProduct(maSanPham) {
+            $.ajax({
+                url: '/Admin/SanPham/EditPartial', // Đường dẫn đến action EditPartial
+                type: 'GET',
+                data: { maSanPham: maSanPham },
+                success: function (response) {
+                    // Chèn nội dung vào modal và hiển thị modal
+                    $('#editProductModal .modal-content').html(response);
+                    $('#editProductModal').modal('show'); // Hiển thị modal
+                },
+                error: function () {
+                    $('#editProductModal .modal-content').html('<p class="text-danger">Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.</p>');
+                }
             });
-        });
+        }
+
+
+
 
         $(document).ready(function() {
             // Trigger tìm kiếm mỗi khi thay đổi đầu vào hoặc sắp xếp
@@ -332,5 +371,6 @@
         margin-left: 0; /* Không áp dụng trùng lặp cho ảnh đầu tiên */
     }
 </style>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
