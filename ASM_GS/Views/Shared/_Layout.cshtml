@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="light">
 
 <head>
-<title>Care - Beauty Store Bootstrap 5 HTML CSS Template</title>
+<title>Website bán mỹ phẩm GS</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +10,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="author" content="TemplatesJungle">
 <meta name="keywords" content="ecommerce,fashion,store">
-<meta name="description" content="Beauty Store Bootstrap 5 HTML CSS Template">
+<meta name="description" content="Website bán mỹ phẩm GS">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="~/icomoon/icomoon.css">
 <link rel="stylesheet" type="text/css" href="~/css/vendor.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
@@ -200,7 +200,7 @@
 
             <div class="col-auto">
                 <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                    <img src="images/Enigma (1).png" alt="logo" style="height: 120px; width: 200px;">
+                    <img src="~/images/Enigma (1).png" alt="logo" style="height: 120px; width: 200px;">
                 </a>
             </div>
 
@@ -224,9 +224,9 @@
                                     <li>
                                             <a href="@Url.Action("Index", "Shop")" class="dropdown-item item-anchor">Cửa Hàng</a>
                                     </li>
-                                    <li>
+                                    @* <li>
                                         <a href="single-product.html" class="dropdown-item item-anchor">Chi tiết sản phẩm</a>
-                                    </li>
+                                    </li> *@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
@@ -239,7 +239,7 @@
                                         <a href="checkout.html" class="dropdown-item item-anchor">Thanh Toán</a>
                                     </li>
                                     <li>
-                                        <a href="my-account.html" class="dropdown-item item-anchor">Đăng Nhập</a>
+                                            <a href="@Url.Action("Index", "LoginAndSignUp")" class="dropdown-item item-anchor">Đăng Nhập, Đăng ký</a>
                                     </li>
                                 </ul>
                             </li>
@@ -289,7 +289,7 @@
 
 
 
-@RenderBody()
+    @RenderBody()
 
 
 @* <section id="best-sellers" class="best-sellers product-carousel position-relative py-5 my-5 open-up" data-aos="zoom-out">
@@ -571,7 +571,7 @@
                 <div class="footer-menu footer-menu-001">
                     <div class="footer-intro mb-4">
                         <a href="index.html">
-                            <img src="images/Enigma (1).png" alt="logo" style="height: 150px; width: 250px;">
+                                <img src="~/images/Enigma (1).png" alt="logo" style="height: 150px; width: 250px;">
                         </a>
                     </div>
                     <div class="social-links">
@@ -685,14 +685,14 @@
                 <div class="col-md-6 d-flex flex-wrap">
                     <div class="shipping">
                         <span>Chúng tôi vận chuyển với:</span>
-                        <img src="images/arct-icon.png" alt="icon">
-                        <img src="images/dhl-logo.png" alt="icon">
+                        <img src="~/images/arct-icon.png" alt="icon">
+                        <img src="~/images/dhl-logo.png" alt="icon">
                     </div>
                     <div class="payment-option">
                         <span>Phương Thức Thanh Toán:</span>
-                        <img src="images/visa-card.png" alt="card">
-                        <img src="images/paypal-card.png" alt="card">
-                        <img src="images/master-card.png" alt="card">
+                        <img src="~/images/visa-card.png" alt="card">
+                        <img src="~/images/paypal-card.png" alt="card">
+                        <img src="~/images/master-card.png" alt="card">
                     </div>
                 </div>
             </div>

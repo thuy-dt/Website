@@ -16,7 +16,6 @@ public partial class DanhGia
     public string? NoiDung { get; set; }
 
     public int SoSao { get; set; }
-
     public virtual KhachHang MaKhachHangNavigation { get; set; } = null!;
 
     public virtual SanPham MaSanPhamNavigation { get; set; } = null!;
