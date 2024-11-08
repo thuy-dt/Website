@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text.Json;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 namespace ASM_GS.Controllers
 {
     public class LoginAndSignUp : Controller
@@ -19,7 +20,12 @@ namespace ASM_GS.Controllers
             _configuration = configuration;
             _context = context;
         }
-
+        public class GoogleUserModel
+        {
+            public string Name { get; set; }
+            public string Email { get; set; }
+            public string Picture { get; set; }
+        }
         private readonly IConfiguration _configuration;
         private string GenerateNewAccountId()
         {
@@ -40,8 +46,9 @@ namespace ASM_GS.Controllers
                 }
             }
 
-            
-            return "TK" + newIdNumber.ToString("D3"); 
+
+            return "TK" + newIdNumber.ToString("D3");
+            return "TK" + newIdNumber.ToString("D3");
         }
         public IActionResult Index()
         {
@@ -76,7 +83,8 @@ namespace ASM_GS.Controllers
 
             var user = _context.TaiKhoans
                 .FirstOrDefault(u => (u.Email.Trim() == model.EmailOrUsername.Trim() || u.TenTaiKhoan.Trim() == model.EmailOrUsername.Trim())
-                                     && u.MatKhau.Trim() == model.Password.Trim() && (u.TinhTrang==1 || u.TinhTrang==2));
+                                     && u.MatKhau.Trim() == model.Password.Trim() && (u.TinhTrang == 1 || u.TinhTrang == 2));
+                                   
 
             if (user == null)
             {
@@ -130,8 +138,7 @@ namespace ASM_GS.Controllers
             {
                 return Json(new { success = false, message = "Tên tài khoản hoặc email đã tồn tại" });
             }
-
-            MaTaiKhoanDuocTao=GenerateNewAccountId();
+            MaTaiKhoanDuocTao = GenerateNewAccountId();
             var newUser = new TaiKhoan
             {
                 MaTaiKhoan = MaTaiKhoanDuocTao,
@@ -150,134 +157,221 @@ namespace ASM_GS.Controllers
         public async Task<IActionResult> CreateCustomer(KhachHang customer, IFormFile Anh)
         {
             var errors = new Dictionary<string, string>();
-
+            var KHList = _context.KhachHangs.ToList();
             // Validate fields manually if required by the business logic
-            if (string.IsNullOrEmpty(customer.TenKhachHang))
+            try
             {
-                errors.Add("TenKhachHang", "Tên khách hàng không được để trống.");
-            }
-
-            if (string.IsNullOrEmpty(customer.SoDienThoai))
-            {
-                errors.Add("SoDienThoai", "Số điện thoại không được để trống.");
-            }
-            else if (!Regex.IsMatch(customer.SoDienThoai, @"^\d{10,11}$"))
-            {
-                errors.Add("SoDienThoai", "Số điện thoại không hợp lệ.");
-            }
-
-            if (string.IsNullOrEmpty(customer.DiaChi))
-            {
-                errors.Add("DiaChi", "Địa chỉ không được để trống.");
-            }
-
-            if (string.IsNullOrEmpty(customer.Cccd))
-            {
-                errors.Add("Cccd", "Căn cước công dân không được để trống.");
-            }
-
-            if (string.IsNullOrEmpty(customer.NgaySinh?.ToString()))
-            {
-                errors.Add("NgaySinh", "Ngày sinh không được để trống.");
-            }
-
-            if (errors.Any())
-            {
-                return Json(new { success = false, errors = errors });
-            }
-
-            // Handle image upload
-            if (Anh != null && Anh.Length > 0)
-            {
-                string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Avatar", fileName);
-
-                using (var stream = new FileStream(path, FileMode.Create))
+                if (string.IsNullOrEmpty(customer.TenKhachHang))
                 {
-                    await Anh.CopyToAsync(stream);
+                    errors.Add("TenKhachHang", "Tên khách hàng không được để trống.");
                 }
 
-                customer.HinhAnh = "/Avatar/" + fileName;
-            }
-            else
-            {
-                errors.Add("Anh", "Vui lòng tải lên hình ảnh hợp lệ.");
-                return Json(new { success = false, errors = errors });
-            }
-
-            // Generate a unique, sequential MaKhachHang
-            var lastCustomer = await _context.KhachHangs
-                                    .OrderByDescending(kh => kh.MaKhachHang)
-                                    .FirstOrDefaultAsync();
-
-            int nextId = 1;
-            if (lastCustomer != null)
-            {
-                string lastIdStr = lastCustomer.MaKhachHang.Substring(2); // Remove "KH" prefix
-                if (int.TryParse(lastIdStr, out int lastId))
+                if (string.IsNullOrEmpty(customer.SoDienThoai))
                 {
-                    nextId = lastId + 1;
+                    errors.Add("SoDienThoai", "Số điện thoại không được để trống.");
                 }
-            }
-            customer.MaKhachHang = "KH" + nextId.ToString("D3"); // Format as KH001, KH002, etc.
-
-            // Set default TrangThai
-            customer.TrangThai = 1;
-
-            // Assign additional properties
-            customer.NgayDangKy = DateOnly.FromDateTime(DateTime.Now);
-
-            // Save to database
-            _context.KhachHangs.Add(customer);
-            await _context.SaveChangesAsync();
-            string maTaiKhoan = HttpContext.Session.GetString("SignUpAccount");
-
-            if (!string.IsNullOrEmpty(maTaiKhoan))
-            {
-                // Find the account in the database and set MaKhachHang
-                var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
-                if (taiKhoan != null)
+                else if (!Regex.IsMatch(customer.SoDienThoai, @"^\d{10,11}$"))
                 {
-                    taiKhoan.MaKhachHang = customer.MaKhachHang;
-                    _context.TaiKhoans.Update(taiKhoan);
-                    await _context.SaveChangesAsync();
+                    errors.Add("SoDienThoai", "Số điện thoại không hợp lệ.");
                 }
+
+                if (string.IsNullOrEmpty(customer.DiaChi))
+                {
+                    errors.Add("DiaChi", "Địa chỉ không được để trống.");
+                }
+
+                if (string.IsNullOrEmpty(customer.Cccd))
+                {
+                    errors.Add("Cccd", "Căn cước công dân không được để trống.");
+                }
+
+                if (string.IsNullOrEmpty(customer.NgaySinh?.ToString()))
+                {
+                    errors.Add("NgaySinh", "Ngày sinh không được để trống.");
+                }
+
+                if (errors.Any())
+                {
+                    return Json(new { success = false, errors = errors });
+                }
+
+                // Handle image upload
+                if (Anh != null && Anh.Length > 0)
+                {
+                    string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Avatar", fileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await Anh.CopyToAsync(stream);
+                    }
+
+                    customer.HinhAnh = "/Avatar/" + fileName;
+                }
+                else
+                {
+                    errors.Add("Anh", "Vui lòng tải lên hình ảnh hợp lệ.");
+                    return Json(new { success = false, errors = errors });
+                }
+
+                // Generate a unique, sequential MaKhachHang
+                var lastCustomer = await _context.KhachHangs
+                                            .OrderByDescending(kh => kh.MaKhachHang)
+                                           .FirstOrDefaultAsync();
+
+
+                int nextId = 1;
+                if (lastCustomer != null)
+                {
+                    string lastIdStr = lastCustomer.MaKhachHang.Substring(2); // Remove "KH" prefix
+                    if (int.TryParse(lastIdStr, out int lastId))
+                    {
+                        nextId = lastId + 1;
+                    }
+                }
+                customer.MaKhachHang = "KH" + nextId.ToString("D3"); // Format as KH001, KH002, etc.
+
+                customer.TrangThai = 1;
+
+                customer.NgayDangKy = DateOnly.FromDateTime(DateTime.Now);
+
+
+                _context.KhachHangs.Add(customer);
+                await _context.SaveChangesAsync();
+                string maTaiKhoan = HttpContext.Session.GetString("SignUpAccount");
+
+                if (!string.IsNullOrEmpty(maTaiKhoan))
+                {
+
+                    var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
+                    if (taiKhoan != null)
+                    {
+                        taiKhoan.MaKhachHang = customer.MaKhachHang;
+                        _context.TaiKhoans.Update(taiKhoan);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                return Json(new { success = true, message = "Tạo tài khoản và bổ sung thông tin thành công" });
             }
-            return Json(new { success = true, message = "Tạo tài khoản và bổ sung thông tin thành công" });
+            catch (Exception ex) {
+                Console.WriteLine(ex.ToString());
+                        return Json(new { success = true, message = "Tạo tài khoản và bổ sung thông tin thành công" });
+            }
+
         }
         [HttpPost]
         public async Task<IActionResult> CreateDefaultCustomer()
         {
-            var lastCustomer = _context.KhachHangs.OrderByDescending(c => c.MaKhachHang).FirstOrDefault();
-            string newMaKhachHang = lastCustomer == null ? "KH000" :
-                "KH" + (int.Parse(lastCustomer.MaKhachHang.Substring(2)) + 1).ToString("D3");
-            var lastUserName = _context.KhachHangs.OrderByDescending(c => c.TenKhachHang).FirstOrDefault()?.TenKhachHang;
-            int newUserNum = lastUserName != null && lastUserName.StartsWith("User") ? int.Parse(lastUserName.Substring(4)) + 1 : 0;
-            string newTenKhachHang = $"ToiXinhDep{newUserNum:D5}";
-            var newCustomer = new KhachHang
+            try
             {
-                MaKhachHang = newMaKhachHang,
-                TenKhachHang = newTenKhachHang,
-                NgayDangKy = DateOnly.FromDateTime(DateTime.Now),
-                TrangThai = 2
+
+                var lastCustomer = _context.KhachHangs.OrderByDescending(c => c.MaKhachHang).FirstOrDefault();
+                string newMaKhachHang = lastCustomer == null ? "KH000" :
+                    "KH" + (int.Parse(lastCustomer.MaKhachHang.Substring(2)) + 1).ToString("D3");
+
+                // Tự động tạo TenKhachHang
+                var lastUserName = _context.KhachHangs.OrderByDescending(c => c.TenKhachHang).FirstOrDefault()?.TenKhachHang;
+                int newUserNum = lastUserName != null && lastUserName.StartsWith("User") ? int.Parse(lastUserName.Substring(4)) + 1 : 0;
+                string newTenKhachHang = $"ToiXinhDep{newUserNum:D5}";
+
+                // Tạo đối tượng KhachHang với các giá trị mặc định
+                var newCustomer = new KhachHang
+                {
+                    MaKhachHang = newMaKhachHang,
+                    TenKhachHang = newTenKhachHang,
+                    NgayDangKy = DateOnly.FromDateTime(DateTime.Now),
+                    TrangThai = 2
+                };
+
+                // Thêm vào database
+                _context.KhachHangs.Add(newCustomer);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Tài Khoản của bạn đã được đăng ký thành công" });
+
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.ToString());
+                return Json(new { success = true, message = "Tài Khoản của bạn đã được đăng ký thành công" });
             };
 
-            _context.KhachHangs.Add(newCustomer);
-            await _context.SaveChangesAsync();
-            string maTaiKhoan = HttpContext.Session.GetString("SignUpAccount");
-
-            if (!string.IsNullOrEmpty(maTaiKhoan))
+            // Tự động tạo MaKhachHang
+           
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomerFromGoogleLogin([FromBody] GoogleUserModel user)
+        {
+            // Check if an account with the given email already exists
+            var existingAccount = _context.TaiKhoans.FirstOrDefault(u => u.Email == user.Email);
+            if (existingAccount == null)
             {
-
-                var taiKhoan = await _context.TaiKhoans.FindAsync(maTaiKhoan);
-                if (taiKhoan != null)
+                // Generate new IDs for MaKhachHang and MaTaiKhoan
+                var lastCustomer = _context.KhachHangs.OrderByDescending(k => k.MaKhachHang).FirstOrDefault();
+                int newCustomerId = lastCustomer != null ? int.Parse(lastCustomer.MaKhachHang.Substring(2)) + 1 : 1;
+                string maKhachHang = $"KH{newCustomerId:D3}";
+                var lastAccount = _context.TaiKhoans.OrderByDescending(t => t.MaTaiKhoan).FirstOrDefault();
+                int newAccountId = lastAccount != null ? int.Parse(lastAccount.MaTaiKhoan.Substring(2)) + 1 : 1;
+                string maTaiKhoan = $"TK{newAccountId:D3}";
+                // Create and save the new customer
+                var newCustomer = new KhachHang
                 {
-                    taiKhoan.MaKhachHang = newCustomer.MaKhachHang;
-                    _context.TaiKhoans.Update(taiKhoan);
+                    MaKhachHang = maKhachHang,
+                    TenKhachHang = user.Name,
+                    HinhAnh = user.Picture,
+                    NgayDangKy = DateOnly.FromDateTime(DateTime.Today),
+                    TrangThai = 2
+                };
+                _context.KhachHangs.Add(newCustomer);
+                await _context.SaveChangesAsync();
+                // Create and save the new account linked to the new customer
+                var newAccount = new TaiKhoan
+                {
+                    MaTaiKhoan = maTaiKhoan,
+                    TenTaiKhoan = user.Email,
+                    MatKhau = "123456",
+                    VaiTro = "User",
+                    Email = user.Email,
+                    MaKhachHang = maKhachHang,
+                    TinhTrang = 1
+                };
+                _context.TaiKhoans.Add(newAccount);
+                await _context.SaveChangesAsync();
+                return Ok("Đã tạo tài khoản và khách hàng mới thành công.");
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(existingAccount.MaKhachHang))
+                {
+                    // Generate a new MaKhachHang for the existing account
+                    var lastCustomer = _context.KhachHangs.OrderByDescending(k => k.MaKhachHang).FirstOrDefault();
+                    int newCustomerId = lastCustomer != null ? int.Parse(lastCustomer.MaKhachHang.Substring(2)) + 1 : 1;
+                    string maKhachHang = $"KH{newCustomerId:D3}";
+                    // Create a new customer and link it to the existing account
+                    var newCustomer = new KhachHang
+                    {
+                        MaKhachHang = maKhachHang,
+                        TenKhachHang = user.Name,
+                        HinhAnh = user.Picture,
+                        NgayDangKy = DateOnly.FromDateTime(DateTime.Today),
+                        TrangThai = 2
+                    };
+                    _context.KhachHangs.Add(newCustomer);
+                    existingAccount.MaKhachHang = maKhachHang;
                     await _context.SaveChangesAsync();
+                    return Ok("Đã tạo khách hàng mới và liên kết với tài khoản hiện có.");
+                }
+                else
+                {
+                    // Update the existing customer's picture
+                    var existingCustomer = _context.KhachHangs.FirstOrDefault(k => k.MaKhachHang == existingAccount.MaKhachHang);
+                    if (existingCustomer != null)
+                    {
+                        existingCustomer.TenKhachHang = user.Name;
+                        existingCustomer.HinhAnh = user.Picture;
+                        await _context.SaveChangesAsync();
+                    }
+                    return Json(new { Message = "Cập nhật hình ảnh cho khách hàng hiện có." });
                 }
             }
-            return Json(new { success = true, message = "Tài Khoản của bạn đã được đăng ký thành công" });
         }
 
     }
