@@ -5,34 +5,53 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
 <div class="modal-body">
-    <form id="editDanhMucForm">
-        <input type="hidden" id="MaDanhMuc" name="MaDanhMuc" value="@Model.MaDanhMuc" />
+    <form id="editForm">
+        <input type="hidden" name="MaDanhMuc" value="@Model.MaDanhMuc" />
+        
         <div class="mb-3">
             <label for="TenDanhMuc" class="form-label">Tên Danh Mục</label>
-            <input type="text" id="TenDanhMuc" name="TenDanhMuc" class="form-control" value="@Model.TenDanhMuc" />
+            <input type="text" id="TenDanhMuc" name="TenDanhMuc" class="form-control" value="@Model.TenDanhMuc" required />
         </div>
+        
+        <div class="mb-3">
+            <label for="TrangThai" class="form-label">Trạng Thái</label>
+            <select id="TrangThai" name="TrangThai" class="form-control">
+                @if (Model.TrangThai == 1)
+                {
+                    <option value="1" selected>Hoạt Động</option>
+                    <option value="0">Không Hoạt Động</option>
+                }
+                else
+                {
+                    <option value="1">Hoạt Động</option>
+                    <option value="0" selected>Không Hoạt Động</option>
+                }
+            </select>
+        </div>
+
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary">Cập Nhật Danh Mục</button>
         </div>
     </form>
 </div>
+
 <script>
-    $(document).ready(function() {
-        $('#editDanhMucForm').submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: '/Admin/DanhMuc/Edit',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire('Cập nhật thành công!', response.message, 'success').then(() => location.reload());
-                    } else {
-                        alert("Có lỗi xảy ra.");
-                    }
+    $('#editForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/Admin/DanhMuc/Edit',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Thành công!', response.message, 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Lỗi!', 'Có lỗi xảy ra. Vui lòng thử lại.', 'error');
                 }
-            });
+            }
         });
     });
 </script>
