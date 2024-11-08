@@ -24,7 +24,7 @@ namespace ASM_GS.Models
 
         [Required]
         public DateOnly NgayDangKy { get; set; }
-        [Required(ErrorMessage = "Vui lòng chọn ảnh.")]
+        //[Required(ErrorMessage = "Vui lòng chọn ảnh.")]
         public string? HinhAnh { get; set; }
 
         [NotMapped]
