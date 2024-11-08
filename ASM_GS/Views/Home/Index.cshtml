@@ -103,7 +103,7 @@
     <div class="container">
         <div class="d-flex flex-wrap justify-content-between align-items-center mt-5 mb-3">
             <h4 class="text-uppercase">Hàng Mới Về</h4>
-            <a href="shop-sidebar.html" class="btn-link">Xem Tất Cả Sản Phẩm</a>
+            <a href="@Url.Action("Index", "Shop")" class="btn-link">Xem Tất Cả Sản Phẩm</a>
         </div>
         @await Component.InvokeAsync("SanPham")
         <div class="icon-arrow no-outline icon-arrow-left bg-light bg-opacity-10"></div>

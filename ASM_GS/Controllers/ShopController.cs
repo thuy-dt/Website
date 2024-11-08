@@ -2,6 +2,8 @@
 using ASM_GS.ViewModels; // Namespace cho ViewModel
 using ASM_GS.Models; // Namespace cho Model
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace ASM_GS.Controllers
 {
@@ -14,9 +16,9 @@ namespace ASM_GS.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string searchQuery, string filterBy, string categoryId, int page = 1, int pageSize = 10)
+        public IActionResult Index(string searchQuery, string filterBy, string categoryId, string priceRange, int page = 1, int pageSize = 10)
         {
-            var products = _context.SanPhams.AsQueryable();
+            var products = _context.SanPhams.Include(p => p.AnhSanPhams).AsQueryable();
             var danhMuc = _context.DanhMucs.ToList(); // Lấy danh sách danh mục
 
             // Tìm kiếm sản phẩm
@@ -30,7 +32,25 @@ namespace ASM_GS.Controllers
             {
                 products = products.Where(p => p.MaDanhMuc == categoryId);
             }
-
+            // Lọc theo khoảng giá
+            if (!string.IsNullOrEmpty(priceRange))
+            {
+                switch (priceRange)
+                {
+                    case "under100k":
+                        products = products.Where(p => p.Gia < 100000);
+                        break;
+                    case "100k-500k":
+                        products = products.Where(p => p.Gia >= 100000 && p.Gia <= 500000);
+                        break;
+                    case "500k-1m":
+                        products = products.Where(p => p.Gia > 500000 && p.Gia <= 1000000);
+                        break;
+                    case "above1m":
+                        products = products.Where(p => p.Gia > 1000000);
+                        break;
+                }
+            }
             // Lọc theo tiêu chí khác
             switch (filterBy)
             {
