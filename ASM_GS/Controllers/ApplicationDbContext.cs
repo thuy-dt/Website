@@ -201,7 +201,7 @@ namespace ASM_GS.Controllers
                     VaiTro = "Customer",
                     MaKhachHang = "KH002",
                     Email = "customer2@example.com"
-                }
+                });
 
 
             // Seed Data cho bảng Combo
