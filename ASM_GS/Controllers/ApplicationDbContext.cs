@@ -39,6 +39,10 @@ namespace ASM_GS.Controllers
                 .HasOne(s => s.MaDanhMucNavigation)
                 .WithMany(d => d.SanPhams)
                 .HasForeignKey(s => s.MaDanhMuc);
+            modelBuilder.Entity<TaiKhoan>()
+               .HasOne(tk => tk.MaKhachHangNavigation)
+               .WithMany(kh => kh.TaiKhoans)
+               .HasForeignKey(tk => tk.MaKhachHang);
 
             // Cấu hình quan hệ giữa ChiTietComBo và ComBo
             modelBuilder.Entity<ChiTietCombo>()
@@ -149,6 +153,56 @@ namespace ASM_GS.Controllers
                new AnhSanPham { Id = 39, MaSanPham = "SP010", UrlAnh = "img/AnhSanPham/bandem3.jpg" },
                new AnhSanPham { Id = 40, MaSanPham = "SP010", UrlAnh = "img/AnhSanPham/bandem4.jpg" }
            );
+            modelBuilder.Entity<KhachHang>().HasData(
+                new KhachHang
+                {
+                    MaKhachHang = "KH001",
+                    TenKhachHang = "Embo",
+                    SoDienThoai = "0123456789",
+                    DiaChi = "123 Main St",
+                    NgayDangKy = new DateOnly(2023, 1, 15),
+                    HinhAnh = null,
+                    Cccd = "123456789",
+                    NgaySinh = new DateOnly(1990, 1, 1),
+                    GioiTinh = true,
+                    TrangThai = 1
+                },
+                new KhachHang
+                {
+                    MaKhachHang = "KH002",
+                    TenKhachHang = "Ember",
+                    SoDienThoai = "0987654321",
+                    DiaChi = "456 Elm St",
+                    NgayDangKy = new DateOnly(2023, 1, 16),
+                    HinhAnh = null,
+                    Cccd = "987654321",
+                    NgaySinh = new DateOnly(1992, 2, 2),
+                    GioiTinh = false,
+                    TrangThai = 1
+                }
+        
+            );
+
+            modelBuilder.Entity<TaiKhoan>().HasData(
+                new TaiKhoan
+                {
+                    MaTaiKhoan = "TK001",
+                    TenTaiKhoan = "customer1",
+                    MatKhau = "123",
+                    VaiTro = "Customer",
+                    MaKhachHang = "KH001",
+                    Email = "customer1@example.com"
+                },
+                new TaiKhoan
+                {
+                    MaTaiKhoan = "TK002",
+                    TenTaiKhoan = "customer2",
+                    MatKhau = "123",
+                    VaiTro = "Customer",
+                    MaKhachHang = "KH002",
+                    Email = "customer2@example.com"
+                });
+
 
             // Seed Data cho bảng Combo
             modelBuilder.Entity<Combo>().HasData(

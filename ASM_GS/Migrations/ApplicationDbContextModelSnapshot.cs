@@ -821,6 +821,32 @@ namespace ASM_GS.Migrations
                     b.HasKey("MaKhachHang");
 
                     b.ToTable("KhachHangs");
+
+                    b.HasData(
+                        new
+                        {
+                            MaKhachHang = "KH001",
+                            Cccd = "123456789",
+                            DiaChi = "123 Main St",
+                            GioiTinh = true,
+                            NgayDangKy = new DateOnly(2023, 1, 15),
+                            NgaySinh = new DateOnly(1990, 1, 1),
+                            SoDienThoai = "0123456789",
+                            TenKhachHang = "Embo",
+                            TrangThai = 1
+                        },
+                        new
+                        {
+                            MaKhachHang = "KH002",
+                            Cccd = "987654321",
+                            DiaChi = "456 Elm St",
+                            GioiTinh = false,
+                            NgayDangKy = new DateOnly(2023, 1, 16),
+                            NgaySinh = new DateOnly(1992, 2, 2),
+                            SoDienThoai = "0987654321",
+                            TenKhachHang = "Ember",
+                            TrangThai = 1
+                        });
                 });
 
             modelBuilder.Entity("ASM_GS.Models.MaNhapGiamGia", b =>
@@ -1035,9 +1061,6 @@ namespace ASM_GS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaKhachHang")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaKhachHangNavigationMaKhachHang")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaNhanVien")
@@ -1053,17 +1076,42 @@ namespace ASM_GS.Migrations
                     b.Property<string>("TenTaiKhoan")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TinhTrang")
+                        .HasColumnType("int");
+
                     b.Property<string>("VaiTro")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaTaiKhoan");
 
-                    b.HasIndex("MaKhachHangNavigationMaKhachHang");
+                    b.HasIndex("MaKhachHang");
 
                     b.HasIndex("MaNhanVienNavigationMaNhanVien");
 
                     b.ToTable("TaiKhoans");
+
+                    b.HasData(
+                        new
+                        {
+                            MaTaiKhoan = "TK001",
+                            Email = "customer1@example.com",
+                            MaKhachHang = "KH001",
+                            MatKhau = "123",
+                            TenTaiKhoan = "customer1",
+                            TinhTrang = 0,
+                            VaiTro = "Customer"
+                        },
+                        new
+                        {
+                            MaTaiKhoan = "TK002",
+                            Email = "customer2@example.com",
+                            MaKhachHang = "KH002",
+                            MatKhau = "123",
+                            TenTaiKhoan = "customer2",
+                            TinhTrang = 0,
+                            VaiTro = "Customer"
+                        });
                 });
 
             modelBuilder.Entity("ASM_GS.Models.AnhSanPham", b =>
@@ -1246,7 +1294,7 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.KhachHang", "MaKhachHangNavigation")
                         .WithMany("TaiKhoans")
-                        .HasForeignKey("MaKhachHangNavigationMaKhachHang");
+                        .HasForeignKey("MaKhachHang");
 
                     b.HasOne("ASM_GS.Models.NhanVien", "MaNhanVienNavigation")
                         .WithMany("TaiKhoans")
