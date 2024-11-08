@@ -24,4 +24,5 @@ public partial class HoaDon
     public virtual GiamGia? MaGiamGiaNavigation { get; set; }
 
     public virtual KhachHang? MaKhachHangNavigation { get; set; }
+    
 }

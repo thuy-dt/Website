@@ -1,0 +1,31 @@
+﻿@model ASM_GS.Models.GiamGia
+
+@{
+    // Giả sử bạn có một danh sách mã nhập đã được sử dụng
+    // Bạn có thể truyền danh sách này từ controller qua ViewBag hoặc Model nếu cần
+    var usedCodes = ViewBag.UsedCodes as List<string> ?? new List<string>();
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">Chi Tiết Giảm Giá: @Model.TenGiamGia</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <p><strong>Tên:</strong> @Model.TenGiamGia</p>
+    <p><strong>Giá Trị:</strong> @($"{Model.GiaTri:P0}")</p> <!-- Hiển thị dưới dạng phần trăm -->
+    <p><strong>Ngày Bắt Đầu:</strong> @Model.NgayBatDau.ToShortDateString()</p>
+    <p><strong>Ngày Kết Thúc:</strong> @Model.NgayKetThuc.ToShortDateString()</p>
+    <p><strong>Số lượng tối đa:</strong> @Model.SoLuongMaNhapToiDa</p>
+    <p><strong>Trạng Thái:</strong> @(Model.TrangThai == 1 ? "Đang Áp Dụng" : "Không Áp Dụng")</p>
+
+    <h6 class="mt-3">Danh Sách Mã Nhập:</h6>
+    <ul>
+        @foreach (var maNhap in Model.MaNhapGiamGias)
+        {
+            <li style="@(maNhap.IsUsed ? "text-decoration: line-through;" : "")">
+                @maNhap.MaNhap
+            </li>
+        }
+    </ul>
+
+</div>

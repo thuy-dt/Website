@@ -1,0 +1,68 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ASM_GS.Models.GiamGia
+
+<form asp-action="Create" method="post" id="createDiscountForm">
+    <!-- Input ẩn cho Mã Giảm Giá (nếu cần) -->
+    <input asp-for="MaGiamGia" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="TenGiamGia">Tên giảm giá</label>
+        <input asp-for="TenGiamGia" class="form-control" required />
+        <span asp-validation-for="TenGiamGia" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="GiaTri">Giá trị giảm giá (%)</label>
+        <input asp-for="GiaTri" class="form-control" type="number" step="0.01" required />
+        <span asp-validation-for="GiaTri" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NgayBatDau">Ngày bắt đầu</label>
+        <input asp-for="NgayBatDau" class="form-control" type="date" required />
+        <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NgayKetThuc">Ngày kết thúc</label>
+        <input asp-for="NgayKetThuc" class="form-control" type="date" required />
+        <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+    </div>
+    <!-- Thêm trường cho Số Lượng Mã Nhập Tối Đa -->
+    <div class="form-group">
+        <label asp-for="SoLuongMaNhapToiDa">Số lượng mã nhập tối đa</label>
+        <input asp-for="SoLuongMaNhapToiDa" class="form-control" type="number" min="1" required />
+        <span asp-validation-for="SoLuongMaNhapToiDa" class="text-danger"></span>
+   </div>
+    <div class="form-group">
+        <label asp-for="TrangThai">Trạng thái</label>
+        <select asp-for="TrangThai" class="form-control">
+            <option value="1">Đang áp dụng</option>
+            <option value="0">Không áp dụng</option>
+        </select>
+        <span asp-validation-for="TrangThai" class="text-danger"></span>
+    </div>
+
+    
+
+    <br />
+    <button type="submit" class="btn btn-primary">Thêm giảm giá</button>
+</form>
+
+<style>
+    /* Thêm con trỏ dạng pointer khi di chuột qua nhãn của checkbox */
+    .form-check-label {
+        cursor: pointer;
+    }
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    // Ghi đè thông báo lỗi mặc định của jQuery Validation bằng tiếng Việt
+    jQuery.extend(jQuery.validator.messages, {
+        range: "Vui lòng nhập giá trị lớn hơn hoặc bằng {0}."
+    });
+</script>

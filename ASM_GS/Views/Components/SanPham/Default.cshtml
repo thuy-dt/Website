@@ -1,0 +1,17 @@
+﻿@model IEnumerable<ASM_GS.Models.SanPham>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@item.TenSanPham</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@item.Gia.ToString("N0") VND</h6>
+                    <p class="card-text">@item.MoTa</p>
+                    <h6>Số lượng: @item.SoLuong</h6>
+                </div>
+            </div>
+        </div>
+    }
+</div>
