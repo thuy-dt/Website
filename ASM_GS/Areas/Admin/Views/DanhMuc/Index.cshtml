@@ -1,97 +1,135 @@
-﻿@using X.PagedList.Mvc.Core
+﻿@model X.PagedList.IPagedList<ASM_GS.Models.DanhMuc>
+@using X.PagedList.Mvc.Core
+
 @using X.PagedList
-@model IPagedList<ASM_GS.Models.DanhMuc>
-
 @{
-    ViewData["Title"] = "Danh sách Sản Phẩm";
+    ViewData["Title"] = "Danh sách Danh Mục";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
 }
 
+<h1 class="card-header">@ViewData["Title"]</h1>
 
-<h1 class="card-header">Danh sách Danh Mục</h1>
 
-<div class="d-flex justify-content-end mb-3">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddDanhMuc">
-        Thêm Danh Mục
-    </button>
+<!-- Button to Trigger Modal for Adding New Category -->
+<div class="col-lg-4 col-md-6 mb-3">
+    <small class="text-light fw-semibold">Thêm Danh Mục</small>
+    <div class="mt-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCategory">
+            Thêm Danh Mục
+        </button>
+    </div>
 </div>
 
-<!-- Modal Thêm Danh Mục -->
-<div class="modal fade" id="modalAddDanhMuc" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- Modal for Adding New Category -->
+<div class="modal fade" id="modalAddCategory" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <!-- Nội dung modal sẽ được tải qua AJAX -->
+            <!-- Content will be loaded via AJAX -->
         </div>
     </div>
 </div>
 
-<!-- Modal Chỉnh Sửa Danh Mục -->
-<div class="modal fade" id="modalEditDanhMuc" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="modalEditCategory" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <!-- Nội dung được tải qua AJAX -->
+            <!-- Content will be loaded via AJAX -->
         </div>
     </div>
 </div>
 
-<form id="filterForm" class="row mb-3">
-    <div class="col-md-4">
-        <input type="text" name="searchName" id="searchName" class="form-control" placeholder="Tìm theo tên danh mục" />
-    </div>
-    <div class="col-md-3">
-        <select name="sortOrder" id="sortOrder" class="form-control">
-            <option value="">Sắp xếp theo tên (A-Z)</option>
-            <option value="name_desc">Sắp xếp theo tên (Z-A)</option>
-            <option value="status">Trạng thái</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary">Lọc</button>
+<!-- Similar filter form and table as SanPham, adapted for DanhMuc -->
+<!-- Filter form -->
+<form id="filterForm" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="searchName" id="searchName" class="form-control" placeholder="Tìm theo tên" />
+        </div>
+        <div class="col-md-2">
+            <select name="status" id="status" class="form-control">
+                <option value="">-- Trạng thái --</option>
+                <option value="1">Hoạt Động</option>
+                <option value="0">Không Hoạt Động</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sortOrder" id="sortOrder" class="form-control">
+                <option value="">Sắp xếp theo tên (A-Z)</option>
+                <option value="name_desc">Sắp xếp theo tên (Z-A)</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select id="pageSize" name="pageSize" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                @for (int i = 5; i <= 50; i += 5)
+                {
+                    @if (ViewBag.PageSize == i)
+                    {
+                        <option value="@i" selected="selected">@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+        </div>
     </div>
 </form>
 
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Mã Danh Mục</th>
-                <th>Tên Danh Mục</th>
-                <th>Trạng Thái</th>
-                <th>Hành Động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+<!-- Table display -->
+<div id="productListContainer">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>@item.MaDanhMuc</td>
-                    <td>@item.TenDanhMuc</td>
-                    <td>
-                        @if (item.TrangThai == 1)
-                        {
-                            <span class="badge bg-success">Hoạt Động</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">Không Hoạt Động</span>
-                        }
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editDanhMuc('@item.MaDanhMuc')">Sửa</button>
-                        <button class="btn btn-sm btn-danger" onclick="confirmDelete('@item.MaDanhMuc')">Xóa</button>
-                    </td>
+                    <th>
+                        <a href="?sortOrder=@(Context.Request.Query["sortOrder"] == "name_desc" ? "" : "name_desc")">Tên Danh Mục</a>
+                    </th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.TenDanhMuc</td>
+                        <td>
+                            @if (item.TrangThai == 1)
+                            {
+                                <span class="badge bg-success">Hoạt Động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Không Hoạt Động</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalEditCategory" onclick="loadEditDanhMuc('@item.MaDanhMuc')">
+                                        <i class="bi bi-pencil-square"></i> Sửa
+                                    </a>
+                                    <a href="javascript:void(0)" class="dropdown-item" onclick="confirmDelete('@item.MaDanhMuc')">
+                                        <i class="bx bx-trash me-1"></i> Xóa
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
+<!-- PagedListPager -->
 <div class="d-flex justify-content-center mt-4">
-    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchName = ViewBag.SearchName, sortOrder = ViewBag.SortOrder }),
-            new PagedListRenderOptions
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize }),
+        new PagedListRenderOptions
     {
-        MaximumPageNumbersToDisplay = 5,
         DisplayLinkToFirstPage = PagedListDisplayMode.Always,
         DisplayLinkToLastPage = PagedListDisplayMode.Always,
         DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
@@ -100,76 +138,124 @@
         LinkToLastPageFormat = "Trang cuối",
         LinkToPreviousPageFormat = "«",
         LinkToNextPageFormat = "»",
-        UlElementClasses = new[] { "pagination" },
+        MaximumPageNumbersToDisplay = 5,
+        ContainerDivClasses = new[] { "pagination" },
+        UlElementClasses = new[] { "pagination justify-content-center" },
         LiElementClasses = new[] { "page-item" },
         PageClasses = new[] { "page-link" }
     })
 </div>
 
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AJAX Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#filterForm').on('submit', function(e) {
-            e.preventDefault();
+        $('#modalAddCategory').on('show.bs.modal', function() {
+            $.ajax({
+                url: '/Admin/DanhMuc/CreatePartial', // URL to your CreatePartial action
+                type: 'GET',
+                success: function(data) {
+                    $('#modalAddCategory .modal-content').html(data); // Load partial view content into modal
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading partial view:", error);
+                }
+            });
+        });
+    });
+
+
+    function loadEditDanhMuc(maDanhMuc) {
+        $.ajax({
+            url: '/Admin/DanhMuc/EditPartial', // Đường dẫn đến action EditPartial
+            type: 'GET',
+            data: { maDanhMuc: maDanhMuc },
+            success: function(response) {
+                // Chèn nội dung vào modal và hiển thị modal
+                $('#modalEditCategory .modal-content').html(response);
+                $('#modalEditCategory').modal('show'); // Hiển thị modal
+            },
+            error: function() {
+                $('#modalEditCategory .modal-content').html('<p class="text-danger">Không thể tải thông tin danh mục. Vui lòng thử lại sau.</p>');
+            }
+        });
+    }
+
+
+
+
+
+    $(document).ready(function() {
+        // Trigger tìm kiếm mỗi khi thay đổi đầu vào hoặc sắp xếp
+        $('#filterForm input, #filterForm select').on('input change', function() {
             performSearch();
         });
 
+        // Thực hiện tìm kiếm qua AJAX
         function performSearch() {
             $.ajax({
                 url: '/Admin/DanhMuc/Index',
                 type: 'GET',
-                data: $('#filterForm').serialize(),
+                data: $('#filterForm').serialize(), // Serialize form data
                 success: function(data) {
                     var $data = $(data);
-                    $('.table-responsive').html($data.find('.table-responsive').html());
-                    $('.pagination').html($data.find('.pagination').html());
+                    $('#productListContainer').html($data.find('#productListContainer').html());
                 },
                 error: function(xhr, status, error) {
                     console.error("Lỗi tìm kiếm:", error);
                 }
             });
         }
-
-        window.editDanhMuc = function(maDanhMuc) {
-            $.ajax({
-                url: '/Admin/DanhMuc/EditPartial',
-                type: 'GET',
-                data: { maDanhMuc: maDanhMuc },
-                success: function(data) {
-                    $('#modalEditDanhMuc .modal-content').html(data);
-                    $('#modalEditDanhMuc').modal('show');
-                },
-                error: function() {
-                    alert("Không thể tải thông tin danh mục.");
-                }
-            });
-        };
-
-        window.confirmDelete = function(maDanhMuc) {
-            Swal.fire({
-                title: 'Bạn có chắc chắn?',
-                text: "Danh mục sẽ bị xóa và không thể khôi phục!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/Admin/DanhMuc/DeleteConfirmed',
-                        type: 'POST',
-                        data: { id: maDanhMuc },
-                        success: function(response) {
-                            Swal.fire('Đã xóa!', response.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: function() {
-                            Swal.fire('Lỗi!', 'Không thể xóa danh mục. Vui lòng thử lại.', 'error');
-                        }
-                    });
-                }
-            });
-        };
     });
+</script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete(maDanhMuc) {
+        Swal.fire({
+            title: 'Bạn có chắc chắn?',
+            text: "Sản phẩm sẽ bị xóa và không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Admin/DanhMuc/DeleteConfirmed',
+                    type: 'POST',
+                    data: {
+                        id: maDanhMuc
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Đã xóa!',
+                            'Sản phẩm đã được xóa thành công.',
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Reload the page to reflect changes
+                        });
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Lỗi!',
+                            'Không thể xóa sản phẩm. Vui lòng thử lại.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
 </script>
