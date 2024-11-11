@@ -1,5 +1,6 @@
 ﻿using ASM_GS.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -10,19 +11,35 @@ namespace ASM_GS.Controllers
     public class HomeController : Controller
     {
 
+        private readonly ApplicationDbContext _context;
+
         private readonly ILogger<HomeController> _logger;
         private readonly GeminiSettings _authSettings;
-        public HomeController(ILogger<HomeController> logger, IOptions<GeminiSettings> authSettings)
+        public HomeController(ILogger<HomeController> logger, IOptions<GeminiSettings> authSettings, ApplicationDbContext context)
         {
             _authSettings = authSettings.Value;
             _logger = logger;
+            _context = context; // Assign _context here
         }
 
         public IActionResult Index()
         {
+            string maKhachHang = HttpContext.Session.GetString("User");
+            string tenKhachHang = string.Empty;
+
+            if (!string.IsNullOrEmpty(maKhachHang))
+            {
+                var khachHang = _context.KhachHangs.FirstOrDefault(kh => kh.MaKhachHang == maKhachHang);
+                if (khachHang != null)
+                {
+                    tenKhachHang = khachHang.TenKhachHang;
+                }
+            }
+
+            ViewBag.TenKhachHang = tenKhachHang;
+
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
