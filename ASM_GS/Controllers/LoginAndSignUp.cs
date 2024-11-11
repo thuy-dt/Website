@@ -92,7 +92,11 @@ namespace ASM_GS.Controllers
             }
             var Kh = _context.KhachHangs.FirstOrDefault(u => (u.MaKhachHang == user.MaKhachHang));
             HttpContext.Session.SetString("UserAccount", user.MaTaiKhoan);
-            HttpContext.Session.SetString("User", Kh.MaKhachHang);
+            if (Kh != null)
+            {
+                HttpContext.Session.SetString("User", Kh.MaKhachHang);
+                HttpContext.Session.SetString("UserName", Kh.TenKhachHang);
+            }
             return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
         }
         [HttpPost]
