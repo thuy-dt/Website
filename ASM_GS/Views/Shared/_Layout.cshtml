@@ -268,7 +268,7 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                         </a>
                     </li>
                     <li>
-                        <a href="#like" class="mx-3">
+                        <a href="javascript:void(0)" class="mx-3" onclick="checkLoginStatus()">
                             <svg width="24" height="24" viewBox="0 0 24 24">
                                 <use xlink:href="#user"></use>
                             </svg>
@@ -856,6 +856,28 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
         recordBtn.innerHTML = '<i class="bi bi-mic"></i>'; // Trở lại biểu tượng micro ban đầu
     }
 
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function checkLoginStatus() {
+        fetch('@Url.Action("CheckLoginStatus", "InformationPersonal")')
+            .then(response => response.json())
+            .then(data => {
+                if (data.isLoggedIn) {
+                    // Nếu đã đăng nhập, chuyển hướng tới trang thông tin cá nhân
+                    window.location.href = '@Url.Action("Index", "InformationPersonal")';
+                } else {
+                    // Nếu chưa đăng nhập, hiển thị thông báo SweetAlert
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Bạn cần đăng nhập',
+                        text: 'Vui lòng đăng nhập để xem thông tin cá nhân của bạn.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+    }
 </script>
 </body>
 
