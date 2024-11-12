@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var sanPhamList2 = ViewData["SanPhamList2"] as List<ASM_GS.ViewModels.SearchingProduct>;
+    var taiKhoanLogin = ViewData["Account"] ;
+    var khachHangLogin = ViewData["Customer"] ;
+    var LoginRoute = ViewData["RoutedFromLogin"];
+}
+@using Newtonsoft.Json
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 
 <head>
@@ -147,7 +154,7 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
 
     <div class="search-popup">
         <div class="search-popup-container">
-            <form role="search" method="get" class="form-group position-relative" action="">
+            <div role="search" method="get" class="form-group position-relative">
                 <input type="search" id="search-form" class="form-control border-0 border-bottom"
                        placeholder="Nhập và nhấn enter" value="" name="s" />
                 <button type="submit" class="search-submit border-0 position-absolute bg-white"
@@ -156,16 +163,25 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                         <use xlink:href="#search"></use>
                     </svg>
                 </button>
-                <span id="record" style="top: 15px; right: 50px; cursor: pointer;">
-                    <i class="bi bi-mic"></i>
+                <span id="record" class="search-submit border-0 position-absolute bg-white" style="top: 15px; right: 70px; cursor: pointer;">
+                    <svg class="search" width="24" height="24">
+                        <i class="bi bi-mic" style="font-size:1.4rem"></i>
+                    </svg>
                 </span>
-                <span id="clear-icon" style="display: none; cursor: pointer; position: absolute; top: 15px; right: 100px;">
+                <span id="clear-icon" style="display: none; cursor: pointer; position: absolute; top: 15px; right: 110px;">
                     ✖
                 </span>
-            </form>
+                <div id="search-results" style="display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 300px; overflow-y: auto; background-color: white; z-index: 9999; border: 1px solid #ddd; border-top: none;">
+                    <div class="container" id="abc">
+                        <h1>Hello World</h1>
+                    </div>
+                </div>
+            </div>
+
+
+           
 
             <h5 class="cat-list-title">Duyệt theo danh mục</h5>
-
             <ul class="cat-list">
                 <li class="cat-list-item mb-3">
                     <a href="#" title="Trang Điểm">Trang Điểm</a>
@@ -174,7 +190,7 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                     <a href="#" title="Chăm Sóc Da">Chăm Sóc Da</a>
                 </li>
                 <li class="cat-list-item mb-3">
-                    <a href="#" title="Sản Phẩm Tắm">Sản Phẩm Tắm</a>
+                    <a href="#" title="Sản Phẩm Tắm">Sản Phẩm Tắm</a>   
                 </li>
                 <li class="cat-list-item mb-3">
                     <a href="#" title="Chăm Sóc Tóc">Chăm Sóc Tóc</a>
@@ -189,7 +205,6 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                     <a href="#" title="Dụng Cụ & Cọ">Dụng Cụ & Cọ</a>
                 </li>
             </ul>
-
         </div>
     </div>
 
@@ -281,17 +296,61 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                             </svg>
                         </a>
                     </li>
+                     <li class="" id="BtnLogOut" style="display:none">
+                        <a href="#" class="">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
         </div>
     </div>
+
+        @if (khachHangLogin != null && LoginRoute!=null)
+        {
+            <div id="welcomeMessage" style="position: fixed; top: 10px; right: 10px; background-color: deepskyblue; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 11px; opacity: 0; transition: opacity 0.5s; width: 400px; height: 40px">
+                Chào mừng bạn quay trở lại!
+            </div>
+
+            <script>
+                function removeRoutedFromLoginSession() {
+                    fetch('/Home/RemoveRoutedFromLoginSession', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            console.log("Session key 'RoutedFromLogin' removed");
+                        }
+                    }).catch(error => console.error("Error removing session key:", error));
+                }
+
+                window.onload = function () {
+                    removeRoutedFromLoginSession(); 
+
+                    const khachHang1 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(khachHangLogin ?? new { }));
+                    const welcomeMessage = document.getElementById("welcomeMessage");
+                    welcomeMessage.innerHTML = `Chào mừng bạn quay trở lại, ${khachHang1.TenKhachHang}`;
+
+                    if (welcomeMessage) {
+                        welcomeMessage.style.opacity = 1;
+                        setTimeout(function () {
+                            welcomeMessage.style.opacity = 0;
+                        }, 3000);
+                    }
+                };
+            </script>
+        }
+
+
+
+
+
 </nav>
 
-
-
     @RenderBody()
-
 
 @* <section id="best-sellers" class="best-sellers product-carousel position-relative py-5 my-5 open-up" data-aos="zoom-out">
     <div class="container">
@@ -720,14 +779,83 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
 </div>
 
 <script>
+    function removeRoutedFromLoginSession() {
+        fetch('/Home/RemoveRoutedFromLoginSession', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                console.log("Session key 'RoutedFromLogin' removed");
+            }
+        }).catch(error => console.error("Error removing session key:", error));
+    }
+</script>
+<script>
+    const sanPhamList2 = @Html.Raw(Json.Serialize(sanPhamList2));
+    const khachHang = @Html.Raw(Json.Serialize(khachHangLogin));
     const searchForm = document.getElementById("search-form");
     const clearIcon = document.getElementById("clear-icon");
-
+    const searchResult = document.getElementById("search-results");
+    const showLog = document.getElementById("BtnLogOut");
+    const abc = document.getElementById("abc");    
+    function formatCurrency(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    if(khachHang==null)
+    {
+        showLog.style.display="none"
+    }
+    else
+    {
+        showLog.style.display="block"
+    }
     searchForm.addEventListener("input", function () {
         if (searchForm.value.length > 0) {
+            abc.innerHTML = '';
             clearIcon.style.display = "inline";
+            searchResult.style.display = "block";
+            let hasResults = false; 
+
+            for (let item of sanPhamList2) {
+                if (item.tenSanPham && item.tenSanPham.toLowerCase().includes((searchForm.value.toLowerCase().trim()))) {
+                    console.log(item)
+                    const giaDaGiam = item.giaDaGiam ? formatCurrency(item.giaDaGiam) : 0;
+                    const giaGoc = item.giaGoc ? formatCurrency(item.giaGoc) : 0 ;
+                    const tietKiem = item.tietKiem ? formatCurrency(item.tietKiem): 0;
+                    abc.innerHTML += `
+                                <div class="row" style="padding-top:30px; padding-bottom:30px; border: 1px solid lightgrey">
+                                    <a>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <img src="${item.ava || 'default-image.jpg'}" style="max-height:75px">
+                                                </div>
+                                                <div class="col-md-8" style="text-align:left; padding-left: 30px">
+                                                    <h6><strong>${item.tenSanPham || 'Tên sản phẩm không xác định'}</strong></h6>
+                                                    <h7><strong>Mô tả:</strong> ${item.moTa || 'Không có mô tả'}</h7><br>
+                                                                    <h7><strong>Giá: &nbsp;</strong><strong style="color:red">${giaDaGiam || 'N/A'} &nbspVND</strong>&nbsp;&nbsp;<del>${giaGoc || 'N/A'} &nbspVND</del> &nbsp / 1 ${item.donVi}</h7><br>
+                                                            <h7><i style="color: darkgreen">Tiết Kiệm: ${tietKiem || '0'} &nbsp VND</i></h7>
+                                                </div>
+                                                <div class="col-md-2" style="text-align:left; padding-left: 30px">
+                                                    <br>
+                                                    <h3>-${Math.round((item.tietKiem || 0) * 100 / (item.giaGoc || 1))}%</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                    hasResults = true;
+                }
+            }
+            if (!hasResults) {
+                abc.innerHTML = '<div class="text-center" style="padding: 15px;">Không tìm thấy sản phẩm nào</div>';
+            }
         } else {
             clearIcon.style.display = "none";
+            searchResult.style.display = "none"
         }
     });
 
@@ -857,6 +985,8 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
     }
 
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/5b61887464.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
