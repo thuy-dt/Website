@@ -29,7 +29,7 @@ namespace ASM_GS.Areas.Admin.Controllers
         }
 
         // GET: Admin/SanPham
-        public async Task<IActionResult> Index(string searchName, int? categoryId, int? status, string sortOrder, int? page, int? pageSize)
+        public async Task<IActionResult> Index(string searchName, int? categoryId, int? status, string sortOrder, int? page, int pageSize = 5)
         {
             if (HttpContext.Session.GetString("StaffAccount") == null)
             {
@@ -44,34 +44,53 @@ namespace ASM_GS.Areas.Admin.Controllers
                 .Include(s => s.MaDanhMucNavigation)
                 .AsQueryable();
 
-            // Ensure ViewBag.DanhMucList is populated
-            ViewBag.DanhMucList = new SelectList(await _context.DanhMucs.ToListAsync(), "MaDanhMuc", "TenDanhMuc");
-
-            // Apply search, filtering, and sorting
+            // Apply search filter
             if (!string.IsNullOrEmpty(searchName))
             {
                 sanPhams = sanPhams.Where(s => s.TenSanPham.Contains(searchName));
             }
+
+            // Apply category filter
             if (categoryId.HasValue)
             {
                 sanPhams = sanPhams.Where(s => s.MaDanhMuc == categoryId.ToString());
             }
+
+            // Apply status filter
             if (status.HasValue)
             {
                 sanPhams = sanPhams.Where(s => s.TrangThai == status.Value);
             }
-            sanPhams = sortOrder switch
+
+            // Apply sorting
+            switch (sortOrder)
             {
-                "name_desc" => sanPhams.OrderByDescending(s => s.TenSanPham),
-                "price_asc" => sanPhams.OrderBy(s => s.Gia),
-                "price_desc" => sanPhams.OrderByDescending(s => s.Gia),
-                _ => sanPhams.OrderBy(s => s.TenSanPham)
-            };
+                case "price_asc":
+                    sanPhams = sanPhams.OrderBy(s => s.Gia);
+                    break;
+                case "price_desc":
+                    sanPhams = sanPhams.OrderByDescending(s => s.Gia);
+                    break;
+                case "name_desc":
+                    sanPhams = sanPhams.OrderByDescending(s => s.TenSanPham);
+                    break;
+                case "name_asc":
+                default:
+                    sanPhams = sanPhams.OrderBy(s => s.TenSanPham);
+                    break;
+            }
 
-            ViewBag.CurrentPageSize = defaultPageSize;
-            ViewBag.PageSize = defaultPageSize;
+            // Add ViewBag data to preserve filter and sorting values
+            ViewBag.SearchName = searchName;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.Status = status;
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
 
-            var pagedList = sanPhams.ToPagedList(pageNumber, defaultPageSize);
+            // Ensure ViewBag.DanhMucList is populated
+            ViewBag.DanhMucList = new SelectList(await _context.DanhMucs.ToListAsync(), "MaDanhMuc", "TenDanhMuc");
+
+            var pagedList = sanPhams.ToPagedList(pageNumber, pageSize);
             return View(pagedList);
         }
 

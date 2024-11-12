@@ -5,31 +5,61 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
 <div class="modal-body">
-    <form id="createDanhMucForm">
+    <form id="createForm">
         <div class="mb-3">
             <label for="TenDanhMuc" class="form-label">Tên Danh Mục</label>
-            <input type="text" id="TenDanhMuc" name="TenDanhMuc" class="form-control" />
+            <input type="text" id="TenDanhMuc" name="TenDanhMuc" class="form-control" placeholder="Nhập tên danh mục" required />
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-primary">Thêm</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary">Thêm Danh Mục</button>
         </div>
     </form>
 </div>
+
 <script>
     $(document).ready(function() {
-        $('#createDanhMucForm').submit(function(e) {
-            e.preventDefault();
+        $('#createForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var formData = new FormData(this);
+
+            // Clear previous error messages
+            $('.text-danger').text('');
+
             $.ajax({
-                url: '/Admin/DanhMuc/Create',
+                url: '/Admin/DanhMuc/Create', // URL to your Create action
                 type: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire('Thành công!', response.message, 'success').then(() => location.reload());
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();
+                            $('#modalAddCategory').modal('hide');
+
+                        });
                     } else {
-                        alert("Có lỗi xảy ra.");
+                        // Display validation errors below each field
+                        $.each(response.errors, function(field, message) {
+                            $('#error' + field).text(message); // Display error message
+                        });
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: 'Đã xảy ra lỗi trong khi lưu sản phẩm. Vui lòng thử lại!',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         });

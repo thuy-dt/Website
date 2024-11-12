@@ -103,18 +103,7 @@
                     </li>
 
                     <!-- Bảng -->
-                    <li class="menu-item">
-                        <a href="@Url.Action("Index", "SanPham", new { area = "Admin" })" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-table"></i>
-                            <div data-i18n="Tables">Danh sách sản phẩm</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="@Url.Action("Index", "DanhMuc", new { area = "Admin" })" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-table"></i>
-                            <div data-i18n="Tables">Danh sách danh mục</div>
-                        </a>
-                    </li>
+                    
 
 
                     <li class="menu-header small text-uppercase">
@@ -167,6 +156,18 @@
                         </ul>
                     </li>
                     <li class="menu-item">
+                        <a href="@Url.Action("Index", "SanPham", new { area = "Admin" })" class="menu-link">
+                            <i class="bi bi-shop me-3"></i>
+                            <div data-i18n="Tables">Danh sách sản phẩm</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="@Url.Action("Index", "DanhMuc", new { area = "Admin" })" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-table"></i>
+                            <div data-i18n="Tables">Danh sách danh mục</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-cube-alt"></i>
                             <div data-i18n="Misc">Combo và Giảm giá</div>
@@ -199,6 +200,7 @@
                             </li>
                         </ul>
                     </li>
+
 
                     <!-- Components -->
                     <li class="menu-header small text-uppercase"><span class="menu-header-text">Thành Phần</span></li>
@@ -413,7 +415,7 @@
         <div class="layout-page">
             <!-- Navbar -->
 
-            <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            @* <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
                     id="layout-navbar">
                 <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                     <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
@@ -545,6 +547,7 @@
                     }
                     }
             </nav>
+            </nav> *@
 
             <!-- / Navbar -->
             <!-- Content wrapper -->

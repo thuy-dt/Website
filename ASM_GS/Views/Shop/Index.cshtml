@@ -64,14 +64,14 @@
                         <div class="col-md-4 mb-5 product-item">
                             <div class="image-holder position-relative">
                                 <a href="@Url.Action("index", "Detail", new { id = product.MaSanPham })">
-                                    <img src="@Url.Content(product.AnhSanPhams.FirstOrDefault()?.UrlAnh ?? "~/img/AnhSanPham/kcn1.jpg")" alt="Product Image" class="product-image img-fluid" />
+                                        <img src="@Url.Content(product.AnhSanPhams.FirstOrDefault()?.UrlAnh)" alt="Product Image" class="product-image img-fluid" style="width: 100%; height:350px; object-fit: cover;" />
                                 </a>
-                  
-                                <a href="wishlist.html" class="btn-icon btn-wishlist">
+
+                                @* <a href="cart.html" class="btn-icon btn-wishlist">
                                     <svg width="24" height="24" viewBox="0 0 24 24" class="svg-color">
-                                        <use xlink:href="#heart"></use>
+                                        <use xlink:href="#cart"></use>
                                     </svg>
-                                </a>
+                                </a> *@
                                 <a href="cart.html" class="btn-icon btn-cart">
                                     <svg width="24" height="24" viewBox="0 0 24 24" class="svg-color">
                                         <use xlink:href="#cart"></use>
@@ -116,10 +116,10 @@
                                 </div>
                                 <div id="collapse-one" class="accordion-collapse collapse show" aria-labelledby="heading-one">
                                     <div class="accordion-body">
-                                        <a href="#">Dưới 10$ <span class="count">(80)</span></a>
-                                        <a href="#">20$ - 40$ <span class="count">(90)</span></a>
-                                        <a href="#">40$ - 50$ <span class="count">(150)</span></a>
-                                        <a href="#">50$ - 60$ <span class="count">(70)</span></a>
+                                        <a href="@Url.Action("Index", new { priceRange = "under100k", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">Dưới 100K</a><br />
+                                        <a href="@Url.Action("Index", new { priceRange = "100k-500k", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">100K - 500K</a><br />
+                                        <a href="@Url.Action("Index", new { priceRange = "500k-1m", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">500K - 1M</a><br />
+                                        <a href="@Url.Action("Index", new { priceRange = "above1m", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">Trên 1M</a>
                                     </div>
                                 </div>
                             </div>

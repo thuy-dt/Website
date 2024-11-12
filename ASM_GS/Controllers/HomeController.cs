@@ -19,6 +19,7 @@ namespace ASM_GS.Controllers
             _context = context;
             _authSettings = authSettings.Value;
             _logger = logger;
+            _context = context; // Assign _context here
         }
 
         public IActionResult Index()
@@ -78,10 +79,23 @@ namespace ASM_GS.Controllers
                 .FirstOrDefault();
             ViewData["RoutedFromLogin"] = HttpContext.Session.GetString("LoginRoute");
 
+        
+            string maKhachHang = HttpContext.Session.GetString("User");
+            string tenKhachHang = string.Empty;
+
+            if (!string.IsNullOrEmpty(maKhachHang))
+            {
+                var khachHang = _context.KhachHangs.FirstOrDefault(kh => kh.MaKhachHang == maKhachHang);
+                if (khachHang != null)
+                {
+                    tenKhachHang = khachHang.TenKhachHang;
+                }
+            }
+
+            ViewBag.TenKhachHang = tenKhachHang;
+
             return View();
         }
-
-
         public IActionResult Privacy()
         {
 
