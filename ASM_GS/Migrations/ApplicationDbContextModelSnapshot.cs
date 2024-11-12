@@ -169,121 +169,121 @@ namespace ASM_GS.Migrations
                         {
                             Id = 21,
                             MaSanPham = "SP006",
-                            UrlAnh = "img/AnhSanPham/sp006_1.jpg"
+                            UrlAnh = "img/AnhSanPham/kcn1.jpg"
                         },
                         new
                         {
                             Id = 22,
                             MaSanPham = "SP006",
-                            UrlAnh = "img/AnhSanPham/sp006_2.jpg"
+                            UrlAnh = "img/AnhSanPham/kcn2.jpg"
                         },
                         new
                         {
                             Id = 23,
                             MaSanPham = "SP006",
-                            UrlAnh = "img/AnhSanPham/sp006_3.jpg"
+                            UrlAnh = "img/AnhSanPham/kcn3.jpg"
                         },
                         new
                         {
                             Id = 24,
                             MaSanPham = "SP006",
-                            UrlAnh = "img/AnhSanPham/sp006_4.jpg"
+                            UrlAnh = "img/AnhSanPham/kcn4.jpg"
                         },
                         new
                         {
                             Id = 25,
                             MaSanPham = "SP007",
-                            UrlAnh = "img/AnhSanPham/sp007_1.jpg"
+                            UrlAnh = "img/AnhSanPham/taytrang1.jpg"
                         },
                         new
                         {
                             Id = 26,
                             MaSanPham = "SP007",
-                            UrlAnh = "img/AnhSanPham/sp007_2.jpg"
+                            UrlAnh = "img/AnhSanPham/taytrang2.jpg"
                         },
                         new
                         {
                             Id = 27,
                             MaSanPham = "SP007",
-                            UrlAnh = "img/AnhSanPham/sp007_3.jpg"
+                            UrlAnh = "img/AnhSanPham/taytrang3.jpg"
                         },
                         new
                         {
                             Id = 28,
                             MaSanPham = "SP007",
-                            UrlAnh = "img/AnhSanPham/sp007_4.jpg"
+                            UrlAnh = "img/AnhSanPham/taytrang4.jpg"
                         },
                         new
                         {
                             Id = 29,
                             MaSanPham = "SP008",
-                            UrlAnh = "img/AnhSanPham/sp008_1.jpg"
+                            UrlAnh = "img/AnhSanPham/tinhchat1.jpg"
                         },
                         new
                         {
                             Id = 30,
                             MaSanPham = "SP008",
-                            UrlAnh = "img/AnhSanPham/sp008_2.jpg"
+                            UrlAnh = "img/AnhSanPham/tinhchat2.jpg"
                         },
                         new
                         {
                             Id = 31,
                             MaSanPham = "SP008",
-                            UrlAnh = "img/AnhSanPham/sp008_3.jpg"
+                            UrlAnh = "img/AnhSanPham/tinhchat3.jpg"
                         },
                         new
                         {
                             Id = 32,
                             MaSanPham = "SP008",
-                            UrlAnh = "img/AnhSanPham/sp008_4.jpg"
+                            UrlAnh = "img/AnhSanPham/tinhchat4.jpg"
                         },
                         new
                         {
                             Id = 33,
                             MaSanPham = "SP009",
-                            UrlAnh = "img/AnhSanPham/sp009_1.jpg"
+                            UrlAnh = "img/AnhSanPham/xitkhoang1.jpg"
                         },
                         new
                         {
                             Id = 34,
                             MaSanPham = "SP009",
-                            UrlAnh = "img/AnhSanPham/sp009_2.jpg"
+                            UrlAnh = "img/AnhSanPham/xitkhoang2.jpg"
                         },
                         new
                         {
                             Id = 35,
                             MaSanPham = "SP009",
-                            UrlAnh = "img/AnhSanPham/sp009_3.jpg"
+                            UrlAnh = "img/AnhSanPham/xitkhoang3.jpg"
                         },
                         new
                         {
                             Id = 36,
                             MaSanPham = "SP009",
-                            UrlAnh = "img/AnhSanPham/sp009_4.jpg"
+                            UrlAnh = "img/AnhSanPham/xitkhoang4.jpg"
                         },
                         new
                         {
                             Id = 37,
                             MaSanPham = "SP010",
-                            UrlAnh = "img/AnhSanPham/sp010_1.jpg"
+                            UrlAnh = "img/AnhSanPham/bandem1.jpg"
                         },
                         new
                         {
                             Id = 38,
                             MaSanPham = "SP010",
-                            UrlAnh = "img/AnhSanPham/sp010_2.jpg"
+                            UrlAnh = "img/AnhSanPham/bandem2.jpg"
                         },
                         new
                         {
                             Id = 39,
                             MaSanPham = "SP010",
-                            UrlAnh = "img/AnhSanPham/sp010_3.jpg"
+                            UrlAnh = "img/AnhSanPham/bandem3.jpg"
                         },
                         new
                         {
                             Id = 40,
                             MaSanPham = "SP010",
-                            UrlAnh = "img/AnhSanPham/sp010_4.jpg"
+                            UrlAnh = "img/AnhSanPham/bandem4.jpg"
                         });
                 });
 
@@ -621,7 +621,8 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenDanhMuc")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -923,7 +924,8 @@ namespace ASM_GS.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DonVi")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Gia")
                         .HasColumnType("decimal(18,2)");
@@ -932,10 +934,12 @@ namespace ASM_GS.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("MaDanhMuc")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MoTa")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateOnly?>("NgayThem")
                         .HasColumnType("date");
@@ -943,12 +947,13 @@ namespace ASM_GS.Migrations
                     b.Property<DateOnly?>("Nsx")
                         .HasColumnType("date");
 
-                    b.Property<int?>("SoLuong")
+                    b.Property<int>("SoLuong")
                         .HasColumnType("int");
 
                     b.Property<string>("TenSanPham")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -1285,7 +1290,9 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.DanhMuc", "MaDanhMucNavigation")
                         .WithMany("SanPhams")
-                        .HasForeignKey("MaDanhMuc");
+                        .HasForeignKey("MaDanhMuc")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("MaDanhMucNavigation");
                 });

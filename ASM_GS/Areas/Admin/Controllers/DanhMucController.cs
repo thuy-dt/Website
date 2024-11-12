@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList.Extensions;
-
+using Microsoft.AspNetCore.Http.Extensions;
 namespace ASM_GS.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -15,12 +15,18 @@ namespace ASM_GS.Areas.Admin.Controllers
 
         public DanhMucController(ApplicationDbContext context)
         {
+
             _context = context;
         }
 
         // GET: Admin/DanhMuc
         public async Task<IActionResult> Index(string searchName, string sortOrder, int? page, int? pageSize)
         {
+            if (HttpContext.Session.GetString("StaffAccount") == null)
+            {
+                HttpContext.Session.SetString("RedirectUrl", HttpContext.Request.GetDisplayUrl());
+                ViewData["RedirectUrl"] = HttpContext.Session.GetString("RedirectUrl");
+            }
             int defaultPageSize = pageSize ?? 5;
             int pageNumber = page ?? 1;
 
