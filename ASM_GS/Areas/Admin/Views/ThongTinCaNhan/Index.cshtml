@@ -1,0 +1,87 @@
+﻿@model ASM_GS.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Thông Tin Cá Nhân";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="MaNhanVien">Mã Nhân Viên</label>
+        <input type="text" id="MaNhanVien" name="MaNhanVien" class="form-control" value="@Model.MaNhanVien" readonly />
+    </div>
+
+    <div class="form-group">
+        <label for="TenNhanVien">Tên Nhân Viên</label>
+        <input type="text" id="TenNhanVien" name="TenNhanVien" class="form-control" value="@Model.TenNhanVien" />
+    </div>
+
+    <div class="form-group">
+        <label for="VaiTro">Vai Trò</label>
+        <input type="text" id="VaiTro" name="VaiTro" class="form-control" value="@Model.VaiTro" readonly />
+    </div>
+
+    <div class="form-group">
+        <label for="SoDienThoai">Số Điện Thoại</label>
+        <input type="text" id="SoDienThoai" name="SoDienThoai" class="form-control" value="@Model.SoDienThoai" />
+    </div>
+
+    <div class="form-group">
+        <label for="NgayBatDau">Ngày Bắt Đầu</label>
+        <input type="date" id="NgayBatDau" name="NgayBatDau" class="form-control" value="@Model.NgayBatDau.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="form-group">
+        <label for="NgaySinh">Ngày Sinh</label>
+        <input type="date" id="NgaySinh" name="NgaySinh" class="form-control" value="@Model.NgaySinh?.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="form-group">
+        <label for="DiaChi">Địa Chỉ</label>
+        <input type="text" id="DiaChi" name="DiaChi" class="form-control" value="@Model.DiaChi" />
+    </div>
+
+    <div class="form-group">
+        <label for="TrangThai">Trạng Thái</label>
+        <input type="number" id="TrangThai" name="TrangThai" class="form-control" value="@Model.TrangThai" />
+    </div>
+
+    <div class="form-group">
+        <label for="Cccd">CCCD</label>
+        <input type="text" id="Cccd" name="Cccd" class="form-control" value="@Model.Cccd" />
+    </div>
+
+    <div class="form-group">
+        <label for="GioiTinh">Giới Tính</label>
+        <select id="GioiTinh" name="GioiTinh" class="form-control">
+            @if (Model.GioiTinh == true)
+            {
+                <option value="true" selected>Nam</option>
+                <option value="false">Nữ</option>
+            }
+            else
+            {
+                <option value="true">Nam</option>
+                <option value="false" selected>Nữ</option>
+            }
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="HinhAnh">Ảnh Đại Diện</label>
+        <input type="file" id="HinhAnh" name="imageFile" class="form-control" />
+        @if (!string.IsNullOrEmpty(Model.HinhAnh))
+        {
+            <img src="@Model.HinhAnh" alt="Current Avatar" width="100" class="mt-2" />
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Cập Nhật</button>
+</form>
