@@ -29,7 +29,7 @@ namespace ASM_GS.Areas.Admin.Controllers
         }
 
         // GET: Admin/SanPham
-        public async Task<IActionResult> Index(string searchName, int? categoryId, int? status, string sortOrder, int? page, int pageSize = 5)
+        public async Task<IActionResult> Index(string searchName, int? categoryId, int? status, string sortOrder, int? page, int? pageSize = 5)
         {
             if (HttpContext.Session.GetString("StaffAccount") == null)
             {
@@ -90,7 +90,7 @@ namespace ASM_GS.Areas.Admin.Controllers
             // Ensure ViewBag.DanhMucList is populated
             ViewBag.DanhMucList = new SelectList(await _context.DanhMucs.ToListAsync(), "MaDanhMuc", "TenDanhMuc");
 
-            var pagedList = sanPhams.ToPagedList(pageNumber, pageSize);
+            var pagedList = sanPhams.ToPagedList(pageNumber, pageSize ?? 5);
             return View(pagedList);
         }
 

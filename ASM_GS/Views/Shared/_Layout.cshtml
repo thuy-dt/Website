@@ -274,14 +274,14 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                             <span class="wishlist-count">(0)</span>
                         </a>
                     </li> *@
-                    <li>
-                        <a href="cart.html" class="text-uppercase mx-3">
-                            <svg width="24" height="24" viewBox="0 0 24 24">
-                                <use xlink:href="#cart"></use>
-                            </svg>
-                            <span class="cart-count">(0)</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Cart")" class="text-uppercase mx-3">
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                    <use xlink:href="#cart"></use>
+                                </svg>
+                                <span class="cart-count">(0)</span>
+                            </a>
+                        </li>
                     <li>
                         <a href="javascript:void(0)" class="mx-3" onclick="checkLoginStatus()">
                             <svg width="24" height="24" viewBox="0 0 24 24">
@@ -1009,6 +1009,7 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://kit.fontawesome.com/5b61887464.js" crossorigin="anonymous"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>

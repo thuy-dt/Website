@@ -23,7 +23,7 @@ namespace ASM_GS.Controllers
         }
 
         public IActionResult Index()
-            {
+        {
             var today = DateOnly.FromDateTime(DateTime.Now);
 
             // Lấy danh sách sản phẩm
@@ -79,7 +79,7 @@ namespace ASM_GS.Controllers
                 .FirstOrDefault();
             ViewData["RoutedFromLogin"] = HttpContext.Session.GetString("LoginRoute");
 
-        
+
             string maKhachHang = HttpContext.Session.GetString("User");
             string tenKhachHang = string.Empty;
 
@@ -93,7 +93,6 @@ namespace ASM_GS.Controllers
             }
 
             ViewBag.TenKhachHang = tenKhachHang;
-
             return View();
         }
         public IActionResult Privacy()
@@ -153,6 +152,20 @@ namespace ASM_GS.Controllers
             }
         }
         [HttpPost]
+        public IActionResult KiemTraDangNhap()
+        {
+            var userAccount = HttpContext.Session.GetString("UserAccount");
+            var user = HttpContext.Session.GetString("User");
+
+            if (string.IsNullOrEmpty(userAccount) || string.IsNullOrEmpty(user))
+            {
+                return Json(new { isLoggedIn = false });
+            }
+
+            return Json(new { isLoggedIn = true });
+        }
+
+
         public IActionResult RemoveRoutedFromLoginSession()
         {
             HttpContext.Session.Remove("LoginRoute");

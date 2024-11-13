@@ -432,95 +432,6 @@ namespace ASM_GS.Migrations
                     b.ToTable("ChiTietDonHangs");
                 });
 
-            modelBuilder.Entity("ASM_GS.Models.ChiTietGioHang", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MaCombo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaComboNavigationMaCombo")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaGioHang")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaGioHangNavigationMaGioHang")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaSanPham")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaSanPhamNavigationMaSanPham")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MaComboNavigationMaCombo");
-
-                    b.HasIndex("MaGioHangNavigationMaGioHang");
-
-                    b.HasIndex("MaSanPhamNavigationMaSanPham");
-
-                    b.ToTable("ChiTietGioHangs");
-                });
-
-            modelBuilder.Entity("ASM_GS.Models.ChiTietHoaDon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("MaCombo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaComboNavigationMaCombo")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaHoaDon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaHoaDonNavigationMaHoaDon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaSanPham")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaSanPhamNavigationMaSanPham")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MaComboNavigationMaCombo");
-
-                    b.HasIndex("MaHoaDonNavigationMaHoaDon");
-
-                    b.HasIndex("MaSanPhamNavigationMaSanPham");
-
-                    b.ToTable("ChiTietHoaDons");
-                });
-
             modelBuilder.Entity("ASM_GS.Models.Combo", b =>
                 {
                     b.Property<string>("MaCombo")
@@ -621,8 +532,7 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenDanhMuc")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -700,8 +610,7 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenGiamGia")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");
@@ -733,27 +642,6 @@ namespace ASM_GS.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ASM_GS.Models.GioHang", b =>
-                {
-                    b.Property<string>("MaGioHang")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaKhachHang")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaKhachHangNavigationMaKhachHang")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateOnly>("NgayTao")
-                        .HasColumnType("date");
-
-                    b.HasKey("MaGioHang");
-
-                    b.HasIndex("MaKhachHangNavigationMaKhachHang");
-
-                    b.ToTable("GioHangs");
-                });
-
             modelBuilder.Entity("ASM_GS.Models.HoaDon", b =>
                 {
                     b.Property<string>("MaHoaDon")
@@ -763,9 +651,6 @@ namespace ASM_GS.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaKhachHang")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MaKhachHangNavigationMaKhachHang")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("NgayXuatHoaDon")
@@ -781,7 +666,7 @@ namespace ASM_GS.Migrations
 
                     b.HasIndex("MaGiamGia");
 
-                    b.HasIndex("MaKhachHangNavigationMaKhachHang");
+                    b.HasIndex("MaKhachHang");
 
                     b.ToTable("HoaDons");
                 });
@@ -924,8 +809,7 @@ namespace ASM_GS.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DonVi")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Gia")
                         .HasColumnType("decimal(18,2)");
@@ -934,12 +818,10 @@ namespace ASM_GS.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("MaDanhMuc")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MoTa")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("NgayThem")
                         .HasColumnType("date");
@@ -952,8 +834,7 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenSanPham")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -1119,6 +1000,92 @@ namespace ASM_GS.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ChiTietGioHang", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("MaCombo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaGioHang")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaSanPham")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SoLuong")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaCombo");
+
+                    b.HasIndex("MaGioHang");
+
+                    b.HasIndex("MaSanPham");
+
+                    b.ToTable("ChiTietGioHangs");
+                });
+
+            modelBuilder.Entity("ChiTietHoaDon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Gia")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MaCombo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaHoaDon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaSanPham")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SoLuong")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaCombo");
+
+                    b.HasIndex("MaHoaDon");
+
+                    b.HasIndex("MaSanPham");
+
+                    b.ToTable("ChiTietHoaDons");
+                });
+
+            modelBuilder.Entity("GioHang", b =>
+                {
+                    b.Property<string>("MaGioHang")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaKhachHang")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateOnly>("NgayTao")
+                        .HasColumnType("date");
+
+                    b.HasKey("MaGioHang");
+
+                    b.HasIndex("MaKhachHang");
+
+                    b.ToTable("GioHangs");
+                });
+
             modelBuilder.Entity("ASM_GS.Models.AnhSanPham", b =>
                 {
                     b.HasOne("ASM_GS.Models.SanPham", "MaSanPhamNavigation")
@@ -1172,54 +1139,6 @@ namespace ASM_GS.Migrations
                     b.Navigation("MaSanPhamNavigation");
                 });
 
-            modelBuilder.Entity("ASM_GS.Models.ChiTietGioHang", b =>
-                {
-                    b.HasOne("ASM_GS.Models.Combo", "MaComboNavigation")
-                        .WithMany("ChiTietGioHangs")
-                        .HasForeignKey("MaComboNavigationMaCombo");
-
-                    b.HasOne("ASM_GS.Models.GioHang", "MaGioHangNavigation")
-                        .WithMany("ChiTietGioHangs")
-                        .HasForeignKey("MaGioHangNavigationMaGioHang")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASM_GS.Models.SanPham", "MaSanPhamNavigation")
-                        .WithMany("ChiTietGioHangs")
-                        .HasForeignKey("MaSanPhamNavigationMaSanPham")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MaComboNavigation");
-
-                    b.Navigation("MaGioHangNavigation");
-
-                    b.Navigation("MaSanPhamNavigation");
-                });
-
-            modelBuilder.Entity("ASM_GS.Models.ChiTietHoaDon", b =>
-                {
-                    b.HasOne("ASM_GS.Models.Combo", "MaComboNavigation")
-                        .WithMany("ChiTietHoaDons")
-                        .HasForeignKey("MaComboNavigationMaCombo");
-
-                    b.HasOne("ASM_GS.Models.HoaDon", "MaHoaDonNavigation")
-                        .WithMany("ChiTietHoaDons")
-                        .HasForeignKey("MaHoaDonNavigationMaHoaDon")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASM_GS.Models.SanPham", "MaSanPhamNavigation")
-                        .WithMany("ChiTietHoaDons")
-                        .HasForeignKey("MaSanPhamNavigationMaSanPham");
-
-                    b.Navigation("MaComboNavigation");
-
-                    b.Navigation("MaHoaDonNavigation");
-
-                    b.Navigation("MaSanPhamNavigation");
-                });
-
             modelBuilder.Entity("ASM_GS.Models.DanhGia", b =>
                 {
                     b.HasOne("ASM_GS.Models.KhachHang", "MaKhachHangNavigation")
@@ -1250,15 +1169,6 @@ namespace ASM_GS.Migrations
                     b.Navigation("MaKhachHangNavigation");
                 });
 
-            modelBuilder.Entity("ASM_GS.Models.GioHang", b =>
-                {
-                    b.HasOne("ASM_GS.Models.KhachHang", "MaKhachHangNavigation")
-                        .WithMany("GioHangs")
-                        .HasForeignKey("MaKhachHangNavigationMaKhachHang");
-
-                    b.Navigation("MaKhachHangNavigation");
-                });
-
             modelBuilder.Entity("ASM_GS.Models.HoaDon", b =>
                 {
                     b.HasOne("ASM_GS.Models.GiamGia", "MaGiamGiaNavigation")
@@ -1266,13 +1176,13 @@ namespace ASM_GS.Migrations
                         .HasForeignKey("MaGiamGia")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("ASM_GS.Models.KhachHang", "MaKhachHangNavigation")
+                    b.HasOne("ASM_GS.Models.KhachHang", "KhachHang")
                         .WithMany("HoaDons")
-                        .HasForeignKey("MaKhachHangNavigationMaKhachHang");
+                        .HasForeignKey("MaKhachHang");
+
+                    b.Navigation("KhachHang");
 
                     b.Navigation("MaGiamGiaNavigation");
-
-                    b.Navigation("MaKhachHangNavigation");
                 });
 
             modelBuilder.Entity("ASM_GS.Models.MaNhapGiamGia", b =>
@@ -1290,9 +1200,7 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.DanhMuc", "MaDanhMucNavigation")
                         .WithMany("SanPhams")
-                        .HasForeignKey("MaDanhMuc")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDanhMuc");
 
                     b.Navigation("MaDanhMucNavigation");
                 });
@@ -1310,6 +1218,63 @@ namespace ASM_GS.Migrations
                     b.Navigation("MaKhachHangNavigation");
 
                     b.Navigation("MaNhanVienNavigation");
+                });
+
+            modelBuilder.Entity("ChiTietGioHang", b =>
+                {
+                    b.HasOne("ASM_GS.Models.Combo", "Combo")
+                        .WithMany("ChiTietGioHangs")
+                        .HasForeignKey("MaCombo");
+
+                    b.HasOne("GioHang", "GioHang")
+                        .WithMany("ChiTietGioHangs")
+                        .HasForeignKey("MaGioHang")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASM_GS.Models.SanPham", "SanPham")
+                        .WithMany("ChiTietGioHangs")
+                        .HasForeignKey("MaSanPham")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("GioHang");
+
+                    b.Navigation("SanPham");
+                });
+
+            modelBuilder.Entity("ChiTietHoaDon", b =>
+                {
+                    b.HasOne("ASM_GS.Models.Combo", "Combo")
+                        .WithMany("ChiTietHoaDons")
+                        .HasForeignKey("MaCombo");
+
+                    b.HasOne("ASM_GS.Models.HoaDon", "HoaDon")
+                        .WithMany("ChiTietHoaDons")
+                        .HasForeignKey("MaHoaDon")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASM_GS.Models.SanPham", "SanPham")
+                        .WithMany("ChiTietHoaDons")
+                        .HasForeignKey("MaSanPham");
+
+                    b.Navigation("Combo");
+
+                    b.Navigation("HoaDon");
+
+                    b.Navigation("SanPham");
+                });
+
+            modelBuilder.Entity("GioHang", b =>
+                {
+                    b.HasOne("ASM_GS.Models.KhachHang", "KhachHang")
+                        .WithMany("GioHangs")
+                        .HasForeignKey("MaKhachHang");
+
+                    b.Navigation("KhachHang");
                 });
 
             modelBuilder.Entity("ASM_GS.Models.Combo", b =>
@@ -1338,11 +1303,6 @@ namespace ASM_GS.Migrations
                     b.Navigation("HoaDons");
 
                     b.Navigation("MaNhapGiamGias");
-                });
-
-            modelBuilder.Entity("ASM_GS.Models.GioHang", b =>
-                {
-                    b.Navigation("ChiTietGioHangs");
                 });
 
             modelBuilder.Entity("ASM_GS.Models.HoaDon", b =>
@@ -1381,6 +1341,11 @@ namespace ASM_GS.Migrations
                     b.Navigation("ChiTietHoaDons");
 
                     b.Navigation("DanhGia");
+                });
+
+            modelBuilder.Entity("GioHang", b =>
+                {
+                    b.Navigation("ChiTietGioHangs");
                 });
 #pragma warning restore 612, 618
         }
