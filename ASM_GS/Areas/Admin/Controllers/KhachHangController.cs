@@ -34,14 +34,12 @@ namespace ASM_GS.Areas.Admin.Controllers
             if (HttpContext.Session.GetString("StaffAccount") == null)
             {
                 HttpContext.Session.SetString("RedirectUrl", HttpContext.Request.GetDisplayUrl());
-				ViewData["RedirectUrl"] = HttpContext.Session.GetString("RedirectUrl");
-			}
-            int pageSizeValue = pageSize ?? 5; // Giá trị mặc định cho pageSize
+                ViewData["RedirectUrl"] = HttpContext.Session.GetString("RedirectUrl");
+            }
 
-            // Lấy tất cả khách hàng từ cơ sở dữ liệu
+            int pageSizeValue = pageSize ?? 5;
             var khachHangs = _context.KhachHangs.AsQueryable();
 
-            // Tìm kiếm theo từ khóa
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 khachHangs = khachHangs.Where(kh => kh.TenKhachHang.Contains(searchTerm) ||
@@ -49,15 +47,20 @@ namespace ASM_GS.Areas.Admin.Controllers
                                                      kh.Cccd.Contains(searchTerm));
             }
 
-            // Phân trang sử dụng ToPagedList
             var pagedKhachHangs = khachHangs.ToPagedList(page, pageSizeValue);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_KhachHangTable", pagedKhachHangs); 
+            }
 
             ViewBag.SearchTerm = searchTerm;
             ViewBag.PageSize = pageSizeValue;
             ViewBag.Page = page;
 
-            return View(pagedKhachHangs); // Trả về đối tượng IPagedList
+            return View(pagedKhachHangs); 
         }
+
 
 
 
@@ -199,8 +202,11 @@ namespace ASM_GS.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            var taiKhoan = _context.TaiKhoans.Where(a => (a.MaKhachHang == khachHang.MaKhachHang)).FirstOrDefault();
+            if(taiKhoan!=null)
+            _context.TaiKhoans.Remove(taiKhoan);
             _context.KhachHangs.Remove(khachHang);
+
             _context.SaveChanges();
             TempData["SuccessMessage"] = "Xoá khách hàng thành công!";
             return RedirectToAction("Index");
@@ -262,13 +268,11 @@ namespace ASM_GS.Areas.Admin.Controllers
             if (Anh != null && Anh.Length > 0)
             {
                 string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "img/AnhKhachHang", fileName);
-
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/AnhKhachHang", fileName);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await Anh.CopyToAsync(stream);
                 }
-
                 customer.HinhAnh = "/img/AnhKhachHang/" + fileName;
             }
             else
@@ -319,39 +323,101 @@ namespace ASM_GS.Areas.Admin.Controllers
 
         // Action to handle updating customer information
         [HttpPost]
-        public async Task<IActionResult> UpdateCustomer(KhachHang model)
+        public async Task<IActionResult> EditCustomer2(KhachHang updatedCustomer, IFormFile Anh)
         {
-            if (!ModelState.IsValid)
+            var errors = new Dictionary<string, string>();
+
+            // Validate customer fields
+            if (string.IsNullOrEmpty(updatedCustomer.TenKhachHang))
             {
-                return BadRequest("Invalid data");
+                errors.Add("TenKhachHang", "Tên khách hàng không được để trống.");
             }
 
-            var customer = await _context.KhachHangs.FindAsync(model.MaKhachHang);
-            if (customer == null)
+            if (string.IsNullOrEmpty(updatedCustomer.SoDienThoai))
             {
-                return NotFound();
+                errors.Add("SoDienThoai", "Số điện thoại không được để trống.");
+            }
+            else if (!Regex.IsMatch(updatedCustomer.SoDienThoai, @"^\d{10,11}$"))
+            {
+                errors.Add("SoDienThoai", "Số điện thoại không hợp lệ.");
             }
 
-            customer.TenKhachHang = model.TenKhachHang;
-            customer.SoDienThoai = model.SoDienThoai;
-            customer.DiaChi = model.DiaChi;
-            customer.Cccd = model.Cccd;
-            customer.NgaySinh = model.NgaySinh;
-            customer.GioiTinh = model.GioiTinh;
-
-            if (model.Anh != null && model.Anh.Length > 0)
+            if (string.IsNullOrEmpty(updatedCustomer.DiaChi))
             {
-                // Save the new image
-                var imagePath = Path.Combine("wwwroot/img/AnhKhachHang", model.Anh.FileName);
-                using (var stream = new FileStream(imagePath, FileMode.Create))
+                errors.Add("DiaChi", "Địa chỉ không được để trống.");
+            }
+
+            if (string.IsNullOrEmpty(updatedCustomer.Cccd))
+            {
+                errors.Add("Cccd", "Căn cước công dân không được để trống.");
+            }
+            else if (!Regex.IsMatch(updatedCustomer.Cccd, @"^0\d{11}$"))
+            {
+                errors.Add("Cccd", "Căn cước công dân phải đủ 12 ký tự và bắt đầu bằng số 0.");
+            }
+
+            if (string.IsNullOrEmpty(updatedCustomer.NgaySinh?.ToString()))
+            {
+                errors.Add("NgaySinh", "Ngày sinh không được để trống.");
+            }
+            else if (updatedCustomer.NgaySinh > DateOnly.FromDateTime(DateTime.Now.AddYears(-15)))
+            {
+                errors.Add("NgaySinh", "Khách hàng phải đủ 15 tuổi.");
+            }
+
+            if (updatedCustomer.GioiTinh != true && updatedCustomer.GioiTinh != false)
+            {
+                errors.Add("GioiTinh", "Vui lòng chọn giới tính.");
+            }
+
+            // Handle file upload for the image (Anh)
+            if (Anh != null && Anh.Length > 0)
+            {
+                string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
+
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/AnhKhachHang", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    await model.Anh.CopyToAsync(stream);
+                    await Anh.CopyToAsync(stream);
                 }
-                customer.HinhAnh = "/images/customers/" + model.Anh.FileName;
+
+                updatedCustomer.HinhAnh = "/img/AnhKhachHang/" + fileName;
             }
-            _context.KhachHangs.Update(customer);
+            else
+            {
+                errors.Add("Anh", "Vui lòng tải lên hình ảnh hợp lệ.");
+            }
+
+            if (errors.Any())
+            {
+                return Json(new { success = false, errors = errors });
+            }
+
+            // Retrieve the existing customer from the database
+            var existingCustomer = await _context.KhachHangs.FindAsync(updatedCustomer.MaKhachHang);
+            if (existingCustomer == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy khách hàng." });
+            }
+
+            // Update fields
+            existingCustomer.TenKhachHang = updatedCustomer.TenKhachHang;
+            existingCustomer.SoDienThoai = updatedCustomer.SoDienThoai;
+            existingCustomer.DiaChi = updatedCustomer.DiaChi;
+            existingCustomer.Cccd = updatedCustomer.Cccd;
+            existingCustomer.NgaySinh = updatedCustomer.NgaySinh;
+            existingCustomer.GioiTinh = updatedCustomer.GioiTinh;
+            if (updatedCustomer.HinhAnh != null)
+            {
+                existingCustomer.HinhAnh = updatedCustomer.HinhAnh;
+            }
+
+            _context.KhachHangs.Update(existingCustomer);
             await _context.SaveChangesAsync();
-            return Ok("Customer updated successfully");
+
+            return Json(new { success = true, message = "Khách hàng đã được cập nhật thành công!" });
         }
+
     }
 }

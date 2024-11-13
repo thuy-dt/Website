@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASM_GS.Models;
 
@@ -23,6 +24,8 @@ public partial class NhanVien
 
     public string? DiaChi { get; set; }
 
+    [NotMapped]
+    public IFormFile Anh { get; set; }
     public int? TrangThai { get; set; }
 
     public string? Cccd { get; set; }

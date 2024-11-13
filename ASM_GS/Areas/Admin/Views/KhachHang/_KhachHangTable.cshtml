@@ -1,0 +1,65 @@
+﻿@model X.PagedList.IPagedList<ASM_GS.Models.KhachHang>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Tên khách hàng</th>
+            <th>Số Điện Thoại</th>
+            <th>Địa chỉ</th>
+            <th>Ngày đăng ký</th>
+            <th>Hình ảnh</th>
+            <th>CCCD</th>
+            <th>Ngày Sinh</th>
+            <th>Giới tính</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var khachHang in Model)
+        {
+            <tr>
+                <td>@(Model.ToList().IndexOf(khachHang) + 1)</td>
+                <td>@khachHang.TenKhachHang</td>
+                <td>@khachHang.SoDienThoai</td>
+                <td>@khachHang.DiaChi</td>
+                <td>@khachHang.NgayDangKy.ToShortDateString()</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(khachHang.HinhAnh))
+                    {
+                        <img src="@Url.Content($"~/img/AnhKhachHang/{System.IO.Path.GetFileName(khachHang.HinhAnh)}")" alt="Ảnh Khách Hàng" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10%" />
+                    }
+                    else
+                    {
+                        <span>Không có ảnh</span>
+                    }
+                </td>
+                <td>@khachHang.Cccd</td>
+                <td>@(khachHang.NgaySinh?.ToShortDateString() ?? "N/A")</td>
+                <td>@(khachHang.GioiTinh.HasValue ? (khachHang.GioiTinh.Value ? "Nam" : "Nữ") : "N/A")</td>
+                <td>@(khachHang.TrangThai == 0 ? "Ngừng hoạt động" : "Hoạt động")</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: transparent; border: none; color: inherit; font-size: 20px;">
+                            :
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" id="editCustomerBtn" data-bs-toggle="modal" data-bs-target="#myModal1" onclick="LoadData('@khachHang.MaKhachHang')">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "KhachHang", new { id = khachHang.MaKhachHang })')">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

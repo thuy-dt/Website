@@ -1,7 +1,7 @@
-﻿@model X.PagedList.IPagedList<ASM_GS.Models.KhachHang>
+﻿@model X.PagedList.IPagedList<ASM_GS.Models.NhanVien>
 @using X.PagedList.Mvc.Core
 @{
-    ViewBag.Title = "Danh Sách Khách Hàng";
+    ViewBag.Title = "Danh Sách Nhân Viên";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var Direct = ViewData["RedirectUrl"] as string;
 }
@@ -62,7 +62,7 @@
                 </form>
             </div>
             <button class="btn btn-success btn-sm" style="margin-left: 60px;padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#myModal">
-                <i class="bi bi-plus"></i> Thêm khách hàng
+                <i class="bi bi-plus"></i> Thêm Nhân Viên
             </button>
 
             @*  <a href="javascript:void(0);" class="btn btn-primary" onclick="loadCreateModal()">
@@ -102,10 +102,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Tên khách hàng</th>
+                        <th>Tên Nhân Viên</th>
                         <th>Số Điện Thoại</th>
                         <th>Địa chỉ</th>
                         <th>Ngày đăng ký</th>
+                        <th>Vai Trò</th>
                         <th>Hình ảnh</th>
                         <th>CCCD</th>
                         <th>Ngày Sinh</th>
@@ -115,28 +116,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var khachHang in Model)
+                    @foreach (var nhanVien in Model)
                     {
                         <tr>
-                            <td>@(Model.ToList().IndexOf(khachHang) + 1)</td>
-                            <td>@khachHang.TenKhachHang</td>
-                            <td>@khachHang.SoDienThoai</td>
-                            <td>@khachHang.DiaChi</td>
-                            <td>@khachHang.NgayDangKy.ToShortDateString()</td>
+                            <td>@(Model.ToList().IndexOf(nhanVien) + 1)</td>
+                            <td>@nhanVien.TenNhanVien</td>
+                            <td>@nhanVien.SoDienThoai</td>
+                            <td>@nhanVien.DiaChi</td>
+                            <td>@nhanVien.NgayBatDau.ToShortDateString()</td>
+                            <td>@nhanVien.VaiTro</td>
                             <td>
-                                @if (!string.IsNullOrEmpty(khachHang.HinhAnh))
+                                @if (!string.IsNullOrEmpty(nhanVien.HinhAnh))
                                 {
-                                    <img src="@Url.Content($"~/img/AnhKhachHang/{System.IO.Path.GetFileName(khachHang.HinhAnh)}")" alt="Ảnh Khách Hàng" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10%" />
+                                    <img src="@Url.Content($"~/img/AnhnhanVien/{System.IO.Path.GetFileName(nhanVien.HinhAnh)}")" alt="Ảnh Khách Hàng" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10%" />
                                 }
                                 else
                                 {
                                     <span>Không có ảnh</span>
                                 }
-                            </td>
-                            <td>@khachHang.Cccd</td>
-                            <td>@(khachHang.NgaySinh?.ToShortDateString() ?? "N/A")</td>
-                            <td>@(khachHang.GioiTinh.HasValue ? (khachHang.GioiTinh.Value ? "Nam" : "Nữ") : "N/A")</td>
-                            <td>@(khachHang.TrangThai == 0 ? "Ngừng hoạt động" : "Hoạt động")</td>
+                            </td>                          
+                            <td>@nhanVien.Cccd</td>
+                            <td>@(nhanVien.NgaySinh?.ToShortDateString() ?? "N/A")</td>
+                            <td>@(nhanVien.GioiTinh.HasValue ? (nhanVien.GioiTinh.Value ? "Nam" : "Nữ") : "N/A")</td>
+                            <td>@(nhanVien.TrangThai == 0 ? "Ngừng hoạt động" : "Hoạt động")</td>
                             <td>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: transparent; border: none; color: inherit; font-size: 20px;">
@@ -144,12 +146,12 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" id="editCustomerBtn" data-bs-toggle="modal" data-bs-target="#myModal1" onclick="LoadData('@khachHang.MaKhachHang')">
+                                            <a class="dropdown-item" id="editCustomerBtn" data-bs-toggle="modal" data-bs-target="#myModal1" onclick="LoadData('@nhanVien.MaNhanVien')">
                                                 <i class="bi bi-pencil-square"></i> Sửa
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "KhachHang", new { id = khachHang.MaKhachHang })')">
+                                            <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "NhanVien", new { id = nhanVien.MaNhanVien })')">
                                                 <i class="bi bi-trash"></i> Xóa
                                             </a>
                                         </li>
@@ -170,9 +172,9 @@
         <div class="modal-dialog">
             <div class="modal-content" style="padding: 30px 30px 30px 30px">
                 <div class="mb-3">
-                    <label class="form-label">Tên Khách Hàng</label>
-                    <input id="TenKhachHang" class="form-control" />
-                    <span id="errorTenKhachHang" class="text-danger"></span>
+                    <label class="form-label">Tên Nhân Viên</label>
+                    <input id="TenNhanVien" class="form-control" />
+                    <span id="errorTenNhanVien" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Số Điện Thoại</label>
@@ -183,6 +185,15 @@
                     <label class="form-label">Địa chỉ</label>
                     <input id="DiaChi" class="form-control" />
                     <span id="errorDiaChi" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Vai Trò</label>
+                    <select id="VaiTro" class="form-select">
+                        <option value="">Chọn Vai Trò</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <span id="errorVaiTro" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <div class="row">
@@ -239,11 +250,11 @@
     <div class="modal" id="myModal1">
         <div class="modal-dialog">
             <div class="modal-content" style="padding: 30px 30px 30px 30px">
-                <input type="text" id="MaKhachHang1" hidden>
+                <input type="text" id="MaNhanVien1" hidden>
                 <div class="mb-3">
                     <label class="form-label">Tên Khách Hàng</label>
-                    <input id="TenKhachHang1" class="form-control" />
-                    <span id="errorTenKhachHang1" class="text-danger"></span>
+                    <input id="TenNhanVien1" class="form-control" />
+                    <span id="errorTenNhanVien1" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Số Điện Thoại</label>
@@ -256,10 +267,19 @@
                     <span id="errorDiaChi1" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Vai Trò</label>
+                    <select id="VaiTro1" class="form-select">
+                        <option value="">Chọn Vai Trò</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <span id="errorVaiTro1" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
                     <div class="row">
                         <label class="form-label">Hình ảnh</label>
                         <div class="col-md-3">
-                            <img src="../assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                            <img src="../assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar1" />
                         </div>
                         <div class="col-md-9">
                             <br>
@@ -314,25 +334,25 @@
 
 
 
-     <div class="d-flex justify-content-center">
-     @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize, searchTerm = ViewBag.SearchTerm }),
-     new PagedListRenderOptions
-     {
-     DisplayLinkToFirstPage = PagedListDisplayMode.Always,
-     DisplayLinkToLastPage = PagedListDisplayMode.Always,
-     DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-     DisplayLinkToNextPage = PagedListDisplayMode.Always,
-     LinkToFirstPageFormat = "Trang đầu",
-     LinkToLastPageFormat = "Trang cuối",
-     LinkToPreviousPageFormat = "«",
-     LinkToNextPageFormat = "»",
-     MaximumPageNumbersToDisplay = 5,
-     ContainerDivClasses = new[] { "pagination" },
-     UlElementClasses = new[] { "pagination" },
-     LiElementClasses = new[] { "page-item" },
-     PageClasses = new[] { "page-link" }
-     })
-     </div>
+    <div class="d-flex justify-content-center">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize, searchTerm = ViewBag.SearchTerm }),
+                 new PagedListRenderOptions
+        {
+            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            LinkToFirstPageFormat = "Trang đầu",
+            LinkToLastPageFormat = "Trang cuối",
+            LinkToPreviousPageFormat = "«",
+            LinkToNextPageFormat = "»",
+            MaximumPageNumbersToDisplay = 5,
+            ContainerDivClasses = new[] { "pagination" },
+            UlElementClasses = new[] { "pagination" },
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
+    </div>
     <div id="loginMessage" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);width: 500px; height:300px; text-align:center; align-items: center">
         <p style="color: red; font-size: 2rem">Vui lòng đăng nhập</p>
     </div>
@@ -343,7 +363,7 @@
         var searchTerm = $(this).val();
 
         $.ajax({
-            url: '@Url.Action("Index", "KhachHang", new { area = "Admin" })',
+            url: '@Url.Action("Index", "NhanVien", new { area = "Admin" })',
             type: 'GET',
             data: { searchTerm: searchTerm, page: 1, pageSize: @ViewBag.PageSize },
             success: function (data) {
@@ -409,7 +429,7 @@
             // Sử dụng SweetAlert để hiển thị thông báo xác nhận
             Swal.fire({
                 title: 'Xác nhận xóa',
-                text: 'Bạn có chắc chắn muốn xóa khách hàng này?',
+                text: 'Bạn có chắc chắn muốn xóa nhân viên này?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -431,7 +451,7 @@
 
             // Gửi yêu cầu AJAX để cập nhật kết quả tìm kiếm
             $.ajax({
-                url: '@Url.Action("Index", "KhachHang", new { area = "Admin" })', // Đường dẫn đến action
+                url: '@Url.Action("Index", "NhanVien", new { area = "Admin" })', // Đường dẫn đến action
                 type: 'GET',
                 data: { searchTerm: searchTerm },
                 success: function (response) {
@@ -448,25 +468,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @* Phần Quý *@
 <script>
-    document.getElementById("Anh").addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById("uploadedAvatar").src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
     $(document).ready(function () {
         $("#btnThem").click(function (e) {
             e.preventDefault();
 
-            var customerData = {
-                TenKhachHang: $("#TenKhachHang").val(),
+            var staffData = {
+                TenNhanVien: $("#TenNhanVien").val(),
                 SoDienThoai: $("#SoDienThoai").val(),
                 DiaChi: $("#DiaChi").val(),
-                Anh: $("#Anh")[0].files[0], // Lấy file ảnh
+                VaiTro: $("#VaiTro").val(),
                 Cccd: $("#Cccd").val(),
                 NgaySinh: $("#NgaySinh").val(),
                 GioiTinh: $("#GioiTinh").val()
@@ -474,22 +484,30 @@
 
             // Tạo đối tượng FormData để gửi dữ liệu bao gồm cả file
             var formData = new FormData();
-            formData.append("customer", JSON.stringify(customerData));
-            formData.append("Anh", customerData.Anh);
+
+            // Thêm dữ liệu vào formData
+            for (var key in staffData) {
+                formData.append(key, staffData[key]);
+            }
+
+            // Thêm file ảnh vào formData
+            formData.append("Anh", $("#Anh")[0].files[0]);
 
             // Gửi AJAX POST request đến controller
             $.ajax({
-                url: '/Admin/KhachHang/CreateCustomer',
+                url: '/Admin/NhanVien/CreateStaff',
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: function (response) {
                     if (response.success) {
-                        alert("Khách hàng đã được thêm thành công!");
-                        $("#myModal").modal('hide');  // Đóng modal
+                        alert("Nhân viên đã được thêm thành công!");
+
+                        // Close the modal
+                        $("#myModal").modal('hide');
+                        location.reload();
                     } else {
-                        // Clear any previous error messages
                         $(".text-danger").text("");
 
                         // Display errors for each field
@@ -511,18 +529,18 @@
 <script>
     function LoadData(id) {
         $.ajax({
-            url: `KhachHang/EditCustomer?id=${id}`,
+            url: `NhanVien/EditStaff?id=${id}`,
             type: 'GET',
-            success: function (customer) {
-                $('#MaKhachHang1').val(customer.maKhachHang)
-                $('#TenKhachHang1').val(customer.tenKhachHang)
-                $('#TenKhachHang1').val(customer.tenKhachHang);
-                $('#SoDienThoai1').val(customer.soDienThoai);
-                $('#DiaChi1').val(customer.diaChi);
-                $('#Cccd1').val(customer.cccd);
-                $('#NgaySinh1').val(customer.ngaySinh);
-                $('#GioiTinh1').val(customer.gioiTinh ? 'true' : 'false');
-                $('#uploadedAvatar1').attr('src', customer.hinhAnh || '../assets/img/avatars/1.png');
+            success: function (staff) {
+                $('#MaNhanVien1').val(staff.maNhanVien)
+                $('#TenNhanVien1').val(staff.tenNhanVien)
+                $('#SoDienThoai1').val(staff.soDienThoai);
+                $('#VaiTro1').val(staff.vaiTro);
+                $('#DiaChi1').val(staff.diaChi);
+                $('#Cccd1').val(staff.cccd);
+                $('#NgaySinh1').val(staff.ngaySinh);
+                $('#GioiTinh1').val(staff.gioiTinh ? 'true' : 'false');
+                $('#uploadedAvatar1').attr('src', staff.hinhAnh || '../assets/img/avatars/1.png');
                 $('#myModal1').modal('show');
             }
         });
@@ -530,9 +548,10 @@
 
     $('#btnSua').on('click', function () {
         const formData = new FormData();
-        formData.append('MaKhachHang', $('#MaKhachHang1').val());
-        formData.append('TenKhachHang', $('#TenKhachHang1').val());
+        formData.append('MaNhanVien', $('#MaNhanVien1').val());
+        formData.append('TenNhanVien', $('#TenNhanVien1').val());
         formData.append('SoDienThoai', $('#SoDienThoai1').val());
+        formData.append('VaiTro', $('#VaiTro1').val());
         formData.append('DiaChi', $('#DiaChi1').val());
         formData.append('Cccd', $('#Cccd1').val());
         formData.append('NgaySinh', $('#NgaySinh1').val());
@@ -540,7 +559,7 @@
         formData.append('Anh', $('#Anh1')[0].files[0]);
 
         $.ajax({
-            url: 'KhachHang/EditCustomer2',
+            url: 'NhanVien/EditStaff2',
             type: 'POST',
             data: formData,
             processData: false,
