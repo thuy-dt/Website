@@ -208,29 +208,28 @@ namespace ASM_GS.Controllers
                 {
                     errors.Add("NgaySinh", "Khách hàng phải đủ 15 tuổi.");
                 }
-                if (errors.Any())
-                {
-                    return Json(new { success = false, errors = errors });
-                }
+              
 
                 if (Anh != null && Anh.Length > 0)
                 {
                     string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
-                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Avatar", fileName);
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/AnhKhachHang", fileName);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await Anh.CopyToAsync(stream);
                     }
 
-                    customer.HinhAnh = "/Avatar/" + fileName;
+                    customer.HinhAnh = "/img/AnhKhachHang/" + fileName;
                 }
                 else
                 {
                     errors.Add("Anh", "Vui lòng tải lên hình ảnh hợp lệ.");
+                }
+                if (errors.Any())
+                {
                     return Json(new { success = false, errors = errors });
                 }
-
                 // Generate a unique, sequential MaKhachHang
                 var lastCustomer = await _context.KhachHangs
                                             .OrderByDescending(kh => kh.MaKhachHang)
@@ -406,7 +405,7 @@ namespace ASM_GS.Controllers
                         HttpContext.Session.SetString("UserAccount", existingAccount.MaTaiKhoan);
                         HttpContext.Session.SetString("User", existingCustomer.MaKhachHang);
                     }
-                    return Json(new { Message = "Cập nhật hình ảnh cho khách hàng hiện có." });
+                    return Json(new { Message = "Cập nhật tên cho khách hàng hiện có." });
                 }
             }
         }

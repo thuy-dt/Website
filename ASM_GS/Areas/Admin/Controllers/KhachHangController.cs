@@ -12,6 +12,7 @@ using X.PagedList;
 using X.PagedList.Mvc.Core;
 //using ASM_GS.Migrations;
 using Microsoft.AspNetCore.Http.Extensions;
+using System.Text.RegularExpressions;
 
 namespace ASM_GS.Areas.Admin.Controllers
 {
@@ -133,9 +134,6 @@ namespace ASM_GS.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
-            
-            
                 // Tìm khách hàng hiện tại trong cơ sở dữ liệu
                 var existingKhachHang = await _context.KhachHangs.FindAsync(id);
                 if (existingKhachHang == null)
@@ -211,6 +209,149 @@ namespace ASM_GS.Areas.Admin.Controllers
         private bool KhachHangExists(string id)
         {
             return _context.KhachHangs.Any(e => e.MaKhachHang == id);
+        }
+        //Phần Quý Làm: 
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomer(KhachHang customer, IFormFile Anh)
+        {
+            var errors = new Dictionary<string, string>();
+
+            // Validate customer fields
+            if (string.IsNullOrEmpty(customer.TenKhachHang))
+            {
+                errors.Add("TenKhachHang", "Tên khách hàng không được để trống.");
+            }
+
+            if (string.IsNullOrEmpty(customer.SoDienThoai))
+            {
+                errors.Add("SoDienThoai", "Số điện thoại không được để trống.");
+            }
+            else if (!Regex.IsMatch(customer.SoDienThoai, @"^\d{10,11}$"))
+            {
+                errors.Add("SoDienThoai", "Số điện thoại không hợp lệ.");
+            }
+
+            if (string.IsNullOrEmpty(customer.DiaChi))
+            {
+                errors.Add("DiaChi", "Địa chỉ không được để trống.");
+            }
+
+            if (string.IsNullOrEmpty(customer.Cccd))
+            {
+                errors.Add("Cccd", "Căn cước công dân không được để trống.");
+            }
+            else if (!Regex.IsMatch(customer.Cccd, @"^0\d{11}$"))
+            {
+                errors.Add("Cccd", "Căn cước công dân phải đủ 12 ký tự và bắt đầu bằng số 0.");
+            }
+
+            if (string.IsNullOrEmpty(customer.NgaySinh?.ToString()))
+            {
+                errors.Add("NgaySinh", "Ngày sinh không được để trống.");
+            }
+            else if (customer.NgaySinh > DateOnly.FromDateTime(DateTime.Now.AddYears(-15)))
+            {
+                errors.Add("NgaySinh", "Khách hàng phải đủ 15 tuổi.");
+            }
+            if(customer.GioiTinh!=true && customer.GioiTinh!=false)
+            {
+                errors.Add("GioiTinh", "Vui lòng chọn giới tính");
+            }    
+            
+            // Handle file upload for the image (Anh)
+            if (Anh != null && Anh.Length > 0)
+            {
+                string fileName = Guid.NewGuid() + Path.GetExtension(Anh.FileName);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "img/AnhKhachHang", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await Anh.CopyToAsync(stream);
+                }
+
+                customer.HinhAnh = "/img/AnhKhachHang/" + fileName;
+            }
+            else
+            {
+                errors.Add("Anh", "Vui lòng tải lên hình ảnh hợp lệ.");
+            }
+            if (errors.Any())
+            {
+                return Json(new { success = false, errors = errors });
+            }
+            // Generate a unique, sequential MaKhachHang
+            var lastCustomer = await _context.KhachHangs
+                                             .OrderByDescending(kh => kh.MaKhachHang)
+                                             .FirstOrDefaultAsync();
+
+            int nextId = 1;
+            if (lastCustomer != null)
+            {
+                string lastIdStr = lastCustomer.MaKhachHang.Substring(2); 
+                if (int.TryParse(lastIdStr, out int lastId))
+                {
+                    nextId = lastId + 1;
+                }
+            }
+            customer.MaKhachHang = "KH" + nextId.ToString("D3"); 
+
+
+            customer.TrangThai = 1;
+            customer.NgayDangKy = DateOnly.FromDateTime(DateTime.Now);
+
+
+            _context.KhachHangs.Add(customer);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Khách hàng đã được thêm thành công!" });
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditCustomer(string id)
+        {
+            var customer = await _context.KhachHangs.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return Json(customer);
+        }
+
+        // Action to handle updating customer information
+        [HttpPost]
+        public async Task<IActionResult> UpdateCustomer(KhachHang model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data");
+            }
+
+            var customer = await _context.KhachHangs.FindAsync(model.MaKhachHang);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            customer.TenKhachHang = model.TenKhachHang;
+            customer.SoDienThoai = model.SoDienThoai;
+            customer.DiaChi = model.DiaChi;
+            customer.Cccd = model.Cccd;
+            customer.NgaySinh = model.NgaySinh;
+            customer.GioiTinh = model.GioiTinh;
+
+            if (model.Anh != null && model.Anh.Length > 0)
+            {
+                // Save the new image
+                var imagePath = Path.Combine("wwwroot/img/AnhKhachHang", model.Anh.FileName);
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await model.Anh.CopyToAsync(stream);
+                }
+                customer.HinhAnh = "/images/customers/" + model.Anh.FileName;
+            }
+            _context.KhachHangs.Update(customer);
+            await _context.SaveChangesAsync();
+            return Ok("Customer updated successfully");
         }
     }
 }

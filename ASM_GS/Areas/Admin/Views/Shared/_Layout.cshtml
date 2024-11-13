@@ -439,28 +439,126 @@
                         <div id="welcomeMessage" style="position: fixed; top: 10px; right: 10px; background-color: deepskyblue; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 11px; opacity: 0; transition: opacity 0.5s; width: 400px; height: 40px">
                             Chào mừng bạn quay trở lại!
                         </div>
+             <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                     id="layout-navbar">
+                 <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                     <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                         <i class="bx bx-menu bx-sm"></i>
+                     </a>
+                 </div>
 
-                        <script>
-                            function removeRoutedFromLoginSession() {
-                                fetch('/Home/RemoveRoutedFromLoginSession', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                }).then(response => {
-                                    if (response.ok) {
-                                        console.log("Session key 'RoutedFromLogin' removed");
-                                    }
-                                }).catch(error => console.error("Error removing session key:", error));
-                            }
+                 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                     <!-- Search -->
+                     <div class="navbar-nav align-items-center">
+                         <div class="nav-item d-flex align-items-center">
+                             <i class="bx bx-search fs-4 lh-0"></i>
+                             <input type="text"
+                                     class="form-control border-0 shadow-none"
+                                     placeholder="Search..."
+                                     aria-label="Search..." />
+                         </div>
+                     </div>
+                     <!-- /Search -->
 
-                            window.onload = function () {
-                                removeRoutedFromLoginSession();
+                     <ul class="navbar-nav flex-row align-items-center ms-auto">
+                         <!-- Place this tag where you want the button to render. -->
+                         <li class="nav-item lh-1 me-3">
+                             <a class="github-button"
+                                 href="https://github.com/themeselection/sneat-html-admin-template-free"
+                                 data-icon="octicon-star"
+                                 data-size="large"
+                                 data-show-count="true"
+                                 aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
+                         </li>
 
-                                const welcomeMessage = document.getElementById("welcomeMessage");
-                                const tenNhanVien = "@TenNhanVien";
+                         <!-- User -->
+                         <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                 <div class="avatar avatar-online">
+                                     <img src="~/assets/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                 </div>
+                             </a>
+                             <ul class="dropdown-menu dropdown-menu-end">
+                                 <li>
+                                     <a class="dropdown-item" href="#">
+                                         <div class="d-flex">
+                                             <div class="flex-shrink-0 me-3">
+                                                 <div class="avatar avatar-online">
+                                                     <img src="~/assets/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                                 </div>
+                                             </div>
+                                             <div class="flex-grow-1">
+                                                 <span class="fw-semibold d-block">John Doe</span>
+                                                 <small class="text-muted">Admin</small>
+                                             </div>
+                                         </div>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <div class="dropdown-divider"></div>
+                                 </li>
+                                 <li>
+                                     <a class="dropdown-item" href="#">
+                                         <i class="bx bx-user me-2"></i>
+                                         <span class="align-middle">My Profile</span>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <a class="dropdown-item" href="#">
+                                         <i class="bx bx-cog me-2"></i>
+                                         <span class="align-middle">Settings</span>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <a class="dropdown-item" href="#">
+                                         <span class="d-flex align-items-center align-middle">
+                                             <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                                             <span class="flex-grow-1 align-middle">Billing</span>
+                                             <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                                         </span>
+                                     </a>
+                                 </li>
+                                 <li>
+                                     <div class="dropdown-divider"></div>
+                                 </li>
+                                 <li>
+                                     <a class="dropdown-item" href="auth-login-basic.html">
+                                         <i class="bx bx-power-off me-2"></i>
+                                         <span class="align-middle">Log Out</span>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <!--/ User -->
+                     </ul>
+                 </div>
+                     @if (FromLogin != null && TenNhanVien != null)
+                     {
+                         <div id="welcomeMessage" style="position: fixed; top: 10px; right: 10px; background-color: deepskyblue; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 11px; opacity: 0; transition: opacity 0.5s; width: 400px; height: 40px">
+                             Chào mừng bạn quay trở lại!
+                         </div>
 
-                                welcomeMessage.innerHTML = `Chào mừng bạn quay trở lại, ${tenNhanVien}!`;
+                         <script>
+                             function removeRoutedFromLoginSession() {
+                                 fetch('/Home/RemoveRoutedFromLoginSession', {
+                                     method: 'POST',
+                                     headers: {
+                                         'Content-Type': 'application/json'
+                                     }
+                                 }).then(response => {
+                                     if (response.ok) {
+                                         console.log("Session key 'RoutedFromLogin' removed");
+                                     }
+                                 }).catch(error => console.error("Error removing session key:", error));
+                             }
+
+                             window.onload = function () {
+                                 removeRoutedFromLoginSession();
+
+                                 const welcomeMessage = document.getElementById("welcomeMessage");
+                                 const tenNhanVien = "@TenNhanVien";
+
+                                 welcomeMessage.innerHTML = `Chào mừng bạn quay trở lại, ${tenNhanVien}!`;
 
                                 if (welcomeMessage) {
                                     welcomeMessage.style.opacity = 1;
@@ -568,16 +666,23 @@
             </div>
         </div>
     </div>
-    <!-- / Layout wrapper -->
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="~/assets/assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="~/assets/assets/vendor/libs/popper/popper.js"></script>
-    <script src="~/assets/assets/vendor/js/bootstrap.js"></script>
-    <script src="~/assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+</div>
+<!-- / Layout wrapper -->
+
+<script>
+    console.log(@TenNhanVien)
+    console.log(@FromLogin)
+</script>
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="~/assets/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="~/assets/assets/vendor/libs/popper/popper.js"></script>
+<script src="~/assets/assets/vendor/js/bootstrap.js"></script>
+<script src="~/assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
     <!-- / Layout wrapper -->
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
