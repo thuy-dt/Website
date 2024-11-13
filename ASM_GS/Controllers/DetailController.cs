@@ -82,59 +82,48 @@ namespace ASM_GS.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Lấy MaKhachHang từ session
                 string maKhachHang = HttpContext.Session.GetString("User");
                 if (string.IsNullOrEmpty(maKhachHang))
                 {
-                    return RedirectToAction("Index", "LoginAndSignUp");
+                    return Json(new { success = false, message = "Vui lòng đăng nhập để đánh giá sản phẩm." });
                 }
 
-                // Kiểm tra xem MaKhachHang có tồn tại trong cơ sở dữ liệu không
                 var khachHang = _context.KhachHangs.FirstOrDefault(kh => kh.MaKhachHang == maKhachHang);
                 if (khachHang == null)
                 {
                     return Json(new { success = false, message = "Khách hàng không tồn tại." });
                 }
 
-                // Kiểm tra xem MaSanPham có tồn tại trong cơ sở dữ liệu không
                 var sanPham = _context.SanPhams.FirstOrDefault(sp => sp.MaSanPham == maSanPham);
                 if (sanPham == null)
                 {
                     return Json(new { success = false, message = "Sản phẩm không tồn tại." });
                 }
 
-                // Tạo đối tượng đánh giá
+                var existingReview = _context.DanhGia.FirstOrDefault(dg => dg.MaSanPham == maSanPham && dg.MaKhachHang == maKhachHang);
+                if (existingReview != null)
+                {
+                    return Json(new { success = false, message = "Bạn đã đánh giá sản phẩm này rồi." });
+                }
+
                 var review = new DanhGia
                 {
                     MaDanhGia = Guid.NewGuid().ToString(),
-                    MaSanPham = maSanPham, // Gán MaSanPham
-                    MaKhachHang = maKhachHang, // Gán MaKhachHang
+                    MaSanPham = maSanPham,
+                    MaKhachHang = maKhachHang,
                     NoiDung = comment,
                     SoSao = rating,
-                    MaSanPhamNavigation = sanPham, // Thiết lập MaSanPhamNavigation
-                    MaKhachHangNavigation = khachHang // Thiết lập MaKhachHangNavigation
+                    MaSanPhamNavigation = sanPham,
+                    MaKhachHangNavigation = khachHang
                 };
 
-                // Thêm đánh giá vào cơ sở dữ liệu
                 _context.DanhGia.Add(review);
                 _context.SaveChanges();
 
-                // Chuyển hướng về trang chi tiết sản phẩm sau khi gửi đánh giá thành công
-                return RedirectToAction("Index", new { id = maSanPham });
+                return Json(new { success = true, message = "Cảm ơn bạn đã đánh giá sản phẩm!" });
             }
 
-            // Nếu ModelState không hợp lệ, trả về view với thông báo lỗi
-            var sanPhamError = _context.SanPhams
-                                       .Include(sp => sp.AnhSanPhams)
-                                       .Include(sp => sp.DanhGia)
-                                       .FirstOrDefault(sp => sp.MaSanPham == maSanPham);
-
-            double averageRatingError = sanPhamError?.DanhGia.Any() == true
-                                       ? sanPhamError.DanhGia.Average(dg => dg.SoSao)
-                                       : 0;
-
-            ViewBag.AverageRating = averageRatingError;
-            return View("Index", sanPhamError);
+            return Json(new { success = false, message = "Đã có lỗi xảy ra." });
         }
 
 

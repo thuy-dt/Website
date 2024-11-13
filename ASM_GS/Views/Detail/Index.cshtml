@@ -247,7 +247,7 @@
 <!-- Swiper JavaScript -->
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     var swiper = new Swiper('.product-large-slider', {
         slidesPerView: 1,
@@ -302,8 +302,51 @@
                 }
             });
         });
-    });
+        $(document).ready(function () {
+            $('form').on('submit', function (e) {
+                e.preventDefault();  // Ngừng hành động submit form mặc định
 
+                var form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (data) {
+                        console.log(data);  // In ra dữ liệu trả về từ server
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Cảm ơn!',
+                                text: data.message,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                location.reload(); // Reload trang sau khi thành công
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: data.message,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function () {
+                        console.log('Error in Ajax request');  // Kiểm tra khi có lỗi trong yêu cầu Ajax
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Không thể gửi đánh giá. Vui lòng thử lại.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+
+
+    });
+   
 </script>
 
 <style>
