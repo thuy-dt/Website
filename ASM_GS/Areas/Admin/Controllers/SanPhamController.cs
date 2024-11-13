@@ -36,7 +36,7 @@ namespace ASM_GS.Areas.Admin.Controllers
                 HttpContext.Session.SetString("RedirectUrl", HttpContext.Request.GetDisplayUrl());
 				ViewData["RedirectUrl"] = HttpContext.Session.GetString("RedirectUrl");
 			}
-            int defaultPageSize = pageSize ?? 5; // Default to 5 if not specified
+            int defaultPageSize = pageSize!=0 ? pageSize: 5; // Default to 5 if not specified
             int pageNumber = page ?? 1;
 
             var sanPhams = _context.SanPhams

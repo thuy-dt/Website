@@ -159,5 +159,17 @@ namespace ASM_GS.Controllers
             ViewData["RoutedFromLogin"] = HttpContext.Session.GetString("LoginRoute");
             return Ok();
         }
+        public IActionResult Logout()
+        {
+            // Xóa các session
+            HttpContext.Session.Remove("LoginRoute");
+            HttpContext.Session.Remove("UserAccount");
+            HttpContext.Session.Remove("User");
+            ViewData["Account"] = null;
+            ViewData["RoutedFromLogin"] = null;
+            ViewData["Customer"] =null;
+            // Chuyển hướng đến trang đăng nhập
+            return RedirectToAction("Index", "LoginAndSignUp");
+        }
     }
 }

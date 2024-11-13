@@ -22,6 +22,7 @@
 
 </style>
 <br />
+<body>
 @* <h1 style="margin-left: 10px">@ViewData["Title"]</h1>
  *@<div class="d-flex justify-content-between align-items-center mb-3" style="gap: 10px; padding: 10px;">
     <!-- Control Buttons -->
@@ -59,9 +60,9 @@
         </select>
     </form>
 </div>
-        <a href="#" class="btn btn-success btn-sm" style="margin-left: 60px;padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#createCreateModal" onclick="loadCreateModal()">
+        <button class="btn btn-success btn-sm" style="margin-left: 60px;padding: 10px 20px; font-size: 14px;" data-bs-toggle="modal" data-bs-target="#myModal">
             <i class="bi bi-plus"></i> Thêm khách hàng
-        </a>
+        </button>
 
        @*  <a href="javascript:void(0);" class="btn btn-primary" onclick="loadCreateModal()">
             Thêm Khách Hàng
@@ -134,7 +135,7 @@
                         <td>@khachHang.Cccd</td>
                         <td>@(khachHang.NgaySinh?.ToShortDateString() ?? "N/A")</td>
                         <td>@(khachHang.GioiTinh.HasValue ? (khachHang.GioiTinh.Value ? "Nam" : "Nữ") : "N/A")</td>
-                        <td>@(khachHang.TrangThai == 1 ? "Hoạt động" : "Ngừng hoạt động")</td>
+                        <td>@(khachHang.TrangThai == 0 ? "Ngừng hoạt động" : "Hoạt động")</td>
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: transparent; border: none; color: inherit; font-size: 20px;">
@@ -142,9 +143,9 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#" onclick="loadEditModal('@khachHang.MaKhachHang')">
-                                            <i class="bi bi-pencil-square"></i> Sửa
-                                        </a>
+                                            <a class="dropdown-item" id="editCustomerBtn" data-bs-toggle="modal" data-bs-target="#myModal1" onclick="LoadData('@khachHang.MaKhachHang')">
+                                             <i class="bi bi-pencil-square"></i> Sửa
+                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item text-danger" href="#" onclick="showDeleteModal('@Url.Action("Delete", "KhachHang", new { id = khachHang.MaKhachHang })')">
@@ -164,23 +165,131 @@
 
 
 
-
-<div class="container-fluid">
-    <!-- Modal for creating a customer -->
-    <div class="modal fade" id="createCustomerModal" tabindex="-1" aria-labelledby="createCustomerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" id="createCustomerModalContent"></div>
-        </div>
-    </div>
-
-    <!-- Modal for editing a customer -->
-    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" id="editCustomerModalContent"></div>
+<div class="modal" id="myModal" >
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 30px 30px 30px 30px">    
+            <div class="mb-3">
+                <label class="form-label">Tên Khách Hàng</label>
+                <input id="TenKhachHang" class="form-control" />
+                <span id="errorTenKhachHang" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Số Điện Thoại</label>
+                <input id="SoDienThoai" class="form-control" />
+                <span id="errorSoDienThoai" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Địa chỉ</label>
+                <input id="DiaChi" class="form-control" />
+                <span id="errorDiaChi" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <div class="row">
+                        <label class="form-label">Hình ảnh</label>
+                        <div class="col-md-3">
+                            <img src="../assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                        </div>
+                        <div class="col-md-9">
+                            <br>
+                            <input id="Anh" type="file" class="form-control" />
+                        </div>
+                </div>    
+                <span id="errorAnh" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">CCCD</label>
+                <input id="Cccd" class="form-control" />
+                <span id="errorCccd" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ngày Sinh</label>
+                <input id="NgaySinh" type="date" class="form-control" />
+                <span id="errorNgaySinh" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Giới Tính</label>
+                <select id="GioiTinh" class="form-select">
+                    <option value="">Chọn giới tính</option>
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
+                </select>
+                <span id="errorGioiTinh" class="text-danger"></span>
+            </div>
+            <button id="btnThem" class="btn btn-primary">Thêm</button>
         </div>
     </div>
 </div>
+ @* <div class="container-fluid">
+     <div class="modal-body" id="myModal">
+         <div class="modal-dialog">
+             <div class="modal-content"></div>
+            
+         </div>
+     </div>
 
+
+     <!-- Modal for editing a customer -->
+     <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+             <div class="modal-content" id="editCustomerModalContent"></div>
+         </div>
+     </div>
+ </div> *@
+<div class="modal" id="myModal1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 30px 30px 30px 30px">
+            <input type="text" id="MaKhachHang1" hidden>
+            <div class="mb-3">
+                <label class="form-label">Tên Khách Hàng</label>
+                <input id="TenKhachHang1" class="form-control" />
+                <span id="errorTenKhachHang1" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Số Điện Thoại</label>
+                <input id="SoDienThoai1" class="form-control" />
+                <span id="errorSoDienThoai1" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Địa chỉ</label>
+                <input id="DiaChi1" class="form-control" />
+                <span id="errorDiaChi1" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <div class="row">
+                    <label class="form-label">Hình ảnh</label>
+                    <div class="col-md-3">
+                        <img src="../assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                    </div>
+                    <div class="col-md-9">
+                        <br>
+                        <input id="Anh1" type="file" class="form-control" />
+                    </div>
+                </div>
+                <span id="errorAnh1" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">CCCD</label>
+                <input id="Cccd1" class="form-control" />
+                <span id="errorCccd1" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ngày Sinh</label>
+                <input id="NgaySinh1" type="date" class="form-control" />
+                <span id="errorNgaySinh1" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Giới Tính</label>
+                <select id="GioiTinh1" class="form-select">
+                    <option value="">Chọn giới tính</option>
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
+                </select>
+                <span id="errorGioiTinh1" class="text-danger"></span>
+            </div>
+                <button id="btnSua" class="btn btn-primary">Sửa</button>
+        </div>
+    </div>
+</div>
 
 <!-- Modal for deleting a customer -->
 <div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
@@ -204,7 +313,7 @@
 
 
 
-<div class="d-flex justify-content-center">
+@* <div class="d-flex justify-content-center">
     @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = ViewBag.PageSize, searchTerm = ViewBag.SearchTerm }),
             new PagedListRenderOptions
     {
@@ -222,10 +331,11 @@
         LiElementClasses = new[] { "page-item" },
         PageClasses = new[] { "page-link" }
     })
-</div>
+</div> *@
 <div id="loginMessage" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);width: 500px; height:300px; text-align:center; align-items: center">
     <p style="color: red; font-size: 2rem">Vui lòng đăng nhập</p>
 </div>
+</body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -241,82 +351,193 @@
     });
 </script>
 
+ <script>
+     @* function loadCreateModal() {
+         $.ajax({
+             url: '@Url.Action("Create", "KhachHang", new { area = "Admin" })',
+             type: 'GET',
+             success: function (data) {
+                 $('#createCustomerModalContent').html(data);
+                 $('#createCustomerModal').modal('show');
+             },
+             error: function () {
+                 alert("Lỗi khi tải dữ liệu");
+             }
+         });
+     }
+     setTimeout(function () {
+         var successMessage = document.querySelector(".alert-success");
+         if (successMessage) {
+             successMessage.style.display = "none";
+         }
+     }, 2000);
+
+
+
+     function loadEditModal(id) {
+         $.ajax({
+             url: '@Url.Action("Edit", "KhachHang", new { area = "Admin" })/' + id,
+             type: 'GET',
+             success: function (data) {
+                 $('#editCustomerModalContent').html(data);
+                 $('#editCustomerModal').modal('show');
+             },
+             error: function () {
+                 alert("Lỗi khi tải dữ liệu");
+             }
+         });
+     }
+     *@
+     function showDeleteModal(deleteUrl) {
+         // Sử dụng SweetAlert để hiển thị thông báo xác nhận
+         Swal.fire({
+             title: 'Xác nhận xóa',
+             text: 'Bạn có chắc chắn muốn xóa khách hàng này?',
+             icon: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#d33',
+             cancelButtonColor: '#6c757d',
+             confirmButtonText: 'Xóa',
+             cancelButtonText: 'Hủy'
+         }).then((result) => {
+             if (result.isConfirmed) {
+                 // Chuyển hướng đến đường dẫn xóa nếu người dùng xác nhận
+                 window.location.href = deleteUrl;
+             }
+         });
+     }
+
+
+      $(document).ready(function() {
+         $('#searchInput').on('input', function() {
+             var searchTerm = $(this).val().trim(); // Lấy giá trị tìm kiếm
+
+             // Gửi yêu cầu AJAX để cập nhật kết quả tìm kiếm
+             $.ajax({
+                 url: '@Url.Action("Index", "KhachHang", new { area = "Admin" })', // Đường dẫn đến action
+                 type: 'GET',
+                 data: { searchTerm: searchTerm },
+                 success: function(response) {
+                     $('#searchResults').html($(response).find('#searchResults').html()); // Cập nhật kết quả
+                 },
+                 error: function() {
+                     console.error('Không thể tải kết quả tìm kiếm. Vui lòng thử lại sau.');
+                 }
+             });
+         });
+     });
+
+ </script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@* Phần Quý *@
 <script>
-    function loadCreateModal() {
-        $.ajax({
-            url: '@Url.Action("Create", "KhachHang", new { area = "Admin" })',
-            type: 'GET',
-            success: function (data) {
-                $('#createCustomerModalContent').html(data);
-                $('#createCustomerModal').modal('show');
-            },
-            error: function () {
-                alert("Lỗi khi tải dữ liệu");
-            }
-        });
-    }
-    setTimeout(function () {
-        var successMessage = document.querySelector(".alert-success");
-        if (successMessage) {
-            successMessage.style.display = "none";
+    document.getElementById("Anh").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("uploadedAvatar").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
-    }, 2000);
+    });
+    $(document).ready(function () {
+        $("#btnThem").click(function (e) {
+            e.preventDefault();
 
+            var customerData = {
+                TenKhachHang: $("#TenKhachHang").val(),
+                SoDienThoai: $("#SoDienThoai").val(),
+                DiaChi: $("#DiaChi").val(),
+                Anh: $("#Anh")[0].files[0], // Lấy file ảnh
+                Cccd: $("#Cccd").val(),
+                NgaySinh: $("#NgaySinh").val(),
+                GioiTinh: $("#GioiTinh").val()
+            };
 
+            // Tạo đối tượng FormData để gửi dữ liệu bao gồm cả file
+            var formData = new FormData();
+            formData.append("customer", JSON.stringify(customerData));
+            formData.append("Anh", customerData.Anh);
 
-    function loadEditModal(id) {
-        $.ajax({
-            url: '@Url.Action("Edit", "KhachHang", new { area = "Admin" })/' + id,
-            type: 'GET',
-            success: function (data) {
-                $('#editCustomerModalContent').html(data);
-                $('#editCustomerModal').modal('show');
-            },
-            error: function () {
-                alert("Lỗi khi tải dữ liệu");
-            }
-        });
-    }
-
-    function showDeleteModal(deleteUrl) {
-        // Sử dụng SweetAlert để hiển thị thông báo xác nhận
-        Swal.fire({
-            title: 'Xác nhận xóa',
-            text: 'Bạn có chắc chắn muốn xóa khách hàng này?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Xóa',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Chuyển hướng đến đường dẫn xóa nếu người dùng xác nhận
-                window.location.href = deleteUrl;
-            }
-        });
-    }
-
-
-     $(document).ready(function() {
-        $('#searchInput').on('input', function() {
-            var searchTerm = $(this).val().trim(); // Lấy giá trị tìm kiếm
-
-            // Gửi yêu cầu AJAX để cập nhật kết quả tìm kiếm
+            // Gửi AJAX POST request đến controller
             $.ajax({
-                url: '@Url.Action("Index", "KhachHang", new { area = "Admin" })', // Đường dẫn đến action
-                type: 'GET',
-                data: { searchTerm: searchTerm },
-                success: function(response) {
-                    $('#searchResults').html($(response).find('#searchResults').html()); // Cập nhật kết quả
+                url: '/Admin/KhachHang/CreateCustomer',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        alert("Khách hàng đã được thêm thành công!");
+                        $("#myModal1").modal('hide');  // Đóng modal
+                    } else {
+                        // Clear any previous error messages
+                        $(".text-danger").text("");
+
+                        // Display errors for each field
+                        for (var key in response.errors) {
+                            if (response.errors.hasOwnProperty(key)) {
+                                $("#error" + key +"1").text(response.errors[key]);
+                            }
+                        }
+                    }
                 },
-                error: function() {
-                    console.error('Không thể tải kết quả tìm kiếm. Vui lòng thử lại sau.');
+                error: function (xhr, status, error) {
+                    alert("Có lỗi xảy ra. Vui lòng thử lại.");
                 }
             });
         });
     });
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function LoadData(id) {
+        $.ajax({
+            url: `KhachHang/EditCustomer?id=${id}`,
+            type: 'GET',
+            success: function (customer) {
+                $('#MaKhachHang1').val(customer.maKhachHang)
+                $('#TenKhachHang1').val(customer.tenKhachHang)
+                $('#TenKhachHang1').val(customer.tenKhachHang);
+                $('#SoDienThoai1').val(customer.soDienThoai);
+                $('#DiaChi1').val(customer.diaChi);
+                $('#Cccd1').val(customer.cccd);
+                $('#NgaySinh1').val(customer.ngaySinh);
+                $('#GioiTinh1').val(customer.gioiTinh ? 'true' : 'false');
+                $('#uploadedAvatar1').attr('src', customer.hinhAnh || '../assets/img/avatars/1.png');
+                $('#myModal1').modal('show');
+            }
+        });
+    };
+
+        $('#btnSua').on('click', function () {
+            const formData = new FormData();
+            formData.append('MaKhachHang', $('#MaKhachHang1').val());
+            formData.append('TenKhachHang', $('#TenKhachHang1').val());
+            formData.append('SoDienThoai', $('#SoDienThoai1').val());
+            formData.append('DiaChi', $('#DiaChi1').val());
+            formData.append('Cccd', $('#Cccd1').val());
+            formData.append('NgaySinh', $('#NgaySinh1').val());
+            formData.append('GioiTinh', $('#GioiTinh1').val());
+            formData.append('Anh', $('#Anh1')[0].files[0]);
+
+            $.ajax({
+                url: 'KhachHang/UpdateCustomer',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert(response);
+                    $('#myModal1').modal('hide');
+                    location.reload();
+                },
+                error: function () {
+                    alert("Failed to update customer.");
+                }
+            });
+        })
+    }     
+</script> 
