@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASM_GS.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateAnhSanPhamData : Migration
+    public partial class dulieu : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace ASM_GS.Migrations
                 columns: table => new
                 {
                     MaDanhMuc = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenDanhMuc = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TenDanhMuc = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -47,7 +47,7 @@ namespace ASM_GS.Migrations
                 columns: table => new
                 {
                     MaGiamGia = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenGiamGia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TenGiamGia = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GiaTri = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     NgayBatDau = table.Column<DateOnly>(type: "date", nullable: false),
                     NgayKetThuc = table.Column<DateOnly>(type: "date", nullable: false),
@@ -105,13 +105,13 @@ namespace ASM_GS.Migrations
                 columns: table => new
                 {
                     MaSanPham = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenSanPham = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TenSanPham = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gia = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MoTa = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    MaDanhMuc = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MaDanhMuc = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     SoLuong = table.Column<int>(type: "int", nullable: false),
                     NgayThem = table.Column<DateOnly>(type: "date", nullable: true),
-                    DonVi = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    DonVi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Nsx = table.Column<DateOnly>(type: "date", nullable: true),
                     Hsd = table.Column<DateOnly>(type: "date", nullable: true),
                     TrangThai = table.Column<int>(type: "int", nullable: true)
@@ -123,8 +123,7 @@ namespace ASM_GS.Migrations
                         name: "FK_SanPhams_DanhMucs_MaDanhMuc",
                         column: x => x.MaDanhMuc,
                         principalTable: "DanhMucs",
-                        principalColumn: "MaDanhMuc",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "MaDanhMuc");
                 });
 
             migrationBuilder.CreateTable(

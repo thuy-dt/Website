@@ -621,8 +621,7 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenDanhMuc")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -700,8 +699,7 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenGiamGia")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");
@@ -924,8 +922,7 @@ namespace ASM_GS.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DonVi")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Gia")
                         .HasColumnType("decimal(18,2)");
@@ -934,12 +931,10 @@ namespace ASM_GS.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("MaDanhMuc")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MoTa")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("NgayThem")
                         .HasColumnType("date");
@@ -952,8 +947,7 @@ namespace ASM_GS.Migrations
 
                     b.Property<string>("TenSanPham")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TrangThai")
                         .HasColumnType("int");
@@ -1290,9 +1284,7 @@ namespace ASM_GS.Migrations
                 {
                     b.HasOne("ASM_GS.Models.DanhMuc", "MaDanhMucNavigation")
                         .WithMany("SanPhams")
-                        .HasForeignKey("MaDanhMuc")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDanhMuc");
 
                     b.Navigation("MaDanhMucNavigation");
                 });
