@@ -1,5 +1,7 @@
 ﻿@model ASM_GS.ViewModels.ShopViewModel
-
+@{
+    Layout = "~/Views/Shared/_LayoutPhu.cshtml";
+}
 <div class="py-5">
     <div class="container" style="padding-top: 200px;">
         <div class="row flex-md-row-reverse g-5">
@@ -8,7 +10,50 @@
                 <div class="col-md-3">
                     <form method="get" class="input-group">
                         <select class="form-select border-0" name="filterBy" onchange="this.form.submit()">
-                            <!-- Các bộ lọc đã cài đặt như trước -->
+                            @if (Model.FilterBy == null)
+                            {
+                                <option value="" selected>Tất cả</option>
+                            }
+                            else
+                            {
+                                <option value="">Tất cả</option>
+                            }
+
+                            @if (Model.FilterBy == "Price")
+                            {
+                                <option value="Price" selected>Giá</option>
+                            }
+                            else
+                            {
+                                <option value="Price">Giá</option>
+                            }
+
+                            @if (Model.FilterBy == "Category")
+                            {
+                                <option value="Category" selected>Danh mục</option>
+                            }
+                            else
+                            {
+                                <option value="Category">Danh mục</option>
+                            }
+
+                            @if (Model.FilterBy == "Best Sellers")
+                            {
+                                <option value="Best Sellers" selected>Bán chạy</option>
+                            }
+                            else
+                            {
+                                <option value="Best Sellers">Bán chạy</option>
+                            }
+
+                            @if (Model.FilterBy == "New Arrivals")
+                            {
+                                <option value="New Arrivals" selected>Mới về</option>
+                            }
+                            else
+                            {
+                                <option value="New Arrivals">Mới về</option>
+                            }
                         </select>
                     </form>
                 </div>
@@ -44,11 +89,64 @@
                 </div>
 
                 <!-- Phân trang -->
-                <!-- ... (Phân trang như trước) -->
+                <nav aria-label="Page navigation" class="d-flex justify-content-center mt-5">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+                        {
+                            <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i, searchQuery = Model.SearchQuery, filterBy = Model.FilterBy })">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </main>
 
             <!-- Sidebar -->
-            <!-- ... (Sidebar như trước) -->
+            <aside class="col-md-3">
+                <div class="sidebar">
+                    <div class="product-filter padding-small">
+                        <div class="text-dark text-uppercase">Lọc theo:</div>
+                        <div class="accordion" id="accordionExample">
+                            <!-- Lọc theo giá -->
+                            <div class="accordion-item">
+                                <div class="accordion-header" id="heading-one">
+                                    <button class="accordion-button py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-one" aria-expanded="true" aria-controls="collapse-one">
+                                        <span class="accordion-title fs-3">Giá</span>
+                                    </button>
+                                </div>
+                                <div id="collapse-one" class="accordion-collapse collapse show" aria-labelledby="heading-one">
+                                    <div class="accordion-body">
+                                        <a href="@Url.Action("Index", new { priceRange = "under100k", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">Dưới 100K</a><br />
+                                        <a href="@Url.Action("Index", new { priceRange = "100k-500k", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">100K - 500K</a><br />
+                                        <a href="@Url.Action("Index", new { priceRange = "500k-1m", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">500K - 1M</a><br />
+                                        <a href="@Url.Action("Index", new { priceRange = "above1m", filterBy = Model.FilterBy, searchQuery = Model.SearchQuery })">Trên 1M</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lọc theo danh mục -->
+                            <div class="accordion-item">
+                                <div class="accordion-header" id="heading-two">
+                                    <button class="accordion-button py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-two" aria-expanded="true" aria-controls="collapse-two">
+                                        <span class="accordion-title fs-3">Danh mục</span>
+                                    </button>
+                                </div>
+                                <div id="collapse-two" class="accordion-collapse collapse show" aria-labelledby="heading-two">
+                                    <div class="accordion-body">
+                                        @foreach (var item in Model.DanhMuc)
+                                        {
+                                            <a href="@Url.Action("Index", new { filterBy = "Category", categoryId = item.MaDanhMuc })">
+                                                @item.TenDanhMuc
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
     </div>
 </div>
@@ -107,21 +205,28 @@
 
                 $('#productDetailModal').data('product-id', productId);
                 $('#productName').text(productName);
-                $('#productPrice').text(`${productPrice} VND`);
+                $('#productPrice').text(formatCurrency(productPrice));
                 $('#productImage').attr('src', productImage);
                 $('#quantityInput').val(1);
-                updateTotalPrice(productPrice);
+                updateTotalPrice();
 
                 $('#productDetailModal').modal('show');
             });
 
-            function updateTotalPrice() {
-                const quantity = parseInt($('#quantityInput').val(), 10);
-                const price = parseInt($('#productPrice').text().replace(/[^0-9]/g, ''), 10);
-                const total = quantity * price;
-                $('#totalPrice').text(`${total.toLocaleString()} VND`);
+            // Hàm định dạng tiền tệ theo kiểu Việt Nam
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 0 }).format(value) + ' VNĐ';
             }
 
+            // Hàm cập nhật tổng tiền
+            function updateTotalPrice() {
+                const quantity = parseInt($('#quantityInput').val(), 10);
+                const price = parseInt($('#productPrice').text().replace(/[^\d]/g, ''), 10); // Lấy phần số từ giá
+                const total = quantity * price;
+                $('#totalPrice').text(formatCurrency(total));
+            }
+
+            // Xử lý thêm sản phẩm vào giỏ hàng
             $('#addToCartBtn').on('click', function () {
                 const productId = $('#productDetailModal').data('product-id');
                 const quantity = parseInt($('#quantityInput').val(), 10);
@@ -154,17 +259,20 @@
                 });
             });
 
+            // Tăng số lượng sản phẩm
             $('#increaseQuantity').on('click', function () {
                 const quantity = parseInt($('#quantityInput').val(), 10) + 1;
                 $('#quantityInput').val(quantity);
                 updateTotalPrice();
             });
 
+            // Giảm số lượng sản phẩm
             $('#decreaseQuantity').on('click', function () {
                 const quantity = Math.max(1, parseInt($('#quantityInput').val(), 10) - 1);
                 $('#quantityInput').val(quantity);
                 updateTotalPrice();
             });
+
         });
     </script>
 }

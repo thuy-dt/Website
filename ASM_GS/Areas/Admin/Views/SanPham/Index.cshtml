@@ -134,7 +134,7 @@
             </select>
         </form>
         <!-- Button to Trigger Modal for Add Product -->
-        <a href="#" class="btn btn-success btn-sm d-flex align-items-center" style="padding: 10px 20px; font-size: 14px; margin-right: 200px;" data-bs-toggle="modal" onclick="loadAddProductModal()">
+        <a href="#" class="btn btn-primary" style="padding: 10px 20px; font-size: 14px; margin-right: 200px;" data-bs-toggle="modal" onclick="loadAddProductModal()">
             <i class="bi bi-plus" style="margin-right: 5px;"></i> Thêm Sản Phẩm
         </a>
 
@@ -287,17 +287,21 @@
     <!-- AJAX Script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script>
-          $(document).ready(function () {
-              var directUrl = '@Direct';
+        $(document).ready(function () {
+            var directUrl = '@Direct';
 
-              if (directUrl) {
-                const ThongBao = document.getElementById('loginMessage')
-                  ThongBao.style.display = "block";
-                  setTimeout(function () {
-                      window.location.href = '/LoginAdmin';
-                  }, 3000); 
-              }
-          });
+            if (directUrl) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Thông báo',
+                    text: 'Bạn sẽ được chuyển đến trang đăng nhập.',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(() => {
+                    window.location.href = '/LoginAdmin';
+                });
+            }
+        });
       </script>
     <!-- AJAX Script -->
 

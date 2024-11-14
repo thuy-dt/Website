@@ -46,7 +46,6 @@ namespace ASM_GS.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit([FromForm] KhachHang updatedKhachHang, IFormFile Anh)
         {
-            // Retrieve the account session to ensure user is logged in
             string accountId = HttpContext.Session.GetString("UserAccount");
 
             if (string.IsNullOrEmpty(accountId))
@@ -54,7 +53,6 @@ namespace ASM_GS.Controllers
                 return Json(new { success = false, message = "Bạn cần đăng nhập để chỉnh sửa thông tin cá nhân." });
             }
 
-            // Find the account and associated customer record
             var account = await _context.TaiKhoans
                                         .Include(tk => tk.MaKhachHangNavigation)
                                         .FirstOrDefaultAsync(tk => tk.MaTaiKhoan == accountId);
@@ -66,15 +64,7 @@ namespace ASM_GS.Controllers
 
             var khachHang = account.MaKhachHangNavigation;
 
-            // Update fields
-            khachHang.TenKhachHang = updatedKhachHang.TenKhachHang;
-            khachHang.SoDienThoai = updatedKhachHang.SoDienThoai;
-            khachHang.DiaChi = updatedKhachHang.DiaChi;
-            khachHang.Cccd = updatedKhachHang.Cccd;
-            khachHang.NgaySinh = updatedKhachHang.NgaySinh;
-            khachHang.GioiTinh = updatedKhachHang.GioiTinh;
-
-            // Update image if a new one is provided
+            // Chỉ cập nhật ảnh nếu có tệp mới được tải lên
             if (Anh != null && Anh.Length > 0)
             {
                 var filePath = Path.Combine("wwwroot/Avatar", Anh.FileName);
@@ -90,6 +80,7 @@ namespace ASM_GS.Controllers
 
             return Json(new { success = true });
         }
+
 
         [HttpGet]
         public IActionResult CheckLoginStatus()

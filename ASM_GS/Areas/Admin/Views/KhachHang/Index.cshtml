@@ -70,25 +70,28 @@
             </a> *@
         </div>
         <!-- Form tìm kiếm -->
-        <form id="searchForm" asp-action="Index" method="get" class="form-inline d-flex align-items-center">
-            <!-- Form tìm kiếm -->
-            <input type="text" id="searchInput" name="searchTerm" value="@ViewBag.SearchTerm"
-                   placeholder="Tìm kiếm khách hàng..."
-                   class="form-control form-control-sm"
-                   style="margin-right: 10px; width: 200px;" />
-        </form>
-        @if (TempData["successMessage"] != null)
-        {
-            <script>
-                // Sử dụng SweetAlert để hiển thị thông báo thành công
-                document.addEventListener('DOMContentLoaded', function () {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '@TempData["successMessage"]',
-                        //text: '@TempData["successMessage"]',
-                        //showConfirmButton: false,
-                        //timer: 2000 // Thông báo tự động ẩn sau 2 giây
-                    });
+        <input type="text" id="searchInput" name="searchTerm" value="@ViewBag.SearchTerm"
+               placeholder="Tìm kiếm khách hàng..."
+               class="form-control form-control-sm"
+               style="margin-right: 10px; width: 200px;" />
+        <select name="status" id="status" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Trạng thái --</option>
+            <option value="1">Hoạt Động</option>
+            <option value="0">Không Hoạt Động</option>
+        </select>
+    </form>
+    
+    @if (TempData["successMessage"] != null)
+    {
+        <script>
+            // Sử dụng SweetAlert để hiển thị thông báo thành công
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '@TempData["successMessage"]',
+                    //text: '@TempData["successMessage"]',
+                    //showConfirmButton: false,
+                    //timer: 2000 // Thông báo tự động ẩn sau 2 giây
                 });
             </script>
         }
@@ -359,11 +362,15 @@
         var directUrl = '@Direct';
 
         if (directUrl) {
-            const ThongBao = document.getElementById('loginMessage')
-            ThongBao.style.display = "block";
-            setTimeout(function () {
+            Swal.fire({
+                icon: 'info',
+                title: 'Thông báo',
+                text: 'Bạn sẽ được chuyển đến trang đăng nhập.',
+                showConfirmButton: false,
+                timer: 3000
+            }).then(() => {
                 window.location.href = '/LoginAdmin';
-            }, 3000);
+            });
         }
     });
 </script>

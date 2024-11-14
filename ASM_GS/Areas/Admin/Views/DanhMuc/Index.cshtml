@@ -163,16 +163,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        var directUrl = '@Direct';
+            var directUrl = '@Direct';
 
-        if (directUrl) {
-            const ThongBao = document.getElementById('loginMessage')
-            ThongBao.style.display = "block";
-            setTimeout(function () {
-                window.location.href = '/LoginAdmin';
-            }, 3000);
-        }
-    });
+            if (directUrl) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Thông báo',
+                    text: 'Bạn sẽ được chuyển đến trang đăng nhập.',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(() => {
+                    window.location.href = '/LoginAdmin';
+                });
+            }
+        });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,5 +1,7 @@
 ﻿@model ASM_GS.ViewModels.CheckoutViewModel
-
+@{
+    Layout = "~/Views/Shared/_LayoutPhu.cshtml";
+}
 <section class="checkout-wrap pb-5" style="margin-top: 250px;">
     <div class="container">
         <form class="form-group" method="post" action="@Url.Action("Index", "Checkout")">

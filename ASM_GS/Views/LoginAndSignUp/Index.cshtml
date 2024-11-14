@@ -230,7 +230,7 @@
         <div id="tawk-bubble-container" role="button" tabindex="0" class="tawk-bubble-container" onclick="toggleChatBox()">
             <div class="tawk-icon-right">
                 <i role="button" tabindex="0" data-text="Đóng" aria-label="Đóng" class="tawk-icon tawk-icon-close tawk-icon-small"></i>
-                <img src="https://waifubait.moe/cdn/shop/products/RemProof_grande.png?v=1552807117" alt="Thu hút chú ý đến tính năng trò chuyện" style="max-width: 124px;height: 100%;">
+                <img src="~/images/Remove-bg.ai_1731571250485.png" alt="Thu hút chú ý đến tính năng trò chuyện" style="max-width: 124px;height: 100%; border-radius:10px">
             </div>
         </div>
         <div id="chat-box" class="chat-box" style="display: none;">
@@ -244,30 +244,53 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         const myModal = document.getElementById('myModal');
         myModal.addEventListener('hidden.bs.modal', function (event) {
-            const confirmClose = confirm("Bạn có muốn bỏ qua bước này không?");
-            if (!confirmClose) {
-                const modalInstance = bootstrap.Modal.getInstance(myModal);
-                modalInstance.show();
-            } else {
-                // Gọi AJAX để tạo khách hàng mặc định
-                $.ajax({
-                    url: '/LoginAndSignUp/CreateDefaultCustomer',
-                    type: 'POST',
-                    success: function (response) {
-                        if (response.success) {
-                            alert(response.message);
-                            window.location.href = "Home";
+            // SweetAlert confirm dialog
+            Swal.fire({
+                title: 'Bạn có muốn bỏ qua bước này không?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Có',
+                cancelButtonText: 'Không'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Gọi AJAX để tạo khách hàng mặc định
+                    $.ajax({
+                        url: '/LoginAndSignUp/CreateDefaultCustomer',
+                        type: 'POST',
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.href = "Home";
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Đã có lỗi xảy ra.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                         }
-                    },
-                    error: function () {
-                        alert("Đã có lỗi xảy ra.");
-                    }
-                });
-            }
+                    });
+                } else {
+                    // Show the modal again if the user cancels
+                    const modalInstance = bootstrap.Modal.getInstance(myModal);
+                    modalInstance.show();
+                }
+            });
         });
+
     </script>
 
     <script>
@@ -415,6 +438,7 @@
             console.log(name);
             console.log(email);
             console.log(picture);
+
             $.ajax({
                 url: '/LoginAndSignUp/CreateCustomerFromGoogleLogin',
                 type: 'POST',
@@ -423,18 +447,36 @@
                 dataType: 'json',
                 success: function (result) {
                     if (result.Message === "Đã tạo tài khoản và khách hàng mới thành công.") {
-                        window.location.href = '/Home';
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã tạo tài khoản và khách hàng mới thành công.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '/Home';
+                        });
                     } else {
-                        alert("Đăng nhập thành công");
-                        window.location.href = '/Home';
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đăng nhập thành công',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '/Home';
+                        });
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error("Lỗi khi tạo tài khoản:", error);
-                    alert("Đã tạo tài khoản thành công, vui lòng đăng thao tác lại ");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Đã tạo tài khoản thành công, vui lòng thao tác lại',
+                        showConfirmButton: true
+                    });
                 }
             });
         }
+
         function onFailure() {
             document.getElementById("errorMessages").innerText = "Đăng nhập thất bại. Vui lòng thử lại.";
         }
@@ -554,6 +596,7 @@
             });
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             $('#createCustomerForm').submit(function (e) {
@@ -575,6 +618,7 @@
                     success: function (response) {
                         if (response.success) {
                             alert(response.message);
+                            window.location.href = '/home';
                         } else {
                             // Display errors if validation fails
                             if (response.errors.TenKhachHang) {

@@ -647,18 +647,24 @@ class="btn btn-danger btn-buy-now">Upgrade to Pro</a>
         <p style="color: red; font-size: 2rem">Vui lòng đăng nhập</p>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             var directUrl = '@Direct';
 
             if (directUrl) {
-                const ThongBao = document.getElementById('loginMessage')
-                ThongBao.style.display = "block";
-                setTimeout(function () {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Thông báo',
+                    text: 'Bạn sẽ được chuyển đến trang đăng nhập.',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).then(() => {
                     window.location.href = '/LoginAdmin';
-                }, 3000);
+                });
             }
         });
+
     </script>
 
     <script>
