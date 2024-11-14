@@ -16,7 +16,7 @@ public partial class NhanVien
 
     public string? SoDienThoai { get; set; }
 
-    public DateOnly NgayBatDau { get; set; }
+    public DateOnly? NgayBatDau { get; set; }
 
     public string? HinhAnh { get; set; }
 
@@ -34,3 +34,6 @@ public partial class NhanVien
 
     public virtual ICollection<TaiKhoan> TaiKhoans { get; set; } = new List<TaiKhoan>();
 }
+//Tình trạng:
+//0: Không hoạt động
+//1: Hoạt động

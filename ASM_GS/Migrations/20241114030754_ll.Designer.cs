@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASM_GS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:ASM_GS/Migrations/20241114030754_ll.Designer.cs
     [Migration("20241114030754_ll")]
     partial class ll
+========
+    [Migration("20241114080721_UpdateAnhSanPhamData")]
+    partial class UpdateAnhSanPhamData
+>>>>>>>> origin/Chinh-sua-thong-tin-ca-nhan-Admin:ASM_GS/Migrations/20241114080721_UpdateAnhSanPhamData.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

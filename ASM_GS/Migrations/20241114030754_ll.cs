@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASM_GS.Migrations
 {
     /// <inheritdoc />
+<<<<<<<< HEAD:ASM_GS/Migrations/20241114030754_ll.cs
     public partial class ll : Migration
+========
+    public partial class UpdateAnhSanPhamData : Migration
+>>>>>>>> origin/Chinh-sua-thong-tin-ca-nhan-Admin:ASM_GS/Migrations/20241114080721_UpdateAnhSanPhamData.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
