@@ -29,7 +29,7 @@ namespace ASM_GS.Areas.Admin.Controllers
         }
 
         // GET: Admin/KhachHang
-        public IActionResult Index(string searchTerm, int? pageSize, int page = 1)
+        public IActionResult Index(string searchTerm, int? pageSize, int page = 1, int? status = null)
         {
             if (HttpContext.Session.GetString("StaffAccount") == null)
             {
@@ -48,11 +48,15 @@ namespace ASM_GS.Areas.Admin.Controllers
                                                      kh.SoDienThoai.Contains(searchTerm) ||
                                                      kh.Cccd.Contains(searchTerm));
             }
-
+            if (status.HasValue)
+            {
+                khachHangs = khachHangs.Where(kh => kh.TrangThai == status);
+            }
             // Phân trang sử dụng ToPagedList
             var pagedKhachHangs = khachHangs.ToPagedList(page, pageSizeValue);
 
             ViewBag.SearchTerm = searchTerm;
+            ViewBag.Status = status;
             ViewBag.PageSize = pageSizeValue;
             ViewBag.Page = page;
 

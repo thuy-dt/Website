@@ -1,89 +1,145 @@
 ﻿@model ASM_GS.Models.KhachHang
 @{
     ViewData["Title"] = "Thông Tin Cá Nhân";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutPhu.cshtml";
 }
+<style>
+    .avatar-content-setting-info {
+        text-align: center;
+        width: 150px;
+    }
+
+        .avatar-content-setting-info img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+    .change-photo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px; /* Khoảng cách giữa liên kết và ghi chú */
+        font-size: 14px;
+        color: #888;
+    }
+
+        .change-photo a {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+            .change-photo a:hover {
+                text-decoration: underline;
+            }
+</style>
 
 
+<br />
+<h2 style="text-align:center;
+        color: #333; /* Adjust color as needed */
+        margin-bottom: 20px;">
+    Thông Tin Cá Nhân
+</h2>
 
-<h2>Thông Tin Cá Nhân</h2>
-
-<div>
-    <div class="form-group">
-        <label>Ảnh cá nhân:</label><br>
+<div class="content-setting-info">
+    <div class="avatar-content-setting-info">
         @if (!string.IsNullOrEmpty(Model.HinhAnh))
         {
-            <img src="@Model.HinhAnh" alt="Ảnh cá nhân" width="150" />
+            <img src="@Model.HinhAnh" alt="Ảnh cá nhân" id="profileImage" />
         }
         else
         {
             <p>Chưa có ảnh</p>
         }
+        <div class="change-photo">
+            <a href="javascript:void(0);" onclick="triggerFileInput()">Đổi ảnh cá nhân</a>
+        </div>
+        <input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="previewImage()" />
     </div>
 
-    <div class="form-group">
-        <label>Chọn ảnh mới:</label>
-        <input type="file" id="Anh" class="form-control" accept="image/*" />
-    </div>
-    <div class="form-group">
-        <label>Mã khách hàng:</label>
-        <input type="text" class="form-control" value="@Model.MaKhachHang" readonly />
-    </div>
+    <div class="info-content-setting-info" style="padding-right:30px">
+        <div class="item-info row">
+            <label>Tên khách hàng:</label>
+            <input type="text" id="TenKhachHang" class="form-control" value="@Model.TenKhachHang" />
+        </div>
 
-    <div class="form-group">
-        <label>Tên khách hàng:</label>
-        <input type="text" id="TenKhachHang" class="form-control" value="@Model.TenKhachHang" />
-    </div>
+        <div class="item-info row">
+            <label>Số điện thoại:</label>
+            <input type="text" id="SoDienThoai" class="form-control" value="@Model.SoDienThoai" />
+        </div>
 
-    <div class="form-group">
-        <label>Số điện thoại:</label>
-        <input type="text" id="SoDienThoai" class="form-control" value="@Model.SoDienThoai" />
-    </div>
+        <div class="item-info row">
+            <label>Địa chỉ:</label>
+            <input type="text" id="DiaChi" class="form-control" value="@Model.DiaChi" />
+        </div>
 
-    <div class="form-group">
-        <label>Địa chỉ:</label>
-        <input type="text" id="DiaChi" class="form-control" value="@Model.DiaChi" />
-    </div>
+        <div class="item-info row">
+            <label>CCCD:</label>
+            <input type="text" id="Cccd" class="form-control" value="@Model.Cccd" />
+        </div>
 
-    <div class="form-group">
-        <label>CCCD:</label>
-        <input type="text" id="Cccd" class="form-control" value="@Model.Cccd" />
-    </div>
+        <div class="item-info row">
+            <label>Ngày sinh:</label>
+            <input type="date" id="NgaySinh" class="form-control" value="@Model.NgaySinh?.ToString("dd-MM-yyyy")" />
+        </div>
 
-    <div class="form-group">
-        <label>Ngày sinh:</label>
-        <input type="date" id="NgaySinh" class="form-control" value="@Model.NgaySinh?.ToString("dd-MM-yyyy")" />
+        <div class="item-info row">
+            <label>Giới tính:</label>
+            <select id="GioiTinh" class="form-control">
+                @if (Model.GioiTinh.HasValue && Model.GioiTinh.Value)
+                {
+                    <option value="true" selected>Nam</option>
+                    <option value="false">Nữ</option>
+                }
+                else
+                {
+                    <option value="true">Nam</option>
+                    <option value="false" selected>Nữ</option>
+                }
+            </select>
+        </div>
+        <div class="btn-edit-info">
+            <button onclick="saveChanges()" class="btn btn-primary">Cập nhật</button>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label>Giới tính:</label>
-        <select id="GioiTinh" class="form-control">
-            @if (Model.GioiTinh.HasValue && Model.GioiTinh.Value)
-            {
-                <option value="true" selected>Nam</option>
-                <option value="false">Nữ</option>
-            }
-            else
-            {
-                <option value="true">Nam</option>
-                <option value="false" selected>Nữ</option>
-            }
-        </select>
-    </div>
-
-    <button onclick="saveChanges()" class="btn btn-primary mt-3">Lưu thay đổi</button>
+    
 </div>
+
 
 <!-- SweetAlert2 for showing success or error messages -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Trigger file input when clicking "Đổi ảnh cá nhân"
+    function triggerFileInput() {
+        document.getElementById("fileInput").click();
+    }
+
+    // Preview the selected image but don't upload yet
+    function previewImage() {
+        var fileInput = document.getElementById("fileInput");
+        var profileImage = document.getElementById("profileImage");
+
+        // Show the selected image in the preview area
+        if (fileInput.files && fileInput.files[0]) {
+            profileImage.src = URL.createObjectURL(fileInput.files[0]);
+        }
+    }
+
+    // Submit form data along with the selected image
     function saveChanges() {
         const formData = new FormData();
-        const imageFile = document.getElementById('Anh').files[0];
+
+        // Append the selected image if available
+        const imageFile = document.getElementById('fileInput').files[0];
         if (imageFile) {
             formData.append('Anh', imageFile);
         }
 
+        // Append other form fields
         formData.append('TenKhachHang', document.getElementById('TenKhachHang').value);
         formData.append('SoDienThoai', document.getElementById('SoDienThoai').value);
         formData.append('DiaChi', document.getElementById('DiaChi').value);
@@ -126,3 +182,77 @@
             });
     }
 </script>
+
+<style>
+    /* Container for avatar and form */
+    .content-setting-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff4f4;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Avatar section */
+    .avatar-content-setting-info {
+        text-align: center;
+        width: 150px;
+    }
+
+        .avatar-content-setting-info img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .avatar-content-setting-info p {
+            color: #888;
+            font-size: 14px;
+            margin: 0;
+        }
+
+    /* Info section with form items */
+    .info-content-setting-info {
+        flex: 1;
+    }
+
+    .item-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .item-info label {
+            width: 150px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .item-info input[type="text"],
+        .item-info input[type="date"],
+        .item-info select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+            .item-info input[type="text"]:read-only {
+                background-color: #f0f0f0;
+                color: #666;
+            }
+
+   
+</style>
+
+
+
+

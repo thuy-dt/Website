@@ -75,7 +75,13 @@
                placeholder="Tìm kiếm khách hàng..."
                class="form-control form-control-sm"
                style="margin-right: 10px; width: 200px;" />
+        <select name="status" id="status" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Trạng thái --</option>
+            <option value="1">Hoạt Động</option>
+            <option value="0">Không Hoạt Động</option>
+        </select>
     </form>
+    
     @if (TempData["successMessage"] != null)
     {
         <script>
@@ -342,11 +348,15 @@
         var directUrl = '@Direct';
 
         if (directUrl) {
-            const ThongBao = document.getElementById('loginMessage')
-            ThongBao.style.display = "block";
-            setTimeout(function () {
+            Swal.fire({
+                icon: 'info',
+                title: 'Thông báo',
+                text: 'Bạn sẽ được chuyển đến trang đăng nhập.',
+                showConfirmButton: false,
+                timer: 3000
+            }).then(() => {
                 window.location.href = '/LoginAdmin';
-            }, 3000);
+            });
         }
     });
 </script>

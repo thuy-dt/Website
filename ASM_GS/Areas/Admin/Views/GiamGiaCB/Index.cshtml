@@ -313,11 +313,15 @@
         var directUrl = '@Direct';
 
         if (directUrl) {
-            const ThongBao = document.getElementById('loginMessage')
-            ThongBao.style.display = "block";
-            setTimeout(function () {
+            Swal.fire({
+                icon: 'info',
+                title: 'Thông báo',
+                text: 'Bạn sẽ được chuyển đến trang đăng nhập.',
+                showConfirmButton: false,
+                timer: 3000
+            }).then(() => {
                 window.location.href = '/LoginAdmin';
-            }, 3000);
+            });
         }
     });
 </script>

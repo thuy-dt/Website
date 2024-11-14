@@ -307,12 +307,9 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
         </div>
     </div>
 
-        @if (khachHangLogin != null && LoginRoute!=null)
+        @if (khachHangLogin != null && LoginRoute != null)
         {
-            <div id="welcomeMessage" style="position: fixed; top: 10px; right: 10px; background-color: deepskyblue; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 11px; opacity: 0; transition: opacity 0.5s; width: 400px; height: 40px">
-                Chào mừng bạn quay trở lại!
-            </div>
-
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 function removeRoutedFromLoginSession() {
                     fetch('/Home/RemoveRoutedFromLoginSession', {
@@ -328,18 +325,17 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
                 }
 
                 window.onload = function () {
-                    removeRoutedFromLoginSession(); 
+                    removeRoutedFromLoginSession();
 
                     const khachHang1 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(khachHangLogin ?? new { }));
-                    const welcomeMessage = document.getElementById("welcomeMessage");
-                    welcomeMessage.innerHTML = `Chào mừng bạn quay trở lại, ${khachHang1.TenKhachHang}`;
+                    const customerName = khachHang1.TenKhachHang || "bạn";
 
-                    if (welcomeMessage) {
-                        welcomeMessage.style.opacity = 1;
-                        setTimeout(function () {
-                            welcomeMessage.style.opacity = 0;
-                        }, 3000);
-                    }
+                    Swal.fire({
+                        title: `Chào mừng bạn quay trở lại, ${customerName}!`,
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
                 };
             </script>
         }
@@ -763,7 +759,7 @@ integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJ
     <div id="tawk-bubble-container" role="button" tabindex="0" class="tawk-bubble-container" onclick="toggleChatBox()">
         <div class="tawk-icon-right">
             <i role="button" tabindex="0" data-text="Đóng" aria-label="Đóng" class="tawk-icon tawk-icon-close tawk-icon-small"></i>
-            <img src="https://waifubait.moe/cdn/shop/products/RemProof_grande.png?v=1552807117" alt="Thu hút chú ý đến tính năng trò chuyện" style="max-width: 124px;height: 100%;">
+                <img src="~/images/Remove-bg.ai_1731571250485.png" alt="Thu hút chú ý đến tính năng trò chuyện" style="max-width: 124px;height: 100%; border-radius:10px">
         </div>
     </div>
     <div id="chat-box" class="chat-box" style="display: none;">
