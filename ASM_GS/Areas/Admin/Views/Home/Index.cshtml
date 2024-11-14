@@ -35,22 +35,27 @@ Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <div class="avatar avatar-online">
-                    <img src="~/assets/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                        <img src="@Url.Content(ViewBag.ProfilePicture)" alt="User Avatar" class="w-px-40 h-auto rounded-circle" />
                 </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>
                     <a class="dropdown-item" href="#">
                         <div class="d-flex">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar avatar-online">
-                                    <img src="~/assets/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="@Url.Content(ViewBag.ProfilePicture)" alt="User Avatar" class="w-px-40 h-auto rounded-circle" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <span class="fw-semibold d-block">John Doe</span>
-                                <small class="text-muted">Admin</small>
-                            </div>
+                                <div class="flex-grow-1">
+                                    <span class="fw-semibold d-block">
+                                        @(ViewBag.UserName ?? "Unknown User") <!-- Provide a default value if null -->
+                                    </span>
+                                    <small class="text-muted">
+                                        @(ViewBag.UserRole ?? "Unknown Role") <!-- Provide a default value if null -->
+                                    </small>
+                                </div>
+
                         </div>
                     </a>
                 </li>
@@ -73,12 +78,14 @@ Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
-                <li>
-                        <a class="dropdown-item" href="@Url.Action("Index", "LoginAdmin")">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Đăng xuất</span>
-                    </a>
-                </li>
+
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="logoutUser()">
+                            <i class="bx bx-power-off me-2"></i>
+                            <span class="align-middle">Đăng xuất</span>
+                        </a>
+                    </li>
+
             </ul>
         </li>
         <!--/ User -->
@@ -654,6 +661,21 @@ class="btn btn-danger btn-buy-now">Upgrade to Pro</a>
         });
     </script>
 
+    <script>
+        function logoutUser() {
+            fetch('@Url.Action("RemoveStaffAccount", "Home", new { area = "Admin" })', {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Html.AntiForgeryToken()'
+                }
+            }).then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+            });
+        }
+    </script>
+    
 <!-- Core JS -->
 <!-- build:js assets/vendor/js/core.js -->
 <script src="~/assets/assets/vendor/libs/jquery/jquery.js"></script>

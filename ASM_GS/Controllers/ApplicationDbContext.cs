@@ -182,8 +182,33 @@ namespace ASM_GS.Controllers
                 }
         
             );
+            modelBuilder.Entity<NhanVien>().HasData(
+                new NhanVien
+                {
+                    MaNhanVien = "NV001",
+                    TenNhanVien = "Admin",
+                    VaiTro= "Admin",
+                    SoDienThoai = "0123456789",
+                    DiaChi = "123 Main St",
+                    NgayBatDau = new DateOnly(2023, 1, 15),
+                    HinhAnh = null,
+                    Cccd = "123456789",
+                    NgaySinh = new DateOnly(1990, 1, 1),
+                    GioiTinh = true,
+                    TrangThai = 1
+                }
 
+            );
             modelBuilder.Entity<TaiKhoan>().HasData(
+                new TaiKhoan
+                {
+                    MaTaiKhoan = "TK003",
+                    TenTaiKhoan = "admin",
+                    MatKhau = "123456",
+                    VaiTro = "Admin",
+                    MaNhanVien = "NV001",
+                    Email = "admin@example.com"
+                },
                 new TaiKhoan
                 {
                     MaTaiKhoan = "TK001",
