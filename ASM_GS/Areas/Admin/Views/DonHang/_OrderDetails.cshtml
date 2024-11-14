@@ -1,0 +1,26 @@
+﻿@model ASM_GS.Models.DonHang
+
+<div>
+    <h5>Mã Đơn Hàng: @Model.MaDonHang</h5>
+    <p>Ngày Đặt: @Model.NgayDatHang</p>
+    <p>Tổng Tiền: @Model.TongTien</p>
+    <p>
+        Trạng Thái:
+        @if (Model.TrangThai == 0)
+        {
+            <span>Đang xử lý</span>
+        }
+        else if (Model.TrangThai == 1)
+        {
+            <span>Đang giao</span>
+        }
+        else if (Model.TrangThai == 2)
+        {
+            <span>Đã giao</span>
+        }
+        else if (Model.TrangThai == 4)
+        {
+            <span>Hoàn trả</span>
+        }
+    </p>
+</div>

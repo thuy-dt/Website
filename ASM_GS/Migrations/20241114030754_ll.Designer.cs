@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASM_GS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241113100323_DLS")]
-    partial class DLS
+    [Migration("20241114030754_ll")]
+    partial class ll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
