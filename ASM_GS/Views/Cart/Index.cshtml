@@ -1,135 +1,136 @@
 ﻿@model ASM_GS.ViewModels.CartViewModel
 
 <div style="margin-top: 250px;">
-    <section class="py-5">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mt-5">
-                <h1 class="page-title display-3">Giỏ Hàng</h1>
+     
+        <section class="py-5">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mt-5">
+                    <h1 class="page-title display-3">Giỏ Hàng</h1>
+                </div>
             </div>
-        </div>
-    </section>
-    <section class="py-5">
-        <div class="container">
-            <div class="row my-5">
-                <div class="col-md-8">
-                    <div class="cart-table">
-                        <div class="cart-header">
-                            <div class="row d-flex border-bottom">
-                                <h6 class="cart-title text-uppercase col-lg-4 pb-3">Sản Phẩm</h6>
-                                <h6 class="cart-title text-uppercase col-lg-3 pb-3">Số Lượng</h6>
-                                <h6 class="cart-title text-uppercase col-lg-4 pb-3">Thành Tiền</h6>
+        </section>
+        <section class="py-5">
+            <div class="container">
+                <div class="row my-5">
+                    <div class="col-md-8">
+                        <div class="cart-table">
+                            <div class="cart-header">
+                                <div class="row d-flex border-bottom">
+                                    <h6 class="cart-title text-uppercase col-lg-4 pb-3">Sản Phẩm</h6>
+                                    <h6 class="cart-title text-uppercase col-lg-3 pb-3">Số Lượng</h6>
+                                    <h6 class="cart-title text-uppercase col-lg-4 pb-3">Thành Tiền</h6>
+                                </div>
                             </div>
-                        </div>
 
-                        @foreach (var item in Model.Items)
-                        {
-                            <div class="cart-item border-top border-bottom" data-product-id="@item.ProductId">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-4 col-md-3">
-                                        <div class="cart-info d-flex flex-wrap align-items-center">
-                                            <div class="col-lg-5">
-                                                <div class="card-image">
-                                                    <img src="@Url.Content(item.ImageUrl)" alt="Product Image" class="img-fluid" />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-7">
-                                                <div class="card-detail ps-3">
-                                                    <h5 class="card-title">
-                                                        <a href="#" class="text-decoration-none">@item.ProductName</a>
-                                                    </h5>
-                                                    <div class="card-price">
-                                                        <span class="money gia" data-price="@item.Price">@item.Price.ToString("N0") VND</span>
+                            @foreach (var item in Model.Items)
+                            {
+                                <div class="cart-item border-top border-bottom" data-product-id="@item.ProductId">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-4 col-md-3">
+                                            <div class="cart-info d-flex flex-wrap align-items-center">
+                                                <div class="col-lg-5">
+                                                    <div class="card-image">
+                                                        <img src="@Url.Content(item.ImageUrl)" alt="Product Image" class="img-fluid" />
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-7">
-                                        <div class="row d-flex">
-                                            <div class="col-md-4">
-                                                <div class="input-group product-qty">
-                                                    <button type="button" class="btn btn-light btn-number quantity-left-minus" onclick="updateQuantity(@item.ItemId, -1)">
-                                                        <svg width="5" height="5"><use xlink:href="#minus"></use></svg>
-                                                    </button>
-                                                    <div class="col-md-4">
-                                                        <div class="input-group product-qty" style="width:70px;">
-                                                            @*   <button type="button" class="btn btn-light btn-number quantity-left-minus" onclick="updateQuantity(@item.ItemId, -1)">
-                                                        <svg width="10" height="10"><use xlink:href="#minus"></use></svg>
-                                                        </button> *@
-                                                            <input type="number" id="quantity-@item.ItemId" class="so-luong form-control" data-price="@item.Price" value="@item.Quantity" min="1" />
-                                                            @*        <button type="button" class="btn btn-light btn-number quantity-right-plus" onclick="updateQuantity(@item.ItemId, 1)">
-                                                        <svg width="10" height="10"><use xlink:href="#plus"></use></svg>
-                                                        </button> *@
+                                                <div class="col-lg-7">
+                                                    <div class="card-detail ps-3">
+                                                        <h5 class="card-title">
+                                                            <a href="#" class="text-decoration-none">@item.ProductName</a>
+                                                        </h5>
+                                                        <div class="card-price">
+                                                            <span class="money gia" data-price="@item.Price">@item.Price.ToString("N0") VND</span>
                                                         </div>
                                                     </div>
-
-
-
-                                                    <button type="button" class="btn btn-light btn-number quantity-right-plus" onclick="updateQuantity(@item.ItemId, 1)">
-                                                        <svg width="5" height="5"><use xlink:href="#plus"></use></svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-8 text-center">
-                                                <div class="total-price">
-                                                    <span class="money text-dark thanh-tien">@item.Subtotal.ToString("N0") VND</span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-1 col-md-2">
-                                        <div class="cart-remove">
-                                            <form id="remove-form-@item.ItemId" method="post" action="@Url.Action("Remove", "Cart")">
-                                                <input type="hidden" name="id" value="@item.ItemId" />
-                                                <button type="button" onclick="confirmRemove(@item.ItemId)" class="btn btn-danger btn-remove">
-                                                    <svg width="32px"><use xlink:href="#trash"></use></svg>
-                                                </button>
-                                            </form>
+                                        <div class="col-lg-6 col-md-7">
+                                            <div class="row d-flex">
+                                                <div class="col-md-4">
+                                                    <div class="input-group product-qty">
+                                                        <button type="button" class="btn btn-light btn-number quantity-left-minus" onclick="updateQuantity(@item.ItemId, -1)">
+                                                            <svg width="5" height="5"><use xlink:href="#minus"></use></svg>
+                                                        </button>
+                                                        <div class="col-md-4">
+                                                            <div class="input-group product-qty" style="width:70px;">
+                                                                @*   <button type="button" class="btn btn-light btn-number quantity-left-minus" onclick="updateQuantity(@item.ItemId, -1)">
+                                                            <svg width="10" height="10"><use xlink:href="#minus"></use></svg>
+                                                            </button> *@
+                                                                <input type="number" id="quantity-@item.ItemId" class="so-luong form-control" data-price="@item.Price" value="@item.Quantity" min="1" />
+                                                                @*        <button type="button" class="btn btn-light btn-number quantity-right-plus" onclick="updateQuantity(@item.ItemId, 1)">
+                                                            <svg width="10" height="10"><use xlink:href="#plus"></use></svg>
+                                                            </button> *@
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <button type="button" class="btn btn-light btn-number quantity-right-plus" onclick="updateQuantity(@item.ItemId, 1)">
+                                                            <svg width="5" height="5"><use xlink:href="#plus"></use></svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 text-center">
+                                                    <div class="total-price">
+                                                        <span class="money text-dark thanh-tien">@item.Subtotal.ToString("N0") VND</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-1 col-md-2">
+                                            <div class="cart-remove">
+                                                <form id="remove-form-@item.ItemId" method="post" action="@Url.Action("Remove", "Cart")">
+                                                    <input type="hidden" name="id" value="@item.ItemId" />
+                                                    <button type="button" onclick="confirmRemove(@item.ItemId)" class="btn btn-danger btn-remove">
+                                                        <svg width="32px"><use xlink:href="#trash"></use></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="cart-totals bg-grey py-5">
-                        <h4 class="text-dark pb-4">Tổng Cộng</h4>
-                        <div class="total-price pb-5">
-                            <table cellspacing="0" class="table text-uppercase">
-                                <tbody>
-                                    <tr class="subtotal pt-2 pb-2 border-top border-bottom">
-                                        <th>Tạm Tính</th>
-                                        <td data-title="Subtotal">
-                                            <span class="price-amount amount text-dark ps-5">
-                                                <bdi><span class="price-currency-symbol">₫</span> <span id="temp-total">@Model.Total.ToString("N0")</span></bdi>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="order-total pt-2 pb-2 border-bottom">
-                                        <th>Tổng Cộng</th>
-                                        <td data-title="Total">
-                                            <span class="price-amount amount text-dark ps-5">
-                                                <bdi><span class="price-currency-symbol">₫</span> <span id="grand-total">@Model.Total.ToString("N0")</span></bdi>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            }
                         </div>
-                        <div class="button-wrap row g-2">
-                            <div class="col-md-6"><button class="btn btn-dark text-uppercase btn-rounded-none w-100">Cập Nhật Giỏ Hàng</button></div>
-                            <div class="col-md-6"><button class="btn btn-dark text-uppercase btn-rounded-none w-100">Tiếp Tục Mua Sắm</button></div>
-                            <div class="col-md-12">
-                                <a href="@Url.Action("Index", "Checkout")" class="btn btn-primary text-uppercase btn-rounded-none w-100">Thanh Toán</a>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="cart-totals bg-grey py-5">
+                            <h4 class="text-dark pb-4">Tổng Cộng</h4>
+                            <div class="total-price pb-5">
+                                <table cellspacing="0" class="table text-uppercase">
+                                    <tbody>
+                                        <tr class="subtotal pt-2 pb-2 border-top border-bottom">
+                                            <th>Tạm Tính</th>
+                                            <td data-title="Subtotal">
+                                                <span class="price-amount amount text-dark ps-5">
+                                                    <bdi><span class="price-currency-symbol">₫</span> <span id="temp-total">@Model.Total.ToString("N0")</span></bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="order-total pt-2 pb-2 border-bottom">
+                                            <th>Tổng Cộng</th>
+                                            <td data-title="Total">
+                                                <span class="price-amount amount text-dark ps-5">
+                                                    <bdi><span class="price-currency-symbol">₫</span> <span id="grand-total">@Model.Total.ToString("N0")</span></bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="button-wrap row g-2">
+                                <div class="col-md-6"><button class="btn btn-dark text-uppercase btn-rounded-none w-100">Cập Nhật Giỏ Hàng</button></div>
+                                <div class="col-md-6"><button class="btn btn-dark text-uppercase btn-rounded-none w-100">Tiếp Tục Mua Sắm</button></div>
+                                <div class="col-md-12">
+                                    <a href="@Url.Action("Index", "Checkout")" class="btn btn-primary text-uppercase btn-rounded-none w-100">Thanh Toán</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 </div>
 
 @section Scripts {
@@ -224,6 +225,9 @@
             console.log("Các item ID trên trang:", Array.from(document.querySelectorAll('.input-number')).map(el => el.id));
         });
     </script>
+
+     
+    
 }
 
 @* <style>

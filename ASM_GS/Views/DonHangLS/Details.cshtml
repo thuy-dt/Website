@@ -1,0 +1,40 @@
+﻿@model ASM_GS.ViewModels.DonHangViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết Đơn hàng";
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h3>Thông tin Đơn hàng</h3>
+    <p><strong>Mã Hóa Đơn:</strong> @Model.MaHoaDon</p>
+    <p><strong>Mã Khách Hàng:</strong> @Model.MaKhachHang</p>
+    <p><strong>Ngày Xuất Hóa Đơn:</strong> @Model.NgayXuatHoaDon</p>
+    <p><strong>Tổng Tiền:</strong> @Model.TongTien</p>
+    <p><strong>Trạng Thái:</strong> @Model.TrangThai</p>
+</div>
+
+<h3>Chi tiết các sản phẩm trong đơn hàng</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã Sản Phẩm</th>
+            <th>Số Lượng</th>
+            <th>Giá</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ChiTietHoaDons)
+        {
+            <tr>
+                <td>@item.MaSanPham</td>
+                <td>@item.SoLuong</td>
+                <td>@item.Gia</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "DonHangLS")">Quay lại danh sách đơn hàng</a>
