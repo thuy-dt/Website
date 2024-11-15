@@ -45,14 +45,14 @@ namespace ASM_GS.Areas.Admin.Controllers
                     break;
             }
 
-            var orders = await ordersQuery.Select(dh => new DonHangViewModel
+            var orders = await ordersQuery.Select(dh => new DonHangLSViewModel
             {
                 MaDonHang = dh.MaDonHang,
                 MaKhachHang = dh.MaKhachHang,
                 NgayDatHang = dh.NgayDatHang,
                 TongTien = dh.TongTien,
                 TrangThai = dh.TrangThai ?? 0,
-                ChiTietDonHangs = dh.ChiTietDonHangs.Select(ct => new ChiTietDonHangViewModel
+                ChiTietDonHangs = dh.ChiTietDonHangs.Select(ct => new ChiTietDonHangLSViewModel
                 {
                     MaSanPham = ct.MaSanPham,
                     SoLuong = ct.SoLuong,
